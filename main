@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=1,vmem=31gb,walltime=2:00:00
+#PBS -N roiGen
+#PBS -V
+
+module load singularity 2> /dev/null
+
+singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
+
+if [ ! -d "output" ];
+then
+	echo "output missing"
+	exit 1
+fi
+
