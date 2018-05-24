@@ -1,6 +1,6 @@
 {
 	"dtiinit":	"/N/dc2/projects/lifebid/Concussion/test/dtiinit",
 	"freesurfer":	"/N/dc2/projects/lifebid/Concussion/test/freesurfer",
-	"rois":	"1025,1030",
-	"inflate": 1
+	"rois":	"1025,1030"
 }
+
