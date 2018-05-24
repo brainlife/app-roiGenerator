@@ -27,7 +27,7 @@ else
       args="${args} \"${token}\"" 
       shift
   done
-  eval "\"${exe_dir}/main\"" $args
+  eval "\"${exe_dir}/roiGeneration\"" $args
 fi
 exit
 

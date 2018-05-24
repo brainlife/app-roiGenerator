@@ -1,28 +1,21 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=1,walltime=2:00:00
+#PBS -l nodes=1:ppn=8,walltime=14:00:00
 #PBS -N roiGeneration
 #PBS -V
 
 module load singularity 2> /dev/null
-
-t1=`jq -r '.t1' config.json`
+module load r
+module switch gcc/4.9.2
+module load afni
 
 echo "creating masks"
 time singularity exec -e docker://brainlife/freesurfer:6.0.0 bash -c "echo $FREESURFER_LICENSE > /usr/local/freesurfer/license.txt && ./create_wm_mask.sh"
 
 echo "inflating ROIs"
-time singularity exec -e docker://brainlife/afni:16.3.0 ./roiInflate.sh
+time singularity exec -e docker://brainlife/afni:1.0.0 ./roiInflate.sh
 
 echo "roi generation"
 singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./ROI/roiGeneration
-
-## Clean up
-mkdir parc;
-cp ${t1} ./parc/
-mv parc_inflate_GMI.nii.gz ./parc/parc.nii.gz;
-mv parc_inflate_GMI.niml.lt ./parc/key.txt;
-mv *roi*.nii.gz ./parc/;
-rm -rf *roi*.mat *inflate*.niml.lt *.nii.gz;
 
 #if [ -s track.tck ]
 #then
