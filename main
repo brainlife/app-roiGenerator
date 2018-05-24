@@ -19,7 +19,7 @@ singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./ROI/roiGener
 
 ## Clean up
 mkdir parc;
-cp ${t1} ./parc/
+cp $t1 ./parc/;
 mv parc_inflate_GMI.nii.gz ./parc/parc.nii.gz;
 mv parc_inflate_GMI.niml.lt ./parc/key.txt;
 mv *roi*.nii.gz ./parc/;
