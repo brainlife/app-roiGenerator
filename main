@@ -6,6 +6,7 @@
 module load singularity 2> /dev/null
 
 t1=`jq -r '.t1' config.json`
+inflate=`jq -r '.inflate' config.json`
 
 echo "creating masks"
 time singularity exec -e docker://brainlife/freesurfer:6.0.0 bash -c "echo $FREESURFER_LICENSE > /usr/local/freesurfer/license.txt && ./create_wm_mask.sh"
@@ -23,6 +24,12 @@ mv parc_inflate_GMI.nii.gz ./parc/parc.nii.gz;
 mv parc_inflate_GMI.niml.lt ./parc/key.txt;
 mv *roi*.nii.gz ./parc/;
 rm -rf *roi*.mat *inflate*.niml.lt *.nii.gz;
+
+if [[ ${INFLATE} == 'null' ]];then
+    echo "{\"tags\": [\"no_inflate\" ]}" > product.json
+else
+    echo "{\"tags\": [\"inflate\" ]}" > product.json
+fi
 
 #if [ -s track.tck ]
 #then
