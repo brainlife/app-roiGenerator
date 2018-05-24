@@ -7,10 +7,10 @@
 ## create nifti's for each ROI requested by the user, which can then be fed into a ROI to ROI tracking app (brainlife.io; www.github.com/brain-life/
 ## app-roi2roitracking).
 
-INFLATE=`jq -r '.inflate' config.json`;
+INFLATE=`jq -r '.inflate' config.json`
 t1=`jq -r '.t1' config.json`
-mkdir parc;
-cp $t1 ${PWD}/parc/t1.nii.gz;
+mkdir parc
+cp $t1 ${PWD}/parc/t1.nii.gz
 
 if [[ ${INFLATE} == 'null' ]]; then
 	echo "no inflation";
