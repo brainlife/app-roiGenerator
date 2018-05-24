@@ -8,6 +8,9 @@
 ## app-roi2roitracking).
 
 INFLATE=`jq -r '.inflate' config.json`;
+t1=`jq -r '.t1' config.json`
+mkdir parc;
+cp $t1 ${PWD}/parc/t1.nii.gz;
 
 if [[ ${INFLATE} == 'null' ]]; then
 	echo "no inflation";
