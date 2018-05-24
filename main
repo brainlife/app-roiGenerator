@@ -15,7 +15,7 @@ echo "inflating ROIs"
 time singularity exec -e docker://brainlife/afni:16.3.0 ./roiInflate.sh
 
 echo "roi generation"
-singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./ROI/roiGeneration
+singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./roiGeneration/roiGeneration
 
 ## Clean up
 mkdir parc;
