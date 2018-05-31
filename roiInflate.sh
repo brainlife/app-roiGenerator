@@ -31,6 +31,7 @@ if [ -f parc_diffusion.nii.gz ]; then
 		-wm_skel wm_anat.nii.gz \
 		-skel_thr 0.5 \
 		-skel_stop \
+		-trim_off_wm \
 		${l2} \
 		-nifti \
 		-overwrite;
@@ -42,6 +43,7 @@ else
 		-wm_skel wm_anat.nii.gz \
 		-skel_thr 0.5 \
 		-skel_stop \
+		-trim_off_wm \
 		${l2} \
 		-nifti \
 		-overwrite;
