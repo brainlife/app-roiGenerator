@@ -1,4 +1,5 @@
-[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.1-blue.svg)](https://doi.org/10.25663/bl.app.1)
+[![Abcdspec-compliant](https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg)](https://github.com/soichih/abcd-spec)
+[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.37-blue.svg)](https://doi.org/10.25663/bl.app.37)
 
 # app-roiGenerator
 This app will generate nifti files for specific ROIs, or every ROI, of a parcellation (either freesurfer or atlas). First, the user-specfied parcellation is converted to nifti and a white matter and brain mask are generated using Freesurfer by running the create_wm_mask script. Then, the ROIs are inflated by N voxels, and the white matter mask is removed from the parcellation, using AFNI's 3dROIMaker by running the roiInflate script. Finally, a nifti of the ROIs are generated using Vistasoft's dtiRoiNiftiFromMat function by running the roiGeneration script.
