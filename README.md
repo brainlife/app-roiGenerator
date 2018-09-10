@@ -4,11 +4,17 @@
 # app-roiGenerator
 This app will generate nifti files for specific ROIs, or every ROI, of a parcellation (either freesurfer or atlas). First, the user-specfied parcellation is converted to nifti and a white matter and brain mask are generated using Freesurfer by running the create_wm_mask script. Then, the ROIs are inflated by N voxels, and the white matter mask is removed from the parcellation, using AFNI's 3dROIMaker by running the roiInflate script. Finally, a nifti of the ROIs are generated using Vistasoft's dtiRoiNiftiFromMat function by running the roiGeneration script.
 
-#### Authors
+### Authors
 - Brad Caron (bacaron@iu.edu)
 - Ilaria Sani (isani01@rockefeller.edu)
+
+### Contributors
 - Soichi Hayashi (hayashi@iu.edu)
 - Franco Pestilli (franpest@indiana.edu)
+
+### Funding
+[![NSF-BCS-1734853](https://img.shields.io/badge/NSF_BCS-1734853-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1734853)
+[![NSF-BCS-1636893](https://img.shields.io/badge/NSF_BCS-1636893-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1636893)
 
 ## Running the App 
 
