@@ -27,7 +27,7 @@ You can submit this App online at [https://doi.org/10.25663/bl.app.37](https://d
         "dtiinit": "./input/dtiinit/",
         "fsurfer": "./input/freesurfer/",
         "inflate": 1,
-        "rois": "45,54",      
+        "rois": "45,54" 
 }
 ```
 
@@ -43,7 +43,6 @@ bl dataset download 5a14aa2deb00be0031340618 && mv 5a14aa2deb00be0031340618 inpu
 bl dataset download 5b0db9d841711001e958b51a && mv 5b0db9d841711001e958b51a input/parc
 bl dataset download 5a14f50eeb00be0031340619 && mv 5a14f50eeb00be0031340619 input/dtiinit
 bl dataset download 5a169eea143e7c00bdcf3b5e && mv 5a169eea143e7c00bdcf3b5e input/freesurfer
-
 ```
 
 
