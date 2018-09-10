@@ -46,10 +46,10 @@ You can download sample datasets from Brainlife using [Brainlife CLI](https://gi
 npm install -g brainlife
 bl login
 mkdir input
-bl dataset download 5a14aa2deb00be0031340618 && mv 5a14aa2deb00be0031340618 input/t1
-bl dataset download 5b0db9d841711001e958b51a && mv 5b0db9d841711001e958b51a input/parc
-bl dataset download 5a14f50eeb00be0031340619 && mv 5a14f50eeb00be0031340619 input/dtiinit
-bl dataset download 5a169eea143e7c00bdcf3b5e && mv 5a169eea143e7c00bdcf3b5e input/freesurfer
+bl dataset download 5b96bd23059cf900271924f8 && mv 5b96bd23059cf900271924f8 input/t1
+bl dataset download 5b96bd26059cf900271924f9 && mv 5b96bd26059cf900271924f9 input/parc
+bl dataset download 5b96bc8d059cf900271924f5 && mv 5b96bc8d059cf900271924f5 input/dtiinit
+bl dataset download 5b96bc8f059cf900271924f6 && mv 5b96bc8f059cf900271924f6 input/freesurfer
 ```
 
 
