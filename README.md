@@ -13,7 +13,7 @@ This app will generate nifti files for specific ROIs, or every ROI, of a parcell
 
 ### On Brainlife.io
 
-You can submit this App online at [https://doi.org/10.25663/bl.app.37](https://doi.org/10.25663/bl.app.37 via the "Execute" tab.
+You can submit this App online at [https://doi.org/10.25663/bl.app.37](https://doi.org/10.25663/bl.app.37) via the "Execute" tab.
 
 ### Running Locally (on your machine)
 
