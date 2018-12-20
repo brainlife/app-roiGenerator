@@ -49,8 +49,8 @@ for ii = 1:length(rois)
         display('ROI not found in parcellation. Please see parcellation LUT');
         exit;
     else
-        save(sprintf('roi_%s.mat',num2str(rois(ii))),'matRoi','-v7.3');
-        roiName = sprintf('roi_%s.nii.gz',num2str(rois(ii)));
+        save(sprintf('ROI%s.mat',num2str(rois(ii))),'matRoi','-v7.3');
+        roiName = sprintf('ROI%s.nii.gz',num2str(rois(ii)));
         [ni, roiName] = dtiRoiNiftiFromMat_temp(matRoi,refImg,roiName,1);
         clear('matRoi', 'roiName', 'ni');
     end

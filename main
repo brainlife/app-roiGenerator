@@ -22,8 +22,8 @@ singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./ROI/roiGener
 mkdir parc;
 mv parc_inflate_GMI.nii.gz ./parc/parc.nii.gz;
 mv parc_inflate_GMI.niml.lt ./parc/key.txt;
-mv *roi*.nii.gz ./parc/;
-rm -rf *roi*.mat *inflate*.niml.lt *.nii.gz;
+mv *ROI*.nii.gz ./parc/;
+rm -rf *ROI*.mat *inflate*.niml.lt *.nii.gz;
 
 if [[ ${INFLATE} == 'null' ]];then
     echo "{\"tags\": [\"no_inflate\" ]}" > product.json
