@@ -2,7 +2,7 @@
 
 ## Create white matter mask and move rois to diffusion space for tracking
 
-parc=`jq -r '.parcellation' config.json`
+parc=`jq -r '.parc' config.json`
 dtiinit=`jq -r '.dtiinit' config.json`
 fsurfer=`jq -r '.freesurfer' config.json`
 export input_nii_gz=$dtiinit/`jq -r '.files.alignedDwRaw' $dtiinit/dt6.json`
