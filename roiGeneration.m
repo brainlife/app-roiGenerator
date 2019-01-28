@@ -17,7 +17,7 @@ end
 
 disp('running')
 config = loadjson('config.json');
-rois = str2num(config.rois);
+rois = str2num(config.ROI);
 refImg=fullfile(config.dtiinit, 'dwi_aligned_trilin_noMEC.nii.gz');
 
 %if exist(fullfile(pwd,'parc.nii.gz')) == 2
