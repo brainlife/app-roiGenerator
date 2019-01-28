@@ -33,10 +33,10 @@ else
 fi
 
 if [ -z "$(ls -A ./rois/)" ]; then
-    exit 0
-else
     echo "ROI files missing."
     exit 1
+else
+    exit 0
 fi
 
 
