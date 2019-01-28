@@ -13,7 +13,7 @@ mri_label2vol --seg $fsurfer/mri/aparc+aseg.mgz --temp $input_nii_gz --regheader
 if [ $parc == "null" ]; then
     echo "inputparc is freesurfer. appropriate file already generated"
 else
-    mri_convert $parc/parc.nii.gz parc.mgz
+    mri_convert $parc parc.mgz
     mri_label2vol --seg parc.mgz --temp $input_nii_gz --regheader parc.mgz --o parc_diffusion.nii.gz
 fi
     
