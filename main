@@ -32,10 +32,11 @@ else
     echo "{\"tags\": [\"inflate\" ]}" > product.json
 fi
 
-#if [ -s track.tck ]
-#then
-#    exit 0
-#else
-#	echo "ensemble tracking missing"
-#	exit 1
-#fi
+if [ -z "$(ls -A ./rois/)" ]; then
+    exit 0
+else
+    echo "ROI files missing."
+    exit 1
+fi
+
+
