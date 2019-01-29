@@ -21,9 +21,10 @@ singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./ROI/roiGener
 ## Clean up
 mkdir parc;
 mkdir rois;
+mkdir rois/rois;
 mv parc_inflate_GMI.nii.gz ./parc/parc.nii.gz;
 mv parc_inflate_GMI.niml.lt ./parc/key.txt;
-mv *ROI*.nii.gz ./rois/;
+mv *ROI*.nii.gz ./rois/rois/;
 rm -rf *ROI*.mat *inflate*.niml.lt *.nii.gz;
 
 if [[ ${INFLATE} == 'null' ]];then
