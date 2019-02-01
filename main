@@ -16,6 +16,7 @@ then
     time singularity exec -e docker://brainlife/fsl:5.0.9 ./brainmask.sh
 else
     echo "brainmask exists. skipping"
+    cp -v ${mask} mask.nii.gz;
 fi
 time singularity exec --writable -e docker://brainlife/freesurfer:6.0.0 bash -c "echo $FREESURFER_LICENSE > /usr/local/freesurfer/license.txt && ./create_wm_mask.sh"
 
