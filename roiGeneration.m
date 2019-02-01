@@ -18,7 +18,7 @@ end
 disp('running')
 config = loadjson('config.json');
 rois = str2num(config.ROI);
-refImg=fullfile(config.dtiinit, 'dwi_aligned_trilin_noMEC.nii.gz');
+refImg=niftiRead(config.dwi);
 
 %if exist(fullfile(pwd,'parc.nii.gz')) == 2
 %    fsDir = fullfile(pwd,'parc.nii.gz');
