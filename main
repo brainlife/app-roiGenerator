@@ -41,7 +41,7 @@ else
     echo "{\"tags\": [\"inflate\" ]}" > product.json
 fi
 
-if [ -z "$(ls -A ./rois/)" ]; then
+if [ -z "$(ls -A ./rois/rois/)" ]; then
     echo "ROI files missing."
     exit 1
 else
