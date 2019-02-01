@@ -6,10 +6,17 @@
 module load singularity 2> /dev/null
 
 inflate=`jq -r '.inflate' config.json`
+mask=`jq -r '.mask' config.json`
 
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
 echo "creating masks"
+if [ ${mask} == 'null' ];
+then
+    time singularity exec -e docker://brainlife/fsl:5.0.9 ./brainmask.sh
+else
+    echo "brainmask exists. skipping"
+fi
 time singularity exec --writable -e docker://brainlife/freesurfer:6.0.0 bash -c "echo $FREESURFER_LICENSE > /usr/local/freesurfer/license.txt && ./create_wm_mask.sh"
 
 echo "inflating ROIs"
