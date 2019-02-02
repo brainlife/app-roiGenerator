@@ -3,7 +3,6 @@
 #PBS -N roiGeneration
 #PBS -V
 
-module load singularity 2> /dev/null
 
 inflate=`jq -r '.inflate' config.json`
 mask=`jq -r '.mask' config.json`
