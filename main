@@ -3,7 +3,6 @@
 #PBS -N roiGeneration
 #PBS -V
 
-
 inflate=`jq -r '.inflate' config.json`
 mask=`jq -r '.mask' config.json`
 
