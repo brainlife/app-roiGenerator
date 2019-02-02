@@ -18,7 +18,7 @@ end
 disp('running')
 config = loadjson('config.json');
 rois = str2num(config.ROI);
-refImg=niftiRead(config.dwi);
+refImg=fullfile(config.dwi);
 
 %if exist(fullfile(pwd,'parc.nii.gz')) == 2
 %    fsDir = fullfile(pwd,'parc.nii.gz');
