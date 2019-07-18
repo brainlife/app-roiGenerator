@@ -33,7 +33,7 @@ You can submit this App online at [https://doi.org/10.25663/bl.app.53](https://d
 	"bvecs":	"test/data/dwi/dwi.bvecs",
 	"t1":	"test/data/anat/t1.nii.gz",
 	"freesurfer":	"test/data/freesurfer",
-	"ROI":	"1101,1102",
+	"ROI":	"11101,11102",
 	"inputparc":	"aparc.a2009s",
         "parcellation": ""
 }
