@@ -35,7 +35,8 @@ You can submit this App online at [https://doi.org/10.25663/bl.app.53](https://d
 	"freesurfer":	"test/data/freesurfer",
 	"ROI":	"11101,11102",
 	"inputparc":	"aparc.a2009s",
-        "parcellation": ""
+        "parcellation": "",
+	"subcortical":	false
 }
 
 ```
