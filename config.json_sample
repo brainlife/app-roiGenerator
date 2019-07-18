@@ -1,6 +1,9 @@
 {
-	"dtiinit":	"/N/dc2/projects/lifebid/Concussion/test/dtiinit",
-	"freesurfer":	"/N/dc2/projects/lifebid/Concussion/test/freesurfer",
-	"rois":	"1025,1030"
+	"dwi":	"/media/brad/APPS/app-roiGenerator/data/dwi/dwi.nii.gz",
+	"bvals":	"/media/brad/APPS/app-roiGenerator/data/dwi/dwi.bvals",
+	"bvecs":	"/media/brad/APPS/app-roiGenerator/data/dwi/dwi.bvecs",
+	"t1":	"/media/brad/APPS/app-roiGenerator/data/anat/t1.nii.gz",
+	"freesurfer":	"/media/brad/APPS/app-roiGenerator/data/freesurfer",
+	"rois":	"1101,1102"
 }
 

@@ -10,6 +10,7 @@
 INFLATE=`jq -r '.inflate' config.json`
 t1=`jq -r '.t1' config.json`
 brainmask=mask.nii.gz;
+inputparc=`jq -r '.inputparc' config.json`
 mkdir parc
 cp $t1 ${PWD}/parc/t1.nii.gz
 
@@ -36,15 +37,15 @@ if [ -f parc_diffusion.nii.gz ]; then
 		-overwrite;
 else
 	3dROIMaker \
-		-inset aparc+aseg.nii.gz \
-		-refset aparc+aseg.nii.gz \
-		-mask ${brainmask} \
-		-wm_skel wm_anat.nii.gz \
-		-skel_thr 0.5 \
-		-skel_stop \
-		-trim_off_wm \
-		${l2} \
-		-nifti \
-		-overwrite;
+                -inset ${inputparc}+aseg.nii.gz \
+                -refset ${inputparc}+aseg.nii.gz \
+                -mask ${brainmask} \
+                -wm_skel wm_anat.nii.gz \
+                -skel_thr 0.5 \
+                -skel_stop \
+                -trim_off_wm \
+                ${l2} \
+                -nifti \
+                -overwrite;
 fi
 
