@@ -28,14 +28,16 @@ You can submit this App online at [https://doi.org/10.25663/bl.app.53](https://d
 
 ```json
 {
-        "t1": "./input/t1/t1.nii.gz",
-        "dtiinit": "./input/dtiinit/.",
-        "freesurfer": "./input/freesurfer/output",
-        "parcellation": "",
-        "key":  "",
-        "ROI":  "45,54",
-        "inflate":  5,
+	"dwi":	"test/data/dwi/dwi.nii.gz",
+	"bvals":	"test/data/dwi/dwi.bvals",
+	"bvecs":	"test/data/dwi/dwi.bvecs",
+	"t1":	"test/data/anat/t1.nii.gz",
+	"freesurfer":	"test/data/freesurfer",
+	"ROI":	"1101,1102",
+	"inputparc":	"aparc.a2009s",
+        "parcellation": ""
 }
+
 ```
 
 ### Sample Datasets
@@ -47,7 +49,7 @@ npm install -g brainlife
 bl login
 mkdir input
 bl dataset download 5b96bbbf059cf900271924f2 && mv 5b96bbbf059cf900271924f2 input/t1
-bl dataset download 5c45e58c287fa00144a33567 && mv 5c45e58c287fa00144a33567 input/dtiinit
+bl dataset download 5c45e58c287fa00144a33567 && mv 5c45e58c287fa00144a33567 input/dwi
 bl dataset download 5967bffa9b45c212bbec8958 && mv 5967bffa9b45c212bbec8958 input/freesurfer
 
 ```
