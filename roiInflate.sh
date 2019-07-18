@@ -11,7 +11,7 @@ INFLATE=`jq -r '.inflate' config.json`
 t1=`jq -r '.t1' config.json`
 brainmask=mask.nii.gz;
 inputparc=`jq -r '.inputparc' config.json`
-subcortical=`jq -r '.whitematter' config.json`
+whitematter=`jq -r '.whitematter' config.json`
 mkdir parc
 cp $t1 ${PWD}/parc/t1.nii.gz
 
