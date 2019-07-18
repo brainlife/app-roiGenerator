@@ -11,7 +11,7 @@ INFLATE=`jq -r '.inflate' config.json`
 t1=`jq -r '.t1' config.json`
 brainmask=mask.nii.gz;
 inputparc=`jq -r '.inputparc' config.json`
-subcortical=`jq -r '.subcortical' config.json`
+subcortical=`jq -r '.whitematter' config.json`
 mkdir parc
 cp $t1 ${PWD}/parc/t1.nii.gz
 
@@ -23,11 +23,11 @@ else
 	l2="-inflate ${INFLATE} -prefix parc_inflate";
 fi
 
-if [ ${subcortical} == "true" ]; then
-	echo "subcortical segmentation included";
+if [ ${whitematter} == "true" ]; then
+	echo "white matter segmentation included";
 	l1='-skel_stop'
 else
-	echo "removing subcortical segmentation";
+	echo "removing white matter segmentation";
 	l1='-skel_stop -trim_off_wm';
 fi
 
