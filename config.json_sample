@@ -5,6 +5,8 @@
 	"t1":	"test/data/anat/t1.nii.gz",
 	"freesurfer":	"test/data/freesurfer",
 	"ROI":	"1101,1102",
-	"inputparc":	"aparc.a2009s"
+	"inputparc":	"aparc.a2009s",
+	"parcellation":	"",
+	"subcortical":	false
 }
 
