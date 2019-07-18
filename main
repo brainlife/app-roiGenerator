@@ -21,9 +21,9 @@ time singularity exec --writable -e docker://brainlife/freesurfer:6.0.0 bash -c 
 echo "inflating ROIs"
 time singularity exec -e docker://brainlife/afni:16.3.0 ./roiInflate.sh
 
-echo "roi generation"
+#echo "roi generation"
 singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./ROI/roiGeneration
-
+#
 ## Clean up
 mkdir parc;
 mkdir rois;

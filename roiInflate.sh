@@ -11,6 +11,7 @@ INFLATE=`jq -r '.inflate' config.json`
 t1=`jq -r '.t1' config.json`
 brainmask=mask.nii.gz;
 inputparc=`jq -r '.inputparc' config.json`
+subcortical=`jq -r '.subcortical' config.json`
 mkdir parc
 cp $t1 ${PWD}/parc/t1.nii.gz
 
@@ -22,6 +23,14 @@ else
 	l2="-inflate ${INFLATE} -prefix parc_inflate";
 fi
 
+if [ ${subcortical} == "true" ]; then
+	echo "subcortical segmentation included";
+	l1='-skel_stop'
+else
+	echo "removing subcortical segmentation";
+	l1='-skel_stop -trim_off_wm';
+fi
+
 ## Inflate ROI
 if [ -f parc_diffusion.nii.gz ]; then
 	3dROIMaker \
@@ -30,8 +39,7 @@ if [ -f parc_diffusion.nii.gz ]; then
 		-mask ${brainmask} \
 		-wm_skel wm_anat.nii.gz \
 		-skel_thr 0.5 \
-		-skel_stop \
-		-trim_off_wm \
+		${l1} \
 		${l2} \
 		-nifti \
 		-overwrite;
@@ -42,8 +50,7 @@ else
                 -mask ${brainmask} \
                 -wm_skel wm_anat.nii.gz \
                 -skel_thr 0.5 \
-                -skel_stop \
-                -trim_off_wm \
+                ${l1} \
                 ${l2} \
                 -nifti \
                 -overwrite;
