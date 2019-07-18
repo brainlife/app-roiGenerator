@@ -1,9 +1,10 @@
 {
-	"dwi":	"/media/brad/APPS/app-roiGenerator/data/dwi/dwi.nii.gz",
-	"bvals":	"/media/brad/APPS/app-roiGenerator/data/dwi/dwi.bvals",
-	"bvecs":	"/media/brad/APPS/app-roiGenerator/data/dwi/dwi.bvecs",
-	"t1":	"/media/brad/APPS/app-roiGenerator/data/anat/t1.nii.gz",
-	"freesurfer":	"/media/brad/APPS/app-roiGenerator/data/freesurfer",
-	"rois":	"1101,1102"
+	"dwi":	"test/data/dwi/dwi.nii.gz",
+	"bvals":	"test/data/dwi/dwi.bvals",
+	"bvecs":	"test/data/dwi/dwi.bvecs",
+	"t1":	"test/data/anat/t1.nii.gz",
+	"freesurfer":	"test/data/freesurfer",
+	"ROI":	"1101,1102",
+	"inputparc":	"aparc.a2009s"
 }
 
