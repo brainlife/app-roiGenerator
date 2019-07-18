@@ -4,7 +4,7 @@
 	"bvecs":	"test/data/dwi/dwi.bvecs",
 	"t1":	"test/data/anat/t1.nii.gz",
 	"freesurfer":	"test/data/freesurfer",
-	"rois":	"1101,1102",
+	"ROI":	"1101,1102",
 	"inputparc":	"aparc.a2009s"
 }
 
