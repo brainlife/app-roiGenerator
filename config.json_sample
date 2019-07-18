@@ -7,6 +7,6 @@
 	"ROI":	"1101,1102",
 	"inputparc":	"aparc.a2009s",
 	"parcellation":	"",
-	"subcortical":	false
+	"whitematter":	false
 }
 
