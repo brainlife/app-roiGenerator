@@ -25,7 +25,7 @@ if ~isempty(config.subcort)
 	subcortROIs = str2num(config.subcort);
 	subcortFSDir = fullfile(pwd,sprintf('%s+aseg.nii.gz',inputparc));
 else
-    subcortROIs = [];
+	subcortROIs = [];
 end
 
 %if exist(fullfile(pwd,'parc.nii.gz')) == 2
