@@ -19,7 +19,7 @@ This app will generate region-of-interest (ROI) niftis from either a Freesurfer 
 
 ### On Brainlife.io
 
-You can submit this App online at [https://doi.org/10.25663/bl.app.53](https://doi.org/10.25663/bl.app.37) via the "Execute" tab.
+You can submit this App online at [https://doi.org/10.25663/bl.app.37](https://doi.org/10.25663/bl.app.37) via the "Execute" tab.
 
 ### Running Locally (on your machine)
 
