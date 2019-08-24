@@ -1,12 +1,14 @@
 {
-	"dwi":	"test/data/dwi/dwi.nii.gz",
-	"bvals":	"test/data/dwi/dwi.bvals",
-	"bvecs":	"test/data/dwi/dwi.bvecs",
-	"t1":	"test/data/anat/t1.nii.gz",
-	"freesurfer":	"test/data/freesurfer",
-	"ROI":	"1101,1102",
+	"dwi":	"/testdata/dwi/dwi.nii.gz",
+	"bvals":	"/testdata/dwi/dwi.bvals",
+	"bvecs":	"/testdata/dwi/dwi.bvecs",
+	"t1":	"/testdata/t1/t1.nii.gz",
+	"freesurfer":	"/testdata/freesurfer/output/",
+	"ROI":	"11101,11102",
+	"subcort":	"85",
+	"thalamus":	"8109,8209",
+	"inflate":	null,
 	"inputparc":	"aparc.a2009s",
-	"parcellation":	"",
-	"whitematter":	false
+	"whitematter":	true,
+	"thalamusInflate":	null
 }
-

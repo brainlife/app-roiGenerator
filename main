@@ -6,16 +6,17 @@
 inflate=`jq -r '.inflate' config.json`
 mask=`jq -r '.mask' config.json`
 
-#[ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
+[ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
 echo "creating masks"
-if [ ${mask} == 'null' ];
+if [[ ${mask} == 'null' ]];
 then
     time singularity exec -e docker://brainlife/fsl:5.0.9 ./brainmask.sh
 else
     echo "brainmask exists. skipping"
     cp -v ${mask} mask.nii.gz;
 fi
+
 time singularity exec --writable -e docker://brainlife/freesurfer:6.0.0 bash -c "echo $FREESURFER_LICENSE > /usr/local/freesurfer/license.txt && ./create_wm_mask.sh"
 
 echo "inflating ROIs"
@@ -23,8 +24,8 @@ time singularity exec -e docker://brainlife/afni:16.3.0 ./roiInflate.sh
 
 #echo "roi generation"
 singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./ROI/roiGeneration
-#
-## Clean up
+
+# Clean up
 mkdir parc;
 mkdir rois;
 mkdir rois/rois;

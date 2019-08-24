@@ -28,6 +28,9 @@ else
 	subcortROIs = [];
 end
 
+thalamusROIs = str2num(config.thalamus);
+thalamusDir = fullfile(pwd,'thalamus_inflate_GMI.nii.gz');
+
 %if exist(fullfile(pwd,'parc.nii.gz')) == 2
 %    fsDir = fullfile(pwd,'parc.nii.gz');
 %else
@@ -77,6 +80,19 @@ if ~isempty(subcortROIs)
             clear('matRoi', 'roiName', 'ni');
         end
     end
+end
+
+for ii = 1:length(thalamusROIs)
+	[matRoi] = bsc_roiFromFSnums(thalamusDir,thalamusROIs(ii),'false',[]);
+	if isempty(matRoi.coords)
+	     display('ROI not found in thalamus segmentation. Please see thalamus segmentation');
+	     exit;
+	else
+	     save(sprintf('ROI%s.mat',num2str(thalamusROIs(ii))),'matRoi','-v7.3');
+	     roiName = sprintf('ROI%s.nii.gz',num2str(thalamusROIs(ii)));
+	     [ni, roiName] = dtiRoiNiftiFromMat_temp(matRoi,refImg,roiName,1);
+	     clear('matRoi', 'roiName', 'ni');
+	end
 end
 %exit;
 end

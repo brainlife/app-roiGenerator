@@ -10,6 +10,7 @@ set -x
 ## app-roi2roitracking).
 
 INFLATE=`jq -r '.inflate' config.json`
+thalamusInflate=`jq -r '.thalamusInflate' config.json`
 t1=`jq -r '.t1' config.json`
 brainmask=mask.nii.gz;
 inputparc=`jq -r '.inputparc' config.json`
@@ -23,6 +24,14 @@ if [[ ${INFLATE} == 'null' ]]; then
 else
 	echo "${INFLATE} voxel inflation applied to every cortical label in parcellation";
 	l2="-inflate ${INFLATE} -prefix parc_inflate";
+fi
+
+if [[ ${thalamusInflate} == 'null' ]]; then
+	echo "no thalamic inflation";
+	l3='-prefix thalamus_inflate';
+else
+	echo "${thalamusInflate} voxel inflation applied to every thalamic label";
+	l3="-inflate ${thalamusInflate} -prefix thalamus_inflate";
 fi
 
 if [ ${whitematter} == "true" ]; then
@@ -58,3 +67,14 @@ else
                 -overwrite;
 fi
 
+# inflate thalamus
+3dROIMaker \
+	-inset thalamicNuclei.nii.gz \
+	-refset thalamicNuclei.nii.gz \
+	-mask ${brainmask} \
+	-wm_skel wm_anat.nii.gz \
+	-skel_thr 0.5 \
+	${l1} \
+	${l3} \
+	-nifti \
+	-overwrite;
