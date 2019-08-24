@@ -1,5 +1,5 @@
 [![Abcdspec-compliant](https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg)](https://github.com/brain-life/abcd-spec)
-[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.37-blue.svg)](https://doi.org/10.25663/bl.app.37)
+[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.223-blue.svg)](https://doi.org/10.25663/brainlife.app.223)
 
 # app-roiGenerator
 This app will generate region-of-interest (ROI) niftis from either a Freesurfer parcellation or another parcellation. This app will use AFNI to inflate parcellations and VISTASOFT to extract inputted ROIs and create ROI niftis. The inputs are: T1, DTIINIT, Freesurfer, parcellation (optional). The outputs are: parcellation (inflated), rois (niftis).
@@ -19,7 +19,7 @@ This app will generate region-of-interest (ROI) niftis from either a Freesurfer 
 
 ### On Brainlife.io
 
-You can submit this App online at [https://doi.org/10.25663/bl.app.37](https://doi.org/10.25663/bl.app.37) via the "Execute" tab.
+You can submit this App online at [https://doi.org/10.25663/brainlife.app.223](https://doi.org/10.25663/brainlife.app.223) via the "Execute" tab.
 
 ### Running Locally (on your machine)
 
