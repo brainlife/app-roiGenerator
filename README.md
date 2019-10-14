@@ -2,7 +2,7 @@
 [![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.37-blue.svg)](https://doi.org/10.25663/bl.app.37)
 
 # app-roiGenerator
-This app will generate nifti files for specific ROIs, or every ROI, of a parcellation (either freesurfer or atlas). First, the user-specfied parcellation is converted to nifti and a white matter and brain mask are generated using Freesurfer by running the create_wm_mask script. Then, the ROIs are inflated by N voxels, and the white matter mask is removed from the parcellation, using AFNI's 3dROIMaker by running the roiInflate script. Finally, a nifti of the ROIs are generated using Vistasoft's dtiRoiNiftiFromMat function by running the roiGeneration script.
+This app will generate nifti files for specific ROIs, or every ROI, of a parcellation (either freesurfer or atlas). First, the user-specfied parcellation is converted to nifti and a white matter and brain mask are generated using Freesurfer by running the create_wm_mask script. Then, the ROIs are inflated by N voxels, and the white matter mask is removed from the parcellation, using AFNI's 3dROIMaker by running the roiInflate script. Finally, a nifti of the ROIs are generated using Vistasoft's dtiRoiNiftiFromMat function by running the roiGeneration script. The App also creates neuro/rois output containing separate nifti file for each ROIs.
 
 ### Authors
 - Brad Caron (bacaron@iu.edu)
@@ -29,7 +29,6 @@ You can submit this App online at [https://doi.org/10.25663/bl.app.37](https://d
 
 ```json
 {
-        "t1": "./input/t1/t1.nii.gz",
         "parc": "./input/parc/",
         "dtiinit": "./input/dtiinit/",
         "fsurfer": "./input/freesurfer/",
@@ -46,7 +45,6 @@ You can download sample datasets from Brainlife using [Brainlife CLI](https://gi
 npm install -g brainlife
 bl login
 mkdir input
-bl dataset download 5b96bd23059cf900271924f8 && mv 5b96bd23059cf900271924f8 input/t1
 bl dataset download 5b96bd26059cf900271924f9 && mv 5b96bd26059cf900271924f9 input/parc
 bl dataset download 5b96bc8d059cf900271924f5 && mv 5b96bc8d059cf900271924f5 input/dtiinit
 bl dataset download 5b96bc8f059cf900271924f6 && mv 5b96bc8f059cf900271924f6 input/freesurfer
