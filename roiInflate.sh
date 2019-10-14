@@ -12,11 +12,11 @@
 ## app-roi2roitracking).
 
 INFLATE=`jq -r '.inflate' config.json`
-t1=`jq -r '.t1' config.json`
+#t1=`jq -r '.t1' config.json`
 dtiinit=`jq -r '.dtiinit' config.json`
 brainmask=${dtiinit}/dti/bin/brainMask.nii.gz;
 mkdir parc
-cp $t1 ${PWD}/parc/t1.nii.gz
+#cp $t1 ${PWD}/parc/t1.nii.gz
 
 if [[ ${INFLATE} == 'null' ]]; then
 	echo "no inflation";
