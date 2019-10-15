@@ -1,40 +1,57 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=1,walltime=2:00:00
+#PBS -l nodes=1:ppn=1,walltime=0:30:00
 #PBS -N roiGeneration
 #PBS -V
 
-module load singularity 2> /dev/null
-
 inflate=`jq -r '.inflate' config.json`
+mask=`jq -r '.mask' config.json`
+dtiinit=`jq -r '.dtiinit' config.json`
 
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
 echo "creating masks"
-time singularity exec --writable -e docker://brainlife/freesurfer:6.0.0 bash -c "echo $FREESURFER_LICENSE > /usr/local/freesurfer/license.txt && ./create_wm_mask.sh"
+if [[ -f ${dtiinit}/dti/bin/brainMask.nii.gz ]];
+then
+    cp -v ${dtiinit}/dti/bin/brainMask.nii.gz mask.nii.gz
+elif [[ ! -f "mask.nii.gz" ]] && [[ ${mask} == 'null' ]];
+then
+    time singularity exec -e docker://brainlife/fsl:5.0.9 ./brainmask.sh
+elif [[ -f "mask.nii.gz" ]];
+then
+    echo "brainmask exists. skipping"
+elif [[ ! ${mask} == 'null' ]];
+then
+    echo "brainmask exists. skipping"
+    cp -v ${mask} mask.nii.gz
+fi
+
+echo $FREESURFER_LICENSE > license.txt
+time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./create_wm_mask.sh
 
 echo "inflating ROIs"
 time singularity exec -e docker://brainlife/afni:16.3.0 ./roiInflate.sh
 
-echo "roi generation"
-singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./ROI/roiGeneration
-
+#echo "roi generation"
+#singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./ROI/roiGeneration
+#
 ## Clean up
-mkdir parc;
-mv parc_inflate_GMI.nii.gz ./parc/parc.nii.gz;
-mv parc_inflate_GMI.niml.lt ./parc/key.txt;
-mv *roi*.nii.gz ./parc/;
-rm -rf *roi*.mat *inflate*.niml.lt *.nii.gz;
-
-if [[ ${INFLATE} == 'null' ]];then
-    echo "{\"tags\": [\"no_inflate\" ]}" > product.json
-else
-    echo "{\"tags\": [\"inflate\" ]}" > product.json
-fi
-
-#if [ -s track.tck ]
-#then
-#    exit 0
+#mkdir parc;
+#mkdir rois;
+#mkdir rois/rois;
+#mv parc_inflate_GMI.nii.gz ./parc/parc.nii.gz;
+#mv parc_inflate_GMI.niml.lt ./parc/key.txt;
+#mv *ROI*.nii.gz ./rois/rois/;
+#rm -rf *ROI*.mat *inflate*.niml.lt *.nii.gz;
+#
+#if [[ ${INFLATE} == 'null' ]];then
+#    echo "{\"tags\": [\"no_inflate\" ]}" > product.json
 #else
-#	echo "ensemble tracking missing"
-#	exit 1
+#    echo "{\"tags\": [\"inflate\" ]}" > product.json
+#fi
+#
+#if [ -z "$(ls -A ./rois/rois/)" ]; then
+#    echo "ROI files missing."
+#    exit 1
+#else
+#    exit 0
 #fi

@@ -1,12 +1,11 @@
-[![Abcdspec-compliant](https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg)](https://github.com/soichih/abcd-spec)
-[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.37-blue.svg)](https://doi.org/10.25663/bl.app.37)
+[![Abcdspec-compliant](https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg)](https://github.com/brain-life/abcd-spec)
+[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.223-blue.svg)](https://doi.org/10.25663/brainlife.app.223)
 
 # app-roiGenerator
-This app will generate nifti files for specific ROIs, or every ROI, of a parcellation (either freesurfer or atlas). First, the user-specfied parcellation is converted to nifti and a white matter and brain mask are generated using Freesurfer by running the create_wm_mask script. Then, the ROIs are inflated by N voxels, and the white matter mask is removed from the parcellation, using AFNI's 3dROIMaker by running the roiInflate script. Finally, a nifti of the ROIs are generated using Vistasoft's dtiRoiNiftiFromMat function by running the roiGeneration script. The App also creates neuro/rois output containing separate nifti file for each ROIs.
+This app will generate region-of-interest (ROI) niftis from either a Freesurfer parcellation or another parcellation. This app will use AFNI to inflate parcellations and VISTASOFT to extract inputted ROIs and create ROI niftis. The inputs are: T1, DTIINIT, Freesurfer, parcellation (optional). The outputs are: parcellation (inflated), rois (niftis).
 
 ### Authors
 - Brad Caron (bacaron@iu.edu)
-- Ilaria Sani (isani01@rockefeller.edu)
 
 ### Contributors
 - Soichi Hayashi (hayashi@iu.edu)
@@ -20,7 +19,7 @@ This app will generate nifti files for specific ROIs, or every ROI, of a parcell
 
 ### On Brainlife.io
 
-You can submit this App online at [https://doi.org/10.25663/bl.app.37](https://doi.org/10.25663/bl.app.37) via the "Execute" tab.
+You can submit this App online at [https://doi.org/10.25663/brainlife.app.223](https://doi.org/10.25663/brainlife.app.223) via the "Execute" tab.
 
 ### Running Locally (on your machine)
 
@@ -29,12 +28,17 @@ You can submit this App online at [https://doi.org/10.25663/bl.app.37](https://d
 
 ```json
 {
-        "parc": "./input/parc/",
-        "dtiinit": "./input/dtiinit/",
-        "fsurfer": "./input/freesurfer/",
-        "inflate": 1,
-        "rois": "45,54" 
+	"dwi":	"test/data/dwi/dwi.nii.gz",
+	"bvals":	"test/data/dwi/dwi.bvals",
+	"bvecs":	"test/data/dwi/dwi.bvecs",
+	"t1":	"test/data/anat/t1.nii.gz",
+	"freesurfer":	"test/data/freesurfer",
+	"ROI":	"11101,11102",
+	"inputparc":	"aparc.a2009s",
+        "parcellation": "",
+	"subcortical":	false
 }
+
 ```
 
 ### Sample Datasets
@@ -45,9 +49,10 @@ You can download sample datasets from Brainlife using [Brainlife CLI](https://gi
 npm install -g brainlife
 bl login
 mkdir input
-bl dataset download 5b96bd26059cf900271924f9 && mv 5b96bd26059cf900271924f9 input/parc
-bl dataset download 5b96bc8d059cf900271924f5 && mv 5b96bc8d059cf900271924f5 input/dtiinit
-bl dataset download 5b96bc8f059cf900271924f6 && mv 5b96bc8f059cf900271924f6 input/freesurfer
+bl dataset download 5b96bbbf059cf900271924f2 && mv 5b96bbbf059cf900271924f2 input/t1
+bl dataset download 5c45e58c287fa00144a33567 && mv 5c45e58c287fa00144a33567 input/dwi
+bl dataset download 5967bffa9b45c212bbec8958 && mv 5967bffa9b45c212bbec8958 input/freesurfer
+
 ```
 
 
@@ -59,7 +64,7 @@ bl dataset download 5b96bc8f059cf900271924f6 && mv 5b96bc8f059cf900271924f6 inpu
 
 ## Output
 
-The main output of this App is a folder called "parc". This folder contains nifti images of each ROI requested, the inflated parcellation, and the original t1.
+The main outputs of this App are an inflated parcellation datatype and an roi (niftis) datatype.
 
 #### Product.json
 The secondary output of this app is `product.json`. This file allows web interfaces, DB and API calls on the results of the processing. 
@@ -70,7 +75,8 @@ This App requires the following libraries when run locally.
 
   - singularity: https://singularity.lbl.gov/
   - VISTASOFT: https://github.com/vistalab/vistasoft/
-  - ENCODE: https://github.com/brain-life/encode
+  - SPM 8: https://www.fil.ion.ucl.ac.uk/spm/software/spm8/
   - Freesurfer: https://hub.docker.com/r/brainlife/freesurfer/tags/6.0.0
   - AFNI: https://hub.docker.com/r/brainlife/afni/tags/16.3.0
   - jsonlab: https://github.com/fangq/jsonlab.git
+
