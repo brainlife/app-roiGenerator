@@ -21,11 +21,11 @@ disp('running')
 config = loadjson('config.json');
 
 % parse whether input is dwi or dtiinit
-if ~isemtpy(config.dtiinit)
-	refImg=fullfile(config.dwi);
+if ~exist(config.dtiinit)
+    refImg=fullfile(config.dwi);
 else
     dt6=loadjson(fullfile(config.dtiinit,'dt6.json'));
-	refImg=fullfile(config.dtiinit,dt6.files.alignedDwRaw);
+    refImg=fullfile(config.dtiinit,dt6.files.alignedDwRaw);
 end
 
 % cortical ROIs
@@ -39,26 +39,26 @@ end
 % subcortical ROIs
 if ~isempty(config.subcorticalROIs)
     inputparc = config.inputparc;
-	subcortROIs = str2num(config.subcorticalROIs);
-	subcortFSDir = fullfile(pwd,sprintf('%s+aseg.nii.gz',inputparc));
+    subcortROIs = str2num(config.subcorticalROIs);
+    subcortFSDir = fullfile(pwd,sprintf('%s+aseg.nii.gz',inputparc));
 else
-	display('no subcortical rois');
+    display('no subcortical rois');
 end
 
 % thalamic ROIs
 if ~isempty(config.thalamicROIs)
-	thalamusROIs = str2num(config.thalamicROIs);
-	thalamusDir = fullfile(pwd,'thalamus_inflate_GMI.nii.gz');
+    thalamusROIs = str2num(config.thalamicROIs);
+    thalamusDir = fullfile(pwd,'thalamus_inflate_GMI.nii.gz');
 else
 	display('no thalamic segmentation')
 end
 
 % prf ROIs
 if ~isempty(config.prfROIs)
-        prfROIs = str2num(config.prfROIs);
-        prfDir = fullfile(pwd,'visarea_inflate_GMI.nii.gz');
+    prfROIs = str2num(config.prfROIs);
+    prfDir = fullfile(pwd,'visarea_inflate_GMI.nii.gz');
 else
-        display('no thalamic segmentation')
+    display('no thalamic segmentation')
 end
 
 % % hippocampal ROIs: to do later!
@@ -104,34 +104,34 @@ end
 
 % thalamus rois
 if ~isemtpy(thalamusROIs)
-	for ii = 1:length(thalamusROIs)
-		[matRoi] = bsc_roiFromFSnums(thalamusDir,thalamusROIs(ii),'false',[]);
-		if isempty(matRoi.coords)
-		     display('ROI not found in thalamus segmentation. Please see thalamus segmentation');
-		     exit;
-		else
-		     save(sprintf('ROI00%s.mat',num2str(thalamusROIs(ii))),'matRoi','-v7.3');
-		     roiName = sprintf('ROI00%s.nii.gz',num2str(thalamusROIs(ii)));
-		     [ni, roiName] = dtiRoiNiftiFromMat_temp(matRoi,refImg,roiName,1);
-		     clear('matRoi', 'roiName', 'ni');
-		end
-	end
+    for ii = 1:length(thalamusROIs)
+        [matRoi] = bsc_roiFromFSnums(thalamusDir,thalamusROIs(ii),'false',[]);
+        if isempty(matRoi.coords)
+            display('ROI not found in thalamus segmentation. Please see thalamus segmentation');
+            exit;
+        else
+            save(sprintf('ROI00%s.mat',num2str(thalamusROIs(ii))),'matRoi','-v7.3');
+            roiName = sprintf('ROI00%s.nii.gz',num2str(thalamusROIs(ii)));
+            [ni, roiName] = dtiRoiNiftiFromMat_temp(matRoi,refImg,roiName,1);
+            clear('matRoi', 'roiName', 'ni');
+        end
+    end
 end
 
 % prf rois
 if ~isemtpy(prfROIs)
-        for ii = 1:length(prfROIs)
-                [matRoi] = bsc_roiFromFSnums(prfDir,prfROIs(ii),'false',[]);
-                if isempty(matRoi.coords)
-                     display('ROI not found in visual area segmentation. Please see visual area segmentation');
-                     exit;
-                else
-                     save(sprintf('ROI000%s.mat',num2str(prfROIs(ii))),'matRoi','-v7.3');
-                     roiName = sprintf('ROI000%s.nii.gz',num2str(prfROIs(ii)));
-                     [ni, roiName] = dtiRoiNiftiFromMat_temp(matRoi,refImg,roiName,1);
-                     clear('matRoi', 'roiName', 'ni');
-                end
+    for ii = 1:length(prfROIs)
+        [matRoi] = bsc_roiFromFSnums(prfDir,prfROIs(ii),'false',[]);
+        if isempty(matRoi.coords)
+            display('ROI not found in visual area segmentation. Please see visual area segmentation');
+            exit;
+        else
+            save(sprintf('ROI000%s.mat',num2str(prfROIs(ii))),'matRoi','-v7.3');
+            roiName = sprintf('ROI000%s.nii.gz',num2str(prfROIs(ii)));
+            [ni, roiName] = dtiRoiNiftiFromMat_temp(matRoi,refImg,roiName,1);
+            clear('matRoi', 'roiName', 'ni');
         end
+    end
 end
 
 
