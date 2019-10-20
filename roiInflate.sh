@@ -15,7 +15,7 @@ brainmask=mask.nii.gz;
 inputparc=`jq -r '.inputparc' config.json`
 whitematter=`jq -r '.whitematter' config.json`
 thalamic=`jq -r '.thalamic' config.json`
-prf=`jq -r '.prf' config.json
+prf=`jq -r '.prf' config.json`
 visInflate=`jq -r '.visInflate' config.json`
 
 mkdir parc
