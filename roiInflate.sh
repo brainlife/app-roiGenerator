@@ -15,6 +15,9 @@ brainmask=mask.nii.gz;
 inputparc=`jq -r '.inputparc' config.json`
 whitematter=`jq -r '.whitematter' config.json`
 thalamic=`jq -r '.thalamic' config.json`
+prf=`jq -r '.prf' config.json
+visInflate=`jq -r 'visInflate' config.json`
+
 mkdir parc
 
 if [[ ${INFLATE} == 'null' ]]; then
@@ -32,6 +35,15 @@ else
 	echo "${thalamusInflate} voxel inflation applied to every thalamic label";
 	l3="-inflate ${thalamusInflate} -prefix thalamus_inflate";
 fi
+
+if [[ ${visInflate} == 'null' ]]; then
+        echo "no visual area inflation";
+        l4='-prefix visarea_inflate';
+else
+        echo "${visInflate} voxel inflation applied to every visual area label";
+        l4="-inflate ${visInflate} -prefix visarea_inflate";
+fi
+
 
 if [ ${whitematter} == "true" ]; then
 	echo "white matter segmentation included";
@@ -80,6 +92,22 @@ else
 		${l3} \
 		-nifti \
 		-overwrite;
+fi
+
+# inflate visual areas
+if [[ ${prf} == "false" ]]; then
+        echo "no visual area inflation"
+else
+        3dROIMaker \
+                -inset varea_dwi.nii.gz \
+                -refset varea_dwi.nii.gz \
+                -mask ${brainmask} \
+                -wm_skel wm_anat.nii.gz \
+                -skel_thr 0.5 \
+                ${l1} \
+                ${l4} \
+                -nifti \
+                -overwrite;
 fi
 
 # inflate hippocampus: to do later!

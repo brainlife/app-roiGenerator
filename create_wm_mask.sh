@@ -8,6 +8,8 @@ dtiinit=`jq -r '.dtiinit' config.json`
 thalamic=`jq -r '.thalamic' config.json`
 fsurfer=`jq -r '.freesurfer' config.json`
 inputparc=`jq -r '.inputparc' config.json`
+prf=`jq -r '.prf' config.json`
+prfDir=`jq -r '.prfDir' config.json`
 
 # parse whether input is dtiinit or dwi
 if [[ ${dtiinit} = "null" ]]; then
@@ -34,6 +36,12 @@ if [[ ${thalamic} == "false" ]]; then
 	echo "no thalamic nuclei segmentation"
 else
 	mri_label2vol --seg $fsurfer/mri/ThalamicNuclei.v10.T1.FSvoxelSpace.mgz --temp $input_nii_gz --regheader $fsurfer/mri/ThalamicNuclei.v10.T1.FSvoxelSpace.mgz --o thalamicNuclei.nii.gz
+fi
+
+if [[ ${prf} == "false" ]]; then
+	echo "no visual field mapping"
+else
+        mri_label2vol --seg ${prfDir}/varea.nii.gz  --temp $input_nii_gz --regheader ${prf}/varea.nii.gz --o varea_dwi.nii.gz
 fi
 
 # convert hippocampal nuclei mgz to nifti: to do later!
