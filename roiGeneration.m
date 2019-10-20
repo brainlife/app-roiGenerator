@@ -73,7 +73,7 @@ end
 % cortical rois
 if ~isempty(cortROIs)
     for ii = 1:length(cortROIs)
-        [matRoi] = bsc_roiFromFSnums(fsDir,cortROIs(ii),'false',[]);
+        [matRoi] = bsc_roiFromFSnums(cortDir,cortROIs(ii),'false',[]);
         if isempty(matRoi.coords)
             display('ROI not found in parcellation. Please see parcellation LUT');
             exit;
