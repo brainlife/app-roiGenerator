@@ -21,7 +21,7 @@ disp('running')
 config = loadjson('config.json');
 
 % parse whether input is dwi or dtiinit
-if ~exist(config.dtiinit)
+if ~isfield(config,'dtiinit')
     refImg=fullfile(config.dwi);
 else
     dt6=loadjson(fullfile(config.dtiinit,'dt6.json'));
