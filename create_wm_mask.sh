@@ -41,7 +41,7 @@ fi
 if [[ ${prf} == "false" ]]; then
 	echo "no visual field mapping"
 else
-        mri_label2vol --seg ${prfDir}/varea.nii.gz  --temp $input_nii_gz --regheader ${prf}/varea.nii.gz --o varea_dwi.nii.gz
+        mri_label2vol --seg ${prfDir}/varea.nii.gz  --temp $input_nii_gz --regheader ${prfDir}/varea.nii.gz --o varea_dwi.nii.gz
 fi
 
 # convert hippocampal nuclei mgz to nifti: to do later!
