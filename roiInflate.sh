@@ -23,7 +23,7 @@ fsurfROIs=`jq -r '.freesurferROIs' config.json`
 
 mkdir parc
 
-if [ -z ${parcInflate} ]; then
+if [[ ${parcInflate} == 'null' ]]; then
 	echo "no inflation";
 	l2='-prefix parc_inflate';
 else
@@ -31,7 +31,7 @@ else
 	l2="-inflate ${parcInflate} -prefix parc_inflate";
 fi
 
-if [ -z ${thalamusInflate} ]; then
+if [[ ${thalamusInflate} == 'null' ]]; then
 	echo "no thalamic inflation";
 	l3='-prefix thalamus_inflate';
 else
@@ -39,7 +39,7 @@ else
 	l3="-inflate ${thalamusInflate} -prefix thalamus_inflate";
 fi
 
-if [ -z ${visInflate} ]; then
+if [[ ${visInflate} == 'null' ]]; then
         echo "no visual area inflation";
         l4='-prefix visarea_inflate';
 else
@@ -47,7 +47,7 @@ else
         l4="-inflate ${visInflate} -prefix visarea_inflate";
 fi
 
-if [ -z ${fsurfInflate} ]; then
+if [[ ${fsurfInflate} == 'null' ]]; then
         echo "no freesurfer inflation";
         l5='-prefix ${inputparc}_inflate';
 else
