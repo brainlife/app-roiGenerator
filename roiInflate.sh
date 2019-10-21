@@ -64,7 +64,9 @@ else
 fi
 
 ## Inflate ROI
-if [ -f parc_diffusion.nii.gz ]; then
+if [[ ${parcellation} == "false" ]]; then
+	echo "no parcellation inflation"
+else
 	3dROIMaker \
 		-inset parc_diffusion.nii.gz \
 		-refset parc_diffusion.nii.gz \
