@@ -32,13 +32,13 @@ else
 fi
 
 # convert thalamic nuclei mgz to nifti
-if [[ ${thalamicROIs} == "null" ]]; then
+if [ -z ${thalamicROIs} ]; then
 	echo "no thalamic nuclei segmentation"
 else
 	mri_label2vol --seg $fsurfer/mri/ThalamicNuclei.v10.T1.FSvoxelSpace.mgz --temp $input_nii_gz --regheader $fsurfer/mri/ThalamicNuclei.v10.T1.FSvoxelSpace.mgz --o thalamicNuclei.nii.gz
 fi
 
-if [[ ${prfROIs} == "null" ]]; then
+if [ -z ${prfROIs} ]; then
 	echo "no visual field mapping"
 else
         mri_label2vol --seg ${prfDir}/varea.nii.gz  --temp $input_nii_gz --regheader ${prfDir}/varea.nii.gz --o varea_dwi.nii.gz
