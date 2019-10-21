@@ -119,7 +119,7 @@ if ~isemtpy(thalamusROIs)
 end
 
 % prf rois
-if ~isemtpy(prfROIs)
+if ~isempty(prfROIs)
     for ii = 1:length(prfROIs)
         [matRoi] = bsc_roiFromFSnums(prfDir,prfROIs(ii),'false',[]);
         if isempty(matRoi.coords)
