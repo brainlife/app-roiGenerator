@@ -103,7 +103,7 @@ if ~isempty(subcortROIs)
 end
 
 % thalamus rois
-if ~isemtpy(thalamusROIs)
+if ~isempty(thalamusROIs)
     for ii = 1:length(thalamusROIs)
         [matRoi] = bsc_roiFromFSnums(thalamusDir,thalamusROIs(ii),'false',[]);
         if isempty(matRoi.coords)
