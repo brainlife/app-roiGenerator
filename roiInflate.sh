@@ -9,7 +9,7 @@ set -x
 ## create nifti's for each ROI requested by the user, which can then be fed into a ROI to ROI tracking app (brainlife.io; www.github.com/brain-life/
 ## app-roi2roitracking).
 
-INFLATE=`jq -r '.cortInflate' config.json`
+parcInflate=`jq -r '.parcInflate' config.json`
 thalamusInflate=`jq -r '.thalamusInflate' config.json`
 brainmask=mask.nii.gz;
 inputparc=`jq -r '.inputparc' config.json`
@@ -17,15 +17,17 @@ whitematter=`jq -r '.whitematter' config.json`
 thalamic=`jq -r '.thalamic' config.json`
 prf=`jq -r '.prf' config.json`
 visInflate=`jq -r '.visInflate' config.json`
+fsurfInflate=`jq -r '.freesurferInflate' config.json`
+fsurf=`jq -r '.fsurf' config.json`
 
 mkdir parc
 
-if [[ ${INFLATE} == 'null' ]]; then
+if [[ ${parcInflate} == 'null' ]]; then
 	echo "no inflation";
 	l2='-prefix parc_inflate';
 else
-	echo "${INFLATE} voxel inflation applied to every cortical label in parcellation";
-	l2="-inflate ${INFLATE} -prefix parc_inflate";
+	echo "${parcInflate} voxel inflation applied to every cortical label in parcellation";
+	l2="-inflate ${parcInflate} -prefix parc_inflate";
 fi
 
 if [[ ${thalamusInflate} == 'null' ]]; then

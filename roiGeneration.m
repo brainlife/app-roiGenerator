@@ -29,11 +29,11 @@ else
 end
 
 % cortical ROIs
-if ~isempty(config.corticalROIs)
-    cortROIs = str2num(config.corticalROIs);
-    cortDir = fullfile(pwd,'parc_inflate_GMI.nii.gz');
+if ~isempty(config.parcellationROIs)
+    parcROIs = str2num(config.parcellationROIs);
+    parcDir = fullfile(pwd,'parc_inflate_GMI.nii.gz');
 else
-    display('no cortical rois')
+    display('no parcellation (non-freesurfer) rois')
 end
 
 % subcortical ROIs
@@ -79,16 +79,16 @@ end
 % end
 
 %% ROI generation
-% cortical rois
-if ~isempty(cortROIs)
-    for ii = 1:length(cortROIs)
-        [matRoi] = bsc_roiFromFSnums(cortDir,cortROIs(ii),'false',[]);
+% parcellation (non-freesurfer) rois
+if ~isempty(parcROIs)
+    for ii = 1:length(parcROIs)
+        [matRoi] = bsc_roiFromFSnums(parcDir,parcROIs(ii),'false',[]);
         if isempty(matRoi.coords)
             display('ROI not found in parcellation. Please see parcellation LUT');
             exit;
         else
-            save(sprintf('ROI%s.mat',num2str(cortROIs(ii))),'matRoi','-v7.3');
-            roiName = sprintf('ROI%s.nii.gz',num2str(cortROIs(ii)));
+            save(sprintf('ROI%s.mat',num2str(parcROIs(ii))),'matRoi','-v7.3');
+            roiName = sprintf('ROI%s.nii.gz',num2str(parcROIs(ii)));
             [ni, roiName] = dtiRoiNiftiFromMat_temp(matRoi,refImg,roiName,1);
             clear('matRoi', 'roiName', 'ni');
         end
@@ -119,8 +119,8 @@ if ~isempty(freesurferROIs)
             display('ROI not found in parcellation. Please see parcellation LUT');
             exit;
         else
-            save(sprintf('ROI00%s.mat',num2str(freesurferROIs(ii))),'matRoi','-v7.3');
-            roiName = sprintf('ROI00%s.nii.gz',num2str(freesurferROIs(ii)));
+            save(sprintf('ROI0000%s.mat',num2str(freesurferROIs(ii))),'matRoi','-v7.3');
+            roiName = sprintf('ROI0000%s.nii.gz',num2str(freesurferROIs(ii)));
             [ni, roiName] = dtiRoiNiftiFromMat_temp(matRoi,refImg,roiName,1);
             clear('matRoi', 'roiName', 'ni');
         end
@@ -136,8 +136,8 @@ if ~isempty(thalamusROIs)
             display('ROI not found in thalamus segmentation. Please see thalamus segmentation');
             exit;
         else
-            save(sprintf('ROI000%s.mat',num2str(thalamusROIs(ii))),'matRoi','-v7.3');
-            roiName = sprintf('ROI000%s.nii.gz',num2str(thalamusROIs(ii)));
+            save(sprintf('ROI00%s.mat',num2str(thalamusROIs(ii))),'matRoi','-v7.3');
+            roiName = sprintf('ROI00%s.nii.gz',num2str(thalamusROIs(ii)));
             [ni, roiName] = dtiRoiNiftiFromMat_temp(matRoi,refImg,roiName,1);
             clear('matRoi', 'roiName', 'ni');
         end
@@ -152,8 +152,8 @@ if ~isempty(prfROIs)
             display('ROI not found in visual area segmentation. Please see visual area segmentation');
             exit;
         else
-            save(sprintf('ROI0000%s.mat',num2str(prfROIs(ii))),'matRoi','-v7.3');
-            roiName = sprintf('ROI0000%s.nii.gz',num2str(prfROIs(ii)));
+            save(sprintf('ROI000%s.mat',num2str(prfROIs(ii))),'matRoi','-v7.3');
+            roiName = sprintf('ROI000%s.nii.gz',num2str(prfROIs(ii)));
             [ni, roiName] = dtiRoiNiftiFromMat_temp(matRoi,refImg,roiName,1);
             clear('matRoi', 'roiName', 'ni');
         end
