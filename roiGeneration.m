@@ -29,45 +29,50 @@ else
 end
 
 % cortical ROIs
-if ~isempty(config.parcellationROIs)
+if ~isfield(config,'parcellationROIs')
     parcROIs = str2num(config.parcellationROIs);
     parcDir = fullfile(pwd,'parc_inflate_GMI.nii.gz');
 else
     display('no parcellation (non-freesurfer) rois')
+    parcROIs = [];
 end
 
 % subcortical ROIs
-if ~isempty(config.subcorticalROIs)
+if ~isfield(config,'subcorticalROIs')
     inputparc = config.inputparc;
     subcortROIs = str2num(config.subcorticalROIs);
     subcortFSDir = fullfile(pwd,sprintf('%s+aseg.nii.gz',inputparc));
 else
     display('no subcortical rois');
+    subcortROIs = [];
 end
 
 % freesurfer ROIs
-if ~isempty(config.freesurferROIs)
+if ~isfield(config,'freesurferROIs')
     inputparc = config.inputparc;
     freesurferROIs = str2num(config.freesurferROIs);
     freesurferFSDir = fullfile(pwd,sprintf('%s+aseg.nii.gz',inputparc));
 else
     display('no freesurfer rois')
+    freesurferROIs = [];
 end
 
 % thalamic ROIs
-if ~isempty(config.thalamicROIs)
+if ~isfield(config,'thalamicROIs')
     thalamusROIs = str2num(config.thalamicROIs);
     thalamusDir = fullfile(pwd,'thalamus_inflate_GMI.nii.gz');
 else
-	display('no thalamic segmentation')
+    display('no thalamic segmentation')
+    thalamusROIs = [];
 end
 
 % prf ROIs
-if ~isempty(config.prfROIs)
+if ~isfield(config,'prfROIs')
     prfROIs = str2num(config.prfROIs);
     prfDir = fullfile(pwd,'visarea_inflate_GMI.nii.gz');
 else
     display('no thalamic segmentation')
+    prfROIs = [];
 end
 
 % % hippocampal ROIs: to do later!
