@@ -5,10 +5,10 @@
 parc=`jq -r '.parc' config.json`
 dwi=`jq -r '.dwi' config.json`
 dtiinit=`jq -r '.dtiinit' config.json`
-thalamic=`jq -r '.thalamic' config.json`
+thalamicROIs=`jq -r '.thalamicROIs' config.json`
 fsurfer=`jq -r '.freesurfer' config.json`
 inputparc=`jq -r '.inputparc' config.json`
-prf=`jq -r '.prf' config.json`
+prfROIs=`jq -r '.prfROIs' config.json`
 prfDir=`jq -r '.prfDir' config.json`
 
 # parse whether input is dtiinit or dwi
