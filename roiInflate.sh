@@ -14,11 +14,12 @@ thalamusInflate=`jq -r '.thalamusInflate' config.json`
 brainmask=mask.nii.gz;
 inputparc=`jq -r '.inputparc' config.json`
 whitematter=`jq -r '.whitematter' config.json`
-thalamic=`jq -r '.thalamic' config.json`
-prf=`jq -r '.prf' config.json`
+thalamicROIs=`jq -r '.thalamicROIs' config.json`
+parcellationROIs=`jq -r '.parcellationROIs' config.json`
+prfROIs=`jq -r '.prfROIs' config.json`
 visInflate=`jq -r '.visInflate' config.json`
 fsurfInflate=`jq -r '.freesurferInflate' config.json`
-fsurf=`jq -r '.fsurf' config.json`
+fsurfROIs=`jq -r '.freesurferROIs' config.json`
 
 mkdir parc
 
@@ -63,8 +64,8 @@ else
 	l1='-skel_stop -trim_off_wm';
 fi
 
-## Inflate ROI
-if [[ ${parcellation} == "false" ]]; then
+## Inflate parcellation ROIs
+if [[ ${parcellationROIs} == 'null' ]]; then
 	echo "no parcellation inflation"
 else
 	3dROIMaker \
@@ -79,7 +80,8 @@ else
 		-overwrite;
 fi
 
-if [[ ${fsurf} == "false" ]]; then
+## Inflate freesurfer ROIs
+if [[ ${freesurferROIs} == 'null' ]]; then
 	echo "no freesurfer inflation"
 else
 	3dROIMaker \
@@ -95,7 +97,7 @@ else
 fi
 
 # inflate thalamus
-if [[ ${thalamic} == "false" ]]; then
+if [[ ${thalamicROIs} == 'null' ]]; then
 	echo "no thalamic nuclei segmentation"
 else
 	3dROIMaker \
@@ -111,7 +113,7 @@ else
 fi
 
 # inflate visual areas
-if [[ ${prf} == "false" ]]; then
+if [[ ${prfROIs} == 'null' ]]; then
         echo "no visual area inflation"
 else
         3dROIMaker \
