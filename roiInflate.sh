@@ -23,7 +23,7 @@ fsurfROIs=`jq -r '.freesurferROIs' config.json`
 
 mkdir parc
 
-if [[ ${parcInflate} == 'null' ]]; then
+if [ -z ${parcInflate} ]; then
 	echo "no inflation";
 	l2='-prefix parc_inflate';
 else
@@ -31,7 +31,7 @@ else
 	l2="-inflate ${parcInflate} -prefix parc_inflate";
 fi
 
-if [[ ${thalamusInflate} == 'null' ]]; then
+if [ -z ${thalamusInflate} ]; then
 	echo "no thalamic inflation";
 	l3='-prefix thalamus_inflate';
 else
@@ -39,7 +39,7 @@ else
 	l3="-inflate ${thalamusInflate} -prefix thalamus_inflate";
 fi
 
-if [[ ${visInflate} == 'null' ]]; then
+if [ -z ${visInflate} ]; then
         echo "no visual area inflation";
         l4='-prefix visarea_inflate';
 else
@@ -47,7 +47,7 @@ else
         l4="-inflate ${visInflate} -prefix visarea_inflate";
 fi
 
-if [[ ${fsurfInflate} == 'null' ]]; then
+if [ -z ${fsurfInflate} ]; then
         echo "no freesurfer inflation";
         l5='-prefix ${inputparc}_inflate';
 else
@@ -65,7 +65,7 @@ else
 fi
 
 ## Inflate parcellation ROIs
-if [[ ${parcellationROIs} == 'null' ]]; then
+if [ -z ${parcellationROIs} ]; then
 	echo "no parcellation inflation"
 else
 	3dROIMaker \
@@ -81,7 +81,7 @@ else
 fi
 
 ## Inflate freesurfer ROIs
-if [[ ${freesurferROIs} == 'null' ]]; then
+if [ -z ${freesurferROIs} ]; then
 	echo "no freesurfer inflation"
 else
 	3dROIMaker \
@@ -97,7 +97,7 @@ else
 fi
 
 # inflate thalamus
-if [[ ${thalamicROIs} == 'null' ]]; then
+if [ -z ${thalamicROIs} ]; then
 	echo "no thalamic nuclei segmentation"
 else
 	3dROIMaker \
@@ -113,7 +113,7 @@ else
 fi
 
 # inflate visual areas
-if [[ ${prfROIs} == 'null' ]]; then
+if [ -z ${prfROIs} ]; then
         echo "no visual area inflation"
 else
         3dROIMaker \
