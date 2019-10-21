@@ -29,7 +29,7 @@ else
 end
 
 % cortical ROIs
-if ~isfield(config,'parcellationROIs')
+if isfield(config,'parcellationROIs')
     parcROIs = str2num(config.parcellationROIs);
     parcDir = fullfile(pwd,'parc_inflate_GMI.nii.gz');
 else
@@ -38,7 +38,7 @@ else
 end
 
 % subcortical ROIs
-if ~isfield(config,'subcorticalROIs')
+if isfield(config,'subcorticalROIs')
     inputparc = config.inputparc;
     subcortROIs = str2num(config.subcorticalROIs);
     subcortFSDir = fullfile(pwd,sprintf('%s+aseg.nii.gz',inputparc));
@@ -48,7 +48,7 @@ else
 end
 
 % freesurfer ROIs
-if ~isfield(config,'freesurferROIs')
+if isfield(config,'freesurferROIs')
     inputparc = config.inputparc;
     freesurferROIs = str2num(config.freesurferROIs);
     freesurferFSDir = fullfile(pwd,sprintf('%s+aseg.nii.gz',inputparc));
@@ -58,7 +58,7 @@ else
 end
 
 % thalamic ROIs
-if ~isfield(config,'thalamicROIs')
+if isfield(config,'thalamicROIs')
     thalamusROIs = str2num(config.thalamicROIs);
     thalamusDir = fullfile(pwd,'thalamus_inflate_GMI.nii.gz');
 else
@@ -67,7 +67,7 @@ else
 end
 
 % prf ROIs
-if ~isfield(config,'prfROIs')
+if isfield(config,'prfROIs')
     prfROIs = str2num(config.prfROIs);
     prfDir = fullfile(pwd,'visarea_inflate_GMI.nii.gz');
 else
