@@ -45,6 +45,15 @@ else
     display('no subcortical rois');
 end
 
+% freesurfer ROIs
+if ~isempty(config.freesurferROIs)
+    inputparc = config.inputparc;
+    freesurferROIs = str2num(config.freesurferROIs);
+    freesurferFSDir = fullfile(pwd,sprintf('%s+aseg.nii.gz',inputparc));
+else
+    display('no freesurfer rois')
+end
+
 % thalamic ROIs
 if ~isempty(config.thalamicROIs)
     thalamusROIs = str2num(config.thalamicROIs);
@@ -102,6 +111,23 @@ if ~isempty(subcortROIs)
     end
 end
 
+% freesurfer ROIs
+if ~isempty(freesurferROIs)
+    for ii = 1:length(freesurferROIs)
+        [matRoi] = bsc_roiFromFSnums(freesurferFSDir,freesurferROIs(ii),'false',[]);
+        if isempty(matRoi.coords)
+            display('ROI not found in parcellation. Please see parcellation LUT');
+            exit;
+        else
+            save(sprintf('ROI00%s.mat',num2str(freesurferROIs(ii))),'matRoi','-v7.3');
+            roiName = sprintf('ROI00%s.nii.gz',num2str(freesurferROIs(ii)));
+            [ni, roiName] = dtiRoiNiftiFromMat_temp(matRoi,refImg,roiName,1);
+            clear('matRoi', 'roiName', 'ni');
+        end
+    end
+end
+
+
 % thalamus rois
 if ~isempty(thalamusROIs)
     for ii = 1:length(thalamusROIs)
@@ -110,8 +136,8 @@ if ~isempty(thalamusROIs)
             display('ROI not found in thalamus segmentation. Please see thalamus segmentation');
             exit;
         else
-            save(sprintf('ROI00%s.mat',num2str(thalamusROIs(ii))),'matRoi','-v7.3');
-            roiName = sprintf('ROI00%s.nii.gz',num2str(thalamusROIs(ii)));
+            save(sprintf('ROI000%s.mat',num2str(thalamusROIs(ii))),'matRoi','-v7.3');
+            roiName = sprintf('ROI000%s.nii.gz',num2str(thalamusROIs(ii)));
             [ni, roiName] = dtiRoiNiftiFromMat_temp(matRoi,refImg,roiName,1);
             clear('matRoi', 'roiName', 'ni');
         end
@@ -126,8 +152,8 @@ if ~isempty(prfROIs)
             display('ROI not found in visual area segmentation. Please see visual area segmentation');
             exit;
         else
-            save(sprintf('ROI000%s.mat',num2str(prfROIs(ii))),'matRoi','-v7.3');
-            roiName = sprintf('ROI000%s.nii.gz',num2str(prfROIs(ii)));
+            save(sprintf('ROI0000%s.mat',num2str(prfROIs(ii))),'matRoi','-v7.3');
+            roiName = sprintf('ROI0000%s.nii.gz',num2str(prfROIs(ii)));
             [ni, roiName] = dtiRoiNiftiFromMat_temp(matRoi,refImg,roiName,1);
             clear('matRoi', 'roiName', 'ni');
         end

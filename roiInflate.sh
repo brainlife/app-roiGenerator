@@ -44,6 +44,14 @@ else
         l4="-inflate ${visInflate} -prefix visarea_inflate";
 fi
 
+if [[ ${fsurfInflate} == 'null' ]]; then
+        echo "no freesurfer inflation";
+        l5='-prefix ${inputparc}_inflate';
+else
+        echo "${fsurfInflate} voxel inflation applied to every freesurfer label";
+        l5="-inflate ${fsurfInflate} -prefix ${inputparc}_inflate";
+fi
+
 
 if [ ${whitematter} == "true" ]; then
 	echo "white matter segmentation included";
@@ -65,6 +73,10 @@ if [ -f parc_diffusion.nii.gz ]; then
 		${l2} \
 		-nifti \
 		-overwrite;
+fi
+
+if [[ ${fsurf} == "false" ]]; then
+	echo "no freesurfer inflation"
 else
 	3dROIMaker \
                 -inset ${inputparc}+aseg.nii.gz \
@@ -73,7 +85,7 @@ else
                 -wm_skel wm_anat.nii.gz \
                 -skel_thr 0.5 \
                 ${l1} \
-                ${l2} \
+                ${l5} \
                 -nifti \
                 -overwrite;
 fi
