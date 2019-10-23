@@ -174,7 +174,7 @@ fi
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
 3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
-3dcalc -as_is -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
+3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
 
 # create key.txt for parcellation
 FILES=(`echo "*ROI*.nii.gz"`)
