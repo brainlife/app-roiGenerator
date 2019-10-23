@@ -20,6 +20,7 @@ prfROIs=`jq -r '.prfROIs' config.json`
 visInflate=`jq -r '.visInflate' config.json`
 fsurfInflate=`jq -r '.freesurferInflate' config.json`
 fsurfROIs=`jq -r '.freesurferROIs' config.json`
+subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
 
 mkdir parc
 
@@ -49,7 +50,7 @@ fi
 
 if [[ ${fsurfInflate} == 'null' ]]; then
         echo "no freesurfer inflation";
-        l5='-prefix ${inputparc}_inflate';
+        l5='-prefix ${inputparc}+aseg_inflate';
 else
         echo "${fsurfInflate} voxel inflation applied to every freesurfer label";
         l5="-inflate ${fsurfInflate} -prefix ${inputparc}_inflate";
@@ -68,6 +69,7 @@ fi
 if [ -z ${parcellationROIs} ]; then
 	echo "no parcellation inflation"
 else
+	#inflate
 	3dROIMaker \
 		-inset parc_diffusion.nii.gz \
 		-refset parc_diffusion.nii.gz \
@@ -78,6 +80,13 @@ else
 		${l2} \
 		-nifti \
 		-overwrite;
+
+	#generate rois
+	PARCROIS=`echo ${parcellationROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+	for PARC in ${PARCROIS}
+	do
+		3dcalc -a parc_inflate_GMI.nii.gz -expr 'equals(a,'${PARC}')' -prefix ROI${PARC}.nii.gz
+	done
 fi
 
 ## Inflate freesurfer ROIs
@@ -94,6 +103,14 @@ else
                 ${l5} \
                 -nifti \
                 -overwrite;
+	
+	#generate rois
+        FREEROIS=`echo ${freesurferROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+        for FREE in ${FREEROIS}
+        do
+                3dcalc -a ${inputparc}+aseg_inflate_GMI.nii.gz -expr 'equals(a,'${FREE}')' -prefix ROI0000${FREE}.nii.gz
+        done
+
 fi
 
 # inflate thalamus
@@ -110,6 +127,13 @@ else
 		${l3} \
 		-nifti \
 		-overwrite;
+
+	#generate rois
+        THALROIS=`echo ${thalamicROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+        for THAL in ${THALROIS}
+        do
+                3dcalc -a thalamus_inflate_GMI.nii.gz -expr 'equals(a,'${THAL}')' -prefix ROI00${THAL}.nii.gz
+        done
 fi
 
 # inflate visual areas
@@ -126,7 +150,49 @@ else
                 ${l4} \
                 -nifti \
                 -overwrite;
+
+	#generate rois
+	PRFROIS=`echo ${prfROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+        for VIS in ${PRFROIS}
+        do
+                3dcalc -a visarea_inflate_GMI.nii.gz -expr 'equals(a,'${VIS}')' -prefix ROI000${VIS}.nii.gz
+        done
 fi
+
+if [ -z ${subcorticalROIs} ]; then
+        echo "no subcortical rois"
+else
+        #generate rois
+        SUBROIS=`echo ${subcorticalROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+        for SUB in ${SUBROIS}
+        do
+                3dcalc -a ${inputparc}+aseg.nii.gz -expr 'equals(a,'${SUB}')' -prefix ROI0${SUB}.nii.gz
+        done
+fi
+
+# create parcellation of all rois
+3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
+3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
+3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
+3dcalc -as_is -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
+
+# create key.txt for parcellation
+FILES=(`echo "*ROI*.nii.gz"`)
+for i in "${!FILES[@]}"
+do
+	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
+	newval=$((i + 1))
+	echo "${oldval} -> ${newval}" >> key.txt
+done
+
+# clean up
+mkdir parc;
+mkdir rois;
+mkdir rois/rois;
+mv allrois_byte.nii.gz ./parc/parc.nii.gz;
+mv key.txt ./parc/key.txt;
+mv *ROI*.nii.gz ./rois/rois/;
+rm *.nii.gz*
 
 # inflate hippocampus: to do later!
 #if [[ ${hippocampus} == "false" ]]; then

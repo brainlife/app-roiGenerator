@@ -28,20 +28,9 @@ fi
 echo $FREESURFER_LICENSE > license.txt
 time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./create_wm_mask.sh
 
-echo "inflating ROIs"
-time singularity exec -e docker://brainlife/afni:16.3.0 ./roiInflate.sh
+echo "inflating & generate ROIs"
+time singularity exec -e docker://brainlife/afni:16.3.0 ./roiGeneration.sh
 
-echo "roi generation"
-singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./ROI/roiGeneration
-
-# Clean up
-mkdir parc;
-mkdir rois;
-mkdir rois/rois;
-mv parc_inflate_GMI.nii.gz ./parc/parc.nii.gz;
-mv parc_inflate_GMI.niml.lt ./parc/key.txt;
-mv *ROI*.nii.gz ./rois/rois/;
-rm -rf *ROI*.mat *inflate*.niml.lt *.nii.gz;
 
 if [[ ${INFLATE} == 'null' ]];then
     echo "{\"tags\": [\"no_inflate\" ]}" > product.json
