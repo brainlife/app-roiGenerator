@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+#set -x
 
 ## This script uses AFNI's (Taylor PA, Saad ZS (2013).  FATCAT: (An Efficient) Functional And Tractographic Connectivity Analysis Toolbox. Brain 
 ## Connectivity 3(5):523-535. https://afni.nimh.nih.gov/) 3dROIMaker function to a) remove the white matter mask from the cortical segmentation 
@@ -19,14 +19,14 @@ parcellationROIs=`jq -r '.parcellationROIs' config.json`
 prfROIs=`jq -r '.prfROIs' config.json`
 visInflate=`jq -r '.visInflate' config.json`
 fsurfInflate=`jq -r '.freesurferInflate' config.json`
-fsurfROIs=`jq -r '.freesurferROIs' config.json`
+freesurferROIs=`jq -r '.freesurferROIs' config.json`
 subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
 
 mkdir parc
 
 if [[ ${parcInflate} == 'null' ]]; then
 	echo "no inflation";
-	l2='-prefix parc_inflate';
+	l2="-prefix parc_inflate";
 else
 	echo "${parcInflate} voxel inflation applied to every cortical label in parcellation";
 	l2="-inflate ${parcInflate} -prefix parc_inflate";
@@ -34,7 +34,7 @@ fi
 
 if [[ ${thalamusInflate} == 'null' ]]; then
 	echo "no thalamic inflation";
-	l3='-prefix thalamus_inflate';
+	l3="-prefix thalamus_inflate";
 else
 	echo "${thalamusInflate} voxel inflation applied to every thalamic label";
 	l3="-inflate ${thalamusInflate} -prefix thalamus_inflate";
@@ -42,7 +42,7 @@ fi
 
 if [[ ${visInflate} == 'null' ]]; then
         echo "no visual area inflation";
-        l4='-prefix visarea_inflate';
+        l4="-prefix visarea_inflate";
 else
         echo "${visInflate} voxel inflation applied to every visual area label";
         l4="-inflate ${visInflate} -prefix visarea_inflate";
@@ -50,19 +50,19 @@ fi
 
 if [[ ${fsurfInflate} == 'null' ]]; then
         echo "no freesurfer inflation";
-        l5='-prefix ${inputparc}+aseg_inflate';
+        l5="-prefix ${inputparc}+aseg_inflate";
 else
         echo "${fsurfInflate} voxel inflation applied to every freesurfer label";
-        l5="-inflate ${fsurfInflate} -prefix ${inputparc}_inflate";
+        l5="-inflate ${fsurfInflate} -prefix ${inputparc}+aseg_inflate";
 fi
 
 
 if [ ${whitematter} == "true" ]; then
 	echo "white matter segmentation included";
-	l1='-skel_stop'
+	l1="-skel_stop";
 else
 	echo "removing white matter segmentation";
-	l1='-skel_stop -trim_off_wm';
+	l1="-skel_stop -trim_off_wm";
 fi
 
 ## Inflate parcellation ROIs
@@ -186,14 +186,14 @@ do
 done
 
 # clean up
-mkdir parc;
-mkdir rois;
-mkdir rois/rois;
-mv allrois_byte.nii.gz ./parc/parc.nii.gz;
-mv key.txt ./parc/key.txt;
-mv *ROI*.nii.gz ./rois/rois/;
-rm *.nii.gz* *.niml.*
-
+#mkdir parc;
+#mkdir rois;
+#mkdir rois/rois;
+#mv allrois_byte.nii.gz ./parc/parc.nii.gz;
+#mv key.txt ./parc/key.txt;
+#mv *ROI*.nii.gz ./rois/rois/;
+#rm *.nii.gz* *.niml.*
+#
 # inflate hippocampus: to do later!
 #if [[ ${hippocampus} == "false" ]]; then
 #        echo "no thalamic nuclei segmentation"
