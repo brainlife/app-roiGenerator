@@ -21,8 +21,10 @@ visInflate=`jq -r '.visInflate' config.json`
 fsurfInflate=`jq -r '.freesurferInflate' config.json`
 freesurferROIs=`jq -r '.freesurferROIs' config.json`
 subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
-mergeROIs=`jq -r .mergeROIs config.json`
-merge=($mergeROIs)
+mergeROIsL=`jq -r '.mergeROIsL' config.json`
+mergeROIsR=`jq -r '.mergeROIsR' config.json`
+mergeL=($mergeROIsL)
+mergeR=($mergeROIsR)
 mergename=`jq -r '.mergename' config.json`
 
 mkdir parc
@@ -179,19 +181,33 @@ fi
 3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
 3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
 
-if [[ -z ${mergeROIs} ]]; then
+if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
         echo "no merging of rois"
 else
         #merge rois
-	mergeArray=""
-	for i in "${merge[@]}"
-	do
-		mergeArray="$mergeArray `ls ROI*"$i"*`"
-	done
-	3dTcat -prefix merge_pre.nii.gz zeroDataset.nii.gz `ls ${mergeArray}`
-	3dTstat -argmax -prefix ${mergename}_nonbyte.nii.gz merge_pre.nii.gz
-	3dcalc -byte -a ${mergename}_nonbyte.nii.gz -expr 'a' -prefix ${mergename}_allbytes.nii.gz
-	3dcalc -a ${mergename}_allbytes.nii.gz -expr 'step(a)' -prefix ROI${mergename}.nii.gz
+	if [[ ! -z ${mergeROIsL} ]]; then
+		mergeArrayL=""
+		for i in "${mergeL[@]}"
+		do
+			mergeArrayL="$mergeArrayL `ls ROI*"$i"*`"
+		done
+		
+		3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
+        	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
+        	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
+        	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROI${mergename}_L.nii.gz
+	fi
+	if [[ ! -z ${mergeROIsR} ]]; then
+		mergeArrayR=""
+		for i in "${mergeR[@]}"
+		do
+			mergeArrayR="$mergeArrayR `ls ROI*"$i"*`"
+		done
+                3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
+                3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
+                3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
+                3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROI${mergename}_R.nii.gz
+	fi
 fi
 
 # create key.txt for parcellation
