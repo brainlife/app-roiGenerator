@@ -21,6 +21,9 @@ visInflate=`jq -r '.visInflate' config.json`
 fsurfInflate=`jq -r '.freesurferInflate' config.json`
 freesurferROIs=`jq -r '.freesurferROIs' config.json`
 subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
+mergeROIs=`jq -r .mergeROIs config.json`
+merge=($mergeROIs)
+mergename=`jq -r '.mergename' config.json`
 
 mkdir parc
 
@@ -175,6 +178,21 @@ fi
 3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
 3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
 3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
+
+if [[ -z ${mergeROIs} ]]; then
+        echo "no merging of rois"
+else
+        #merge rois
+	mergeArray=""
+	for i in "${merge[@]}"
+	do
+		mergeArray="$mergeArray `ls ROI*"$i"*`"
+	done
+	3dTcat -prefix merge_pre.nii.gz zeroDataset.nii.gz `ls ${mergeArray}`
+	3dTstat -argmax -prefix ${mergename}_nonbyte.nii.gz merge_pre.nii.gz
+	3dcalc -byte -a ${mergename}_nonbyte.nii.gz -expr 'a' -prefix ${mergename}_allbytes.nii.gz
+	3dcalc -a ${mergename}_allbytes.nii.gz -expr 'step(a)' -prefix ROI${mergename}.nii.gz
+fi
 
 # create key.txt for parcellation
 FILES=(`echo "*ROI*.nii.gz"`)
