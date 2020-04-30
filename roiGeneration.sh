@@ -71,7 +71,7 @@ else
 fi
 
 ## Inflate parcellation ROIs
-if [ -z ${parcellationROIs} ]; then
+if [[ -z ${parcellationROIs} ]]; then
 	echo "no parcellation inflation"
 else
 	#inflate
@@ -95,7 +95,7 @@ else
 fi
 
 ## Inflate freesurfer ROIs
-if [ -z ${freesurferROIs} ]; then
+if [[ -z ${freesurferROIs} ]]; then
 	echo "no freesurfer inflation"
 else
 	3dROIMaker \
@@ -119,7 +119,7 @@ else
 fi
 
 # inflate thalamus
-if [ -z ${thalamicROIs} ]; then
+if [[ -z ${thalamicROIs} ]]; then
 	echo "no thalamic nuclei segmentation"
 else
 	3dROIMaker \
@@ -142,7 +142,7 @@ else
 fi
 
 # inflate visual areas
-if [ -z ${prfROIs} ]; then
+if [[ -z ${prfROIs} ]]; then
         echo "no visual area inflation"
 else
         3dROIMaker \
@@ -164,7 +164,7 @@ else
         done
 fi
 
-if [ -z ${subcorticalROIs} ]; then
+if [[ -z ${subcorticalROIs} ]]; then
         echo "no subcortical rois"
 else
         #generate rois
@@ -189,7 +189,7 @@ else
 		mergeArrayL=""
 		for i in "${mergeL[@]}"
 		do
-			mergeArrayL="$mergeArrayL `ls ROI*"$i"*`"
+			mergeArrayL="$mergeArrayL `echo ROI*0"$i".nii.gz`"
 		done
 		
 		3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
@@ -201,7 +201,7 @@ else
 		mergeArrayR=""
 		for i in "${mergeR[@]}"
 		do
-			mergeArrayR="$mergeArrayR `ls ROI*"$i"*`"
+			mergeArrayR="$mergeArrayR `echo ROI*0"$i".nii.gz`"
 		done
                 3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
                 3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
