@@ -226,7 +226,7 @@ mkdir rois/rois;
 mv allrois_byte.nii.gz ./parc/parc.nii.gz;
 mv key.txt ./parc/key.txt;
 mv *ROI*.nii.gz ./rois/rois/;
-rm *.nii.gz* *.niml.*
+rm -rf *.nii.gz* *.niml.*
 
 # inflate hippocampus: to do later!
 #if [[ ${hippocampus} == "false" ]]; then
