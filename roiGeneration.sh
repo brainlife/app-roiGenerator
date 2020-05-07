@@ -21,11 +21,11 @@ visInflate=`jq -r '.visInflate' config.json`
 fsurfInflate=`jq -r '.freesurferInflate' config.json`
 freesurferROIs=`jq -r '.freesurferROIs' config.json`
 subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
-mergeROIsL=`jq -r '.mergeROIsL' config.json`
-mergeROIsR=`jq -r '.mergeROIsR' config.json`
-mergeL=($mergeROIsL)
-mergeR=($mergeROIsR)
-mergename=`jq -r '.mergename' config.json`
+# mergeROIsL=`jq -r '.mergeROIsL' config.json`
+# mergeROIsR=`jq -r '.mergeROIsR' config.json`
+# mergeL=($mergeROIsL)
+# mergeR=($mergeROIsR)
+# mergename=`jq -r '.mergename' config.json`
 
 mkdir parc
 
@@ -176,55 +176,55 @@ else
 fi
 
 # create parcellation of all rois
-3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
-3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
-3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
-3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
+# 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
+# 3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
+# 3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
+# 3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
 
-if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
-        echo "no merging of rois"
-else
-        #merge rois
-	if [[ ! -z ${mergeROIsL} ]]; then
-		mergeArrayL=""
-		for i in "${mergeL[@]}"
-		do
-			mergeArrayL="$mergeArrayL `echo ROI*0"$i".nii.gz`"
-		done
+# if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
+#         echo "no merging of rois"
+# else
+#         #merge rois
+# 	if [[ ! -z ${mergeROIsL} ]]; then
+# 		mergeArrayL=""
+# 		for i in "${mergeL[@]}"
+# 		do
+# 			mergeArrayL="$mergeArrayL `echo ROI*0"$i".nii.gz`"
+# 		done
 		
-		3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
-        	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
-        	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
-        	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROI${mergename}_L.nii.gz
-	fi
-	if [[ ! -z ${mergeROIsR} ]]; then
-		mergeArrayR=""
-		for i in "${mergeR[@]}"
-		do
-			mergeArrayR="$mergeArrayR `echo ROI*0"$i".nii.gz`"
-		done
-                3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
-                3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
-                3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
-                3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROI${mergename}_R.nii.gz
-	fi
-fi
+# 		3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
+#         	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
+#         	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
+#         	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROI${mergename}_L.nii.gz
+# 	fi
+# 	if [[ ! -z ${mergeROIsR} ]]; then
+# 		mergeArrayR=""
+# 		for i in "${mergeR[@]}"
+# 		do
+# 			mergeArrayR="$mergeArrayR `echo ROI*0"$i".nii.gz`"
+# 		done
+#                 3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
+#                 3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
+#                 3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
+#                 3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROI${mergename}_R.nii.gz
+# 	fi
+# fi
 
-# create key.txt for parcellation
-FILES=(`echo "*ROI*.nii.gz"`)
-for i in "${!FILES[@]}"
-do
-	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
-	newval=$((i + 1))
-	echo "${oldval} -> ${newval}" >> key.txt
-done
+# # create key.txt for parcellation
+# FILES=(`echo "*ROI*.nii.gz"`)
+# for i in "${!FILES[@]}"
+# do
+# 	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
+# 	newval=$((i + 1))
+# 	echo "${oldval} -> ${newval}" >> key.txt
+# done
 
 # clean up
-mkdir parc;
+# mkdir parc;
 mkdir rois;
 mkdir rois/rois;
-mv allrois_byte.nii.gz ./parc/parc.nii.gz;
-mv key.txt ./parc/key.txt;
+# mv allrois_byte.nii.gz ./parc/parc.nii.gz;
+# mv key.txt ./parc/key.txt;
 mv *ROI*.nii.gz ./rois/rois/;
 rm -rf *.nii.gz* *.niml.*
 
