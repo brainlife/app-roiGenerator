@@ -191,5 +191,5 @@ mv *ROI*.nii.gz ./rois/rois/;
 mv ./rois/rois/ROI008109.nii.gz ./rois/rois/ROIlgn_L.nii.gz
 mv ./rois/rois/ROI008209.nii.gz ./rois/rois/ROIlgn_R.nii.gz
 mv ./rois/rois/ROI0001.nii.gz ./rois/rois/ROIv1.nii.gz
-mv ./rois/rois/ROI085.nii.gz ./rois/rois/ROIoptic-chaism.nii.gz
+mv ./rois/rois/ROI085.nii.gz ./rois/rois/ROIoptic-chiasm.nii.gz
 rm -rf *.nii.gz* *.niml.*
