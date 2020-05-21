@@ -20,7 +20,7 @@ freesurferInflate=`jq -r '.freesurferInflate' config.json`
 brainmask=mask.nii.gz;
 freesurferROIs="41 42 7 8 4 2 3 46 47 43"
 prfROIs="1"
-thalamicROIs="008109 008209"
+thalamicROIs="8109 8209"
 mergeROIsL="41 42 7 8 4"
 mergeROIsR="2 3 46 47 43"
 mergeL=($mergeROIsL)
@@ -29,7 +29,7 @@ mergename="exclusion"
 
 
 # parse inflation if desired by user
-if [[ ${fsurfInflate} == 'null' ]]; then
+if [[ ${freesurferInflate} == 'null' ]]; then
         echo "no freesurfer inflation";
         l5="-prefix ${inputparc}+aseg_inflate";
 else
