@@ -11,9 +11,9 @@
 
 # bl config inputs
 inputparc=`jq -r '.inputparc' config.json`
-whitematter=`jq -r '.whitematter' config.json`
 thalamusInflate=`jq -r '.thalamusInflate' config.json`
 visInflate=`jq -r '.visInflate' config.json`
+freesurferInflate=`jq -r '.freesurferInflate' config.json`
 #subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
 
 # hard coded roi numbers for optic radiation tracking
@@ -28,12 +28,21 @@ mergeR=($mergeROIsR)
 mergename="exclusion"
 
 # parse inflation if desired by user
-if [[ ${thalamusInflate} == 'null' ]]; then
+if [[ ${freesurferflate} == 'null' ]]; then
+	echo "no thalamic inflation";
+	l5="-prefix thalamus_inflate";
+else
+	echo "${thalamusinflate} voxel inflation applied to every thalamic label";
+	l5="-inflate ${thalamusinflate} -prefix thalamus_inflate";
+fi
+
+# parse inflation if desired by user
+if [[ ${thalamusinflate} == 'null' ]]; then
 	echo "no thalamic inflation";
 	l3="-prefix thalamus_inflate";
 else
-	echo "${thalamusInflate} voxel inflation applied to every thalamic label";
-	l3="-inflate ${thalamusInflate} -prefix thalamus_inflate";
+	echo "${thalamusinflate} voxel inflation applied to every thalamic label";
+	l3="-inflate ${thalamusinflate} -prefix thalamus_inflate";
 fi
 
 if [[ ${visInflate} == 'null' ]]; then
