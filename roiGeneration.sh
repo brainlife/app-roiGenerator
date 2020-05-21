@@ -27,16 +27,16 @@ mergeL=($mergeROIsL)
 mergeR=($mergeROIsR)
 mergename="exclusion"
 
-# parse inflation if desired by user
-if [[ ${freesurferflate} == 'null' ]]; then
-	echo "no thalamic inflation";
-	l5="-prefix thalamus_inflate";
-else
-	echo "${thalamusinflate} voxel inflation applied to every thalamic label";
-	l5="-inflate ${thalamusinflate} -prefix thalamus_inflate";
-fi
 
 # parse inflation if desired by user
+if [[ ${fsurfInflate} == 'null' ]]; then
+        echo "no freesurfer inflation";
+        l5="-prefix ${inputparc}+aseg_inflate";
+else
+        echo "${fsurfInflate} voxel inflation applied to every freesurfer label";
+        l5="-inflate ${fsurfInflate} -prefix ${inputparc}+aseg_inflate";
+fi
+
 if [[ ${thalamusinflate} == 'null' ]]; then
 	echo "no thalamic inflation";
 	l3="-prefix thalamus_inflate";
