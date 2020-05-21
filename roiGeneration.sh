@@ -9,34 +9,25 @@
 ## create nifti's for each ROI requested by the user, which can then be fed into a ROI to ROI tracking app (brainlife.io; www.github.com/brain-life/
 ## app-roi2roitracking).
 
-parcInflate=`jq -r '.parcInflate' config.json`
-thalamusInflate=`jq -r '.thalamusInflate' config.json`
-brainmask=mask.nii.gz;
+# bl config inputs
 inputparc=`jq -r '.inputparc' config.json`
 whitematter=`jq -r '.whitematter' config.json`
-thalamicROIs=`jq -r '.thalamicROIs' config.json`
-parcellationROIs=`jq -r '.parcellationROIs' config.json`
-prfROIs=`jq -r '.prfROIs' config.json`
+thalamusInflate=`jq -r '.thalamusInflate' config.json`
 visInflate=`jq -r '.visInflate' config.json`
-fsurfInflate=`jq -r '.freesurferInflate' config.json`
-freesurferROIs=`jq -r '.freesurferROIs' config.json`
-subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
-mergeROIsL=`jq -r '.mergeROIsL' config.json`
-mergeROIsR=`jq -r '.mergeROIsR' config.json`
+#subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
+
+# hard coded roi numbers for optic radiation tracking
+brainmask=mask.nii.gz;
+freesurferROIs="41 42 7 8 4 2 3 46 47 43"
+prfROIs="1"
+thalamicROIs="008109 008209"
+mergeROIsL="41 42 7 8 4"
+mergeROIsR="2 3 46 47 43"
 mergeL=($mergeROIsL)
 mergeR=($mergeROIsR)
-mergename=`jq -r '.mergename' config.json`
+mergename="exclusion"
 
-mkdir parc
-
-if [[ ${parcInflate} == 'null' ]]; then
-	echo "no inflation";
-	l2="-prefix parc_inflate";
-else
-	echo "${parcInflate} voxel inflation applied to every cortical label in parcellation";
-	l2="-inflate ${parcInflate} -prefix parc_inflate";
-fi
-
+# parse inflation if desired by user
 if [[ ${thalamusInflate} == 'null' ]]; then
 	echo "no thalamic inflation";
 	l3="-prefix thalamus_inflate";
@@ -53,46 +44,8 @@ else
         l4="-inflate ${visInflate} -prefix visarea_inflate";
 fi
 
-if [[ ${fsurfInflate} == 'null' ]]; then
-        echo "no freesurfer inflation";
-        l5="-prefix ${inputparc}+aseg_inflate";
-else
-        echo "${fsurfInflate} voxel inflation applied to every freesurfer label";
-        l5="-inflate ${fsurfInflate} -prefix ${inputparc}+aseg_inflate";
-fi
-
-
-if [ ${whitematter} == "true" ]; then
-	echo "white matter segmentation included";
-	l1="-skel_stop";
-else
-	echo "removing white matter segmentation";
-	l1="-skel_stop -trim_off_wm";
-fi
-
-## Inflate parcellation ROIs
-if [[ -z ${parcellationROIs} ]]; then
-	echo "no parcellation inflation"
-else
-	#inflate
-	3dROIMaker \
-		-inset parc_diffusion.nii.gz \
-		-refset parc_diffusion.nii.gz \
-		-mask ${brainmask} \
-		-wm_skel wm_anat.nii.gz \
-		-skel_thr 0.5 \
-		${l1} \
-		${l2} \
-		-nifti \
-		-overwrite;
-
-	#generate rois
-	PARCROIS=`echo ${parcellationROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
-	for PARC in ${PARCROIS}
-	do
-		3dcalc -a parc_inflate_GMI.nii.gz -expr 'equals(a,'${PARC}')' -prefix ROI${PARC}.nii.gz
-	done
-fi
+# stop inflation into white matter
+l1="-skel_stop";
 
 ## Inflate freesurfer ROIs
 if [[ -z ${freesurferROIs} ]]; then
@@ -164,16 +117,16 @@ else
         done
 fi
 
-if [[ -z ${subcorticalROIs} ]]; then
-        echo "no subcortical rois"
-else
-        #generate rois
-        SUBROIS=`echo ${subcorticalROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
-        for SUB in ${SUBROIS}
-        do
-                3dcalc -a ${inputparc}+aseg.nii.gz -expr 'equals(a,'${SUB}')' -prefix ROI0${SUB}.nii.gz
-        done
-fi
+#if [[ -z ${subcorticalROIs} ]]; then
+#        echo "no subcortical rois"
+#else
+#        #generate rois
+#        SUBROIS=`echo ${subcorticalROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+#        for SUB in ${SUBROIS}
+#        do
+#                3dcalc -a ${inputparc}+aseg.nii.gz -expr 'equals(a,'${SUB}')' -prefix ROI0${SUB}.nii.gz
+#        done
+#fi
 
 # create parcellation of all rois
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
@@ -192,7 +145,7 @@ else
 			mergeArrayL="$mergeArrayL `echo ROI*0"$i".nii.gz`"
 		done
 		
-		3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
+			3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
         	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
         	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
         	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROI${mergename}_L.nii.gz
@@ -227,19 +180,3 @@ mv allrois_byte.nii.gz ./parc/parc.nii.gz;
 mv key.txt ./parc/key.txt;
 mv *ROI*.nii.gz ./rois/rois/;
 rm -rf *.nii.gz* *.niml.*
-
-# inflate hippocampus: to do later!
-#if [[ ${hippocampus} == "false" ]]; then
-#        echo "no thalamic nuclei segmentation"
-#else
-#        3dROIMaker \
-#                -inset thalamicNuclei.nii.gz \
-#                -refset thalamicNuclei.nii.gz \
-#                -mask ${brainmask} \
-#                -wm_skel wm_anat.nii.gz \
-#                -skel_thr 0.5 \
-#                ${l1} \
-#                ${l3} \
-#                -nifti \
-#                -overwrite;
-#fi
