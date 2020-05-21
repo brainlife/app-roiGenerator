@@ -19,6 +19,7 @@ freesurferInflate=`jq -r '.freesurferInflate' config.json`
 # hard coded roi numbers for optic radiation tracking
 brainmask=mask.nii.gz;
 freesurferROIs="41 42 7 8 4 2 3 46 47 43"
+subcorticalROIs="85"
 prfROIs="1"
 thalamicROIs="8109 8209"
 mergeROIsL="41 42 7 8 4"
@@ -26,7 +27,6 @@ mergeROIsR="2 3 46 47 43"
 mergeL=($mergeROIsL)
 mergeR=($mergeROIsR)
 mergename="exclusion"
-
 
 # parse inflation if desired by user
 if [[ ${freesurferInflate} == 'null' ]]; then
@@ -126,16 +126,16 @@ else
         done
 fi
 
-#if [[ -z ${subcorticalROIs} ]]; then
-#        echo "no subcortical rois"
-#else
-#        #generate rois
-#        SUBROIS=`echo ${subcorticalROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
-#        for SUB in ${SUBROIS}
-#        do
-#                3dcalc -a ${inputparc}+aseg.nii.gz -expr 'equals(a,'${SUB}')' -prefix ROI0${SUB}.nii.gz
-#        done
-#fi
+if [[ -z ${subcorticalROIs} ]]; then
+        echo "no subcortical rois"
+else
+        #generate rois
+        SUBROIS=`echo ${subcorticalROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+        for SUB in ${SUBROIS}
+        do
+                3dcalc -a ${inputparc}+aseg.nii.gz -expr 'equals(a,'${SUB}')' -prefix ROI0${SUB}.nii.gz
+        done
+fi
 
 # create parcellation of all rois
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
@@ -191,4 +191,5 @@ mv *ROI*.nii.gz ./rois/rois/;
 mv ./rois/rois/ROI008109.nii.gz ./rois/rois/ROIlgn_L.nii.gz
 mv ./rois/rois/ROI008209.nii.gz ./rois/rois/ROIlgn_R.nii.gz
 mv ./rois/rois/ROI0001.nii.gz ./rois/rois/ROIv1.nii.gz
+mv ./rois/rois/ROI085.nii.gz ./rois/rois/ROIoptic-chaism.nii.gz
 rm -rf *.nii.gz* *.niml.*
