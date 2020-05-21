@@ -35,7 +35,7 @@ fi
 if [ -z ${thalamicROIs} ]; then
 	echo "no thalamic nuclei segmentation"
 else
-	mri_label2vol --seg $fsurfer/mri/ThalamicNuclei.v10.T1.FSvoxelSpace.mgz --temp $input_nii_gz --regheader $fsurfer/mri/ThalamicNuclei.v10.T1.FSvoxelSpace.mgz --o thalamicNuclei.nii.gz
+	mri_label2vol --seg $fsurfer/mri/ThalamicNuclei.*.T1.FSvoxelSpace.mgz --temp $input_nii_gz --regheader $fsurfer/mri/ThalamicNuclei.*.T1.FSvoxelSpace.mgz --o thalamicNuclei.nii.gz
 fi
 
 if [ -z ${prfROIs} ]; then
