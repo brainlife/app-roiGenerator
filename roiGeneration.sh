@@ -190,5 +190,5 @@ mv key.txt ./parc/key.txt;
 mv *ROI*.nii.gz ./rois/rois/;
 mv ./rois/rois/ROI008109.nii.gz ./rois/rois/ROIlgn_L.nii.gz
 mv ./rois/rois/ROI008209.nii.gz ./rois/rois/ROIlgn_R.nii.gz
-mv ./rois/rois/ROI0001.nii.gz ./rois/roi/ROIv1.nii.gz
+mv ./rois/rois/ROI0001.nii.gz ./rois/rois/ROIv1.nii.gz
 rm -rf *.nii.gz* *.niml.*
