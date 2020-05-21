@@ -11,7 +11,7 @@
 
 # bl config inputs
 inputparc=`jq -r '.inputparc' config.json`
-thalamusInflate=`jq -r '.thalamusInflate' config.json`
+thalamusinflate=`jq -r '.thalamusInflate' config.json`
 visInflate=`jq -r '.visInflate' config.json`
 freesurferInflate=`jq -r '.freesurferInflate' config.json`
 #subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
