@@ -18,12 +18,12 @@ freesurferInflate=`jq -r '.freesurferInflate' config.json`
 
 # hard coded roi numbers for optic radiation tracking
 brainmask=mask.nii.gz;
-freesurferROIs="41 42 7 8 4 2 3 46 47 43"
+freesurferROIs="41 42 7 8 4 2 3 46 47 43 28 60"
 subcorticalROIs="85"
 prfROIs="1"
 thalamicROIs="8109 8209"
-mergeROIsL="41 42 7 8 4"
-mergeROIsR="2 3 46 47 43"
+mergeROIsL="41 42 7 8 4 28"
+mergeROIsR="2 3 46 47 43 60"
 mergeL=($mergeROIsL)
 mergeR=($mergeROIsR)
 mergename="exclusion"
