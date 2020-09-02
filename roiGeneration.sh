@@ -20,7 +20,7 @@ freesurferInflate=`jq -r '.freesurferInflate' config.json`
 brainmask=mask.nii.gz;
 freesurferROIs="41 42 7 8 4 2 3 46 47 43 28 60"
 subcorticalROIs="85"
-prfROIs="1"
+prfROIs="1 2 3 4 5 6 7 8 9 10 11 12"
 thalamicROIs="8109 8209"
 mergeROIsL="41 42 7 8 4 28"
 mergeROIsR="2 3 46 47 43 60"
@@ -191,5 +191,16 @@ mv *ROI*.nii.gz ./rois/rois/;
 mv ./rois/rois/ROI008109.nii.gz ./rois/rois/ROIlgn_L.nii.gz
 mv ./rois/rois/ROI008209.nii.gz ./rois/rois/ROIlgn_R.nii.gz
 mv ./rois/rois/ROI0001.nii.gz ./rois/rois/ROIv1.nii.gz
+mv ./rois/rois/ROI0002.nii.gz ./rois/rois/ROIv2.nii.gz
+mv ./rois/rois/ROI0003.nii.gz ./rois/rois/ROIv3.nii.gz
+mv ./rois/rois/ROI0004.nii.gz ./rois/rois/ROIhV4.nii.gz
+mv ./rois/rois/ROI0005.nii.gz ./rois/rois/ROIvO1.nii.gz
+mv ./rois/rois/ROI0006.nii.gz ./rois/rois/ROIvO2.nii.gz
+mv ./rois/rois/ROI0007.nii.gz ./rois/rois/ROIlO1.nii.gz
+mv ./rois/rois/ROI0008.nii.gz ./rois/rois/ROIlO2.nii.gz
+mv ./rois/rois/ROI0009.nii.gz ./rois/rois/ROItO1.nii.gz
+mv ./rois/rois/ROI0010.nii.gz ./rois/rois/ROItO2.nii.gz
+mv ./rois/rois/ROI0011.nii.gz ./rois/rois/ROIv3b.nii.gz
+mv ./rois/rois/ROI0012.nii.gz ./rois/rois/ROIv3a.nii.gz
 mv ./rois/rois/ROI085.nii.gz ./rois/rois/ROIoptic-chiasm.nii.gz
 rm -rf *.nii.gz* *.niml.*
