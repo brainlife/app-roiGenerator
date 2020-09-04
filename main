@@ -33,6 +33,10 @@ fi
 echo "inflating & generate ROIs"
 time singularity exec -e docker://brainlife/afni:16.3.0 ./roiGeneration.sh
 
+echo "creating eccentricity ROIs"
+echo $FREESURFER_LICENSE > license.txt
+time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/connectome_workbench:1.4.2-freesurfer-update ./surface-generator.sh
+
 
 if [[ ${INFLATE} == 'null' ]];then
     echo "{\"tags\": [\"no_inflate\" ]}" > product.json
@@ -44,5 +48,7 @@ if [ -z "$(ls -A ./rois/rois/)" ]; then
     echo "ROI files missing."
     exit 1
 else
+    mkdir -p raw
+    mv *.nii.gz *.func.gii ./raw/
     exit 0
 fi
