@@ -193,7 +193,7 @@ visROIs=($visROIs)
 visROINames=($visROINames)
 for ROIS in ${!visROIs[@]}
 do
-        mv ./rois/rois/ROI00${visROIs[$ROIs]}.nii.gz ./rois/rois/ROI${visROINames[$ROIs]}.nii.gz
+        mv ./rois/rois/ROI000${visROIs[$ROIs]}.nii.gz ./rois/rois/ROI${visROINames[$ROIs]}.nii.gz
 done
 mv ./rois/rois/ROI008109.nii.gz ./rois/rois/ROIlgn_L.nii.gz
 mv ./rois/rois/ROI008209.nii.gz ./rois/rois/ROIlgn_R.nii.gz
