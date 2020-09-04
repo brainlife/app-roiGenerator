@@ -20,7 +20,7 @@ freesurferInflate=`jq -r '.freesurferInflate' config.json`
 brainmask=mask.nii.gz;
 freesurferROIs="41 42 7 8 4 2 3 46 47 43 28 60"
 subcorticalROIs="85"
-visROIs="2 3 4 5 6 7 8 11 12 14 17 18 19 20 21 22 23 24 50 120 122 127 128 134 136 137 138 139 141 142 143 144 147 153 154 155 156 157 158 159 160 161 164 183 184 185 186 187 188 189 192 193 195 198 199 200 201 202 203 204 205 231 301 303 308 309 315 317 318 319 320 322 323 324 325 328 334 335 336 337 338 339 340 341 342 345"
+visROIs="02 03 4 5 6 7 8 11 12 14 17 18 19 20 21 22 23 24 50 120 122 127 128 134 136 137 138 139 141 142 143 144 147 153 154 155 156 157 158 159 160 161 164 183 184 185 186 187 188 189 192 193 195 198 199 200 201 202 203 204 205 231 301 303 308 309 315 317 318 319 320 322 323 324 325 328 334 335 336 337 338 339 340 341 342 345"
 visROINames="v1_L mst_L v6_L v2_L v3_L v4_L v8_L fef_L pef_L v3a_L v7_L ips1_L ffc_L v3b_L lo1_L lo2_L pit_L mt_L mip_L pres_L pros_L pha1_L pha3_L te1p_L tf_L te2p_L pht_L ph_L tpoj2_L tpoj3_L dvt_L pgp_L ip0_L v6a_L vmv1_L vmv3_L pha2_L v4t_L fst_L v3cd_L lo3_L vmv2_L vvc_L v1_R mst_R v6_R v2_R v3_R v4_R v8_R fef_R pef_R v3a_R v7_R ips1_R ffc_R v3b_R lo1_R lo2_R pit_R mt_R mip_R pres_R pros_R pha1_R pha3_R te1p_R tf_R te2p_R pht_R ph_R tpoj2_R tpoj3_R dvt_R pgp_R ip0_R v6a_R vmv1_R vmv3_R pha2_R v4t_R fst_R v3cd_R lo3_R vmv2_R vvc_R"
 thalamicROIs="8109 8209"
 mergeROIsL="41 42 7 8 4 28"
@@ -193,7 +193,7 @@ visROIs=($visROIs)
 visROINames=($visROINames)
 for ROIS in ${!visROIs[@]}
 do
-        mv ./rois/rois/ROI000${visROIs[$ROIs]}.nii.gz ./rois/rois/ROI${visROINames[$ROIs]}.nii.gz
+        mv ./rois/rois/ROI000${visROIs[$ROIS]}.nii.gz ./rois/rois/ROI${visROINames[$ROIS]}.nii.gz
 done
 mv ./rois/rois/ROI008109.nii.gz ./rois/rois/ROIlgn_L.nii.gz
 mv ./rois/rois/ROI008209.nii.gz ./rois/rois/ROIlgn_R.nii.gz
