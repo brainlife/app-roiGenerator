@@ -28,6 +28,6 @@ mri_binarize --i ${inputparc}+aseg.nii.gz --o wm_anat.nii.gz --match 2 41 16 17 
 # convert thalamic nuclei mgz to nifti
 mri_label2vol --seg $fsurfer/mri/ThalamicNuclei.*.T1.FSvoxelSpace.mgz --temp $input_nii_gz --regheader $fsurfer/mri/ThalamicNuclei.*.T1.FSvoxelSpace.mgz --o thalamicNuclei.nii.gz
 
-# convert visual area segmentation
-mri_label2vol --seg ${prfDir} --temp $input_nii_gz --regheader ${prfDir} --o varea_dwi.nii.gz
+# reslice glasser parc to dwi
+mri_vol2vol --mov ${parc} --temp $input_nii_gz --regheader --o parc_dwi.nii.gz
 
