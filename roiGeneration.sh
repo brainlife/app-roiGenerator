@@ -20,7 +20,8 @@ freesurferInflate=`jq -r '.freesurferInflate' config.json`
 brainmask=mask.nii.gz;
 freesurferROIs="41 42 7 8 4 2 3 46 47 43 28 60"
 subcorticalROIs="85"
-prfROIs="1 2 3 4 5 6 7 8 9 10 11 12"
+visROIs="2 3 4 5 6 7 8 11 12 14 17 18 19 20 21 22 23 24 50 120 122 127 128 134 136 137 138 139 141 142 143 144 147 153 154 155 156 157 158 159 160 161 164 183 184 185 186 187 188 189 192 193 195 198 199 200 201 202 203 204 205 231 301 303 308 309 315 317 318 319 320 322 323 324 325 328 334 335 336 337 338 339 340 341 342 345"
+visROINames="v1_L mst_L v6_L 
 thalamicROIs="8109 8209"
 mergeROIsL="41 42 7 8 4 28"
 mergeROIsR="2 3 46 47 43 60"
@@ -104,12 +105,12 @@ else
 fi
 
 # inflate visual areas
-if [[ -z ${prfROIs} ]]; then
+if [[ -z ${visROIs} ]]; then
         echo "no visual area inflation"
 else
         3dROIMaker \
-                -inset varea_dwi.nii.gz \
-                -refset varea_dwi.nii.gz \
+                -inset parc_dwi.nii.gz \
+                -refset parc_dwi.nii.gz \
                 -mask ${brainmask} \
                 -wm_skel wm_anat.nii.gz \
                 -skel_thr 0.5 \
@@ -119,8 +120,8 @@ else
                 -overwrite;
 
 	#generate rois
-	PRFROIS=`echo ${prfROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
-        for VIS in ${PRFROIS}
+	VISROIS=`echo ${visROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+        for VIS in ${VISROIS}
         do
                 3dcalc -a visarea_inflate_GMI.nii.gz -expr 'equals(a,'${VIS}')' -prefix ROI000${VIS}.nii.gz
         done
