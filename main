@@ -25,7 +25,7 @@ then
     cp -v ${mask} mask.nii.gz
 fi
 
-#echo $FREESURFER_LICENSE > license.txt
+echo $FREESURFER_LICENSE > license.txt
 if [ ! -f wm_anat.nii.gz ]; then 
 	time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./create_wm_mask.sh
 fi
