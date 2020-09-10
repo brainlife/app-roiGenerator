@@ -1,54 +1,25 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=1,vmem=16gb,walltime=8:00:00
-#PBS -N roiGeneration
+#PBS -l nodes=1:ppn=1,vmem=16gb,walltime=1:00:00
+#PBS -N eccentricity-parcellation-generator
 #PBS -V
 
-inflate=`jq -r '.inflate' config.json`
-mask=`jq -r '.mask' config.json`
-dtiinit=`jq -r '.dtiinit' config.json`
+inputparc=`jq -r '.inputparc' config.json`
 
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
-echo "creating masks"
-if [[ -f ${dtiinit}/dti/bin/brainMask.nii.gz ]];
-then
-    cp -v ${dtiinit}/dti/bin/brainMask.nii.gz mask.nii.gz
-elif [[ ! -f "mask.nii.gz" ]] && [[ ${mask} == 'null' ]];
-then
-    time singularity exec -e docker://brainlife/fsl:5.0.9 ./brainmask.sh
-elif [[ -f "mask.nii.gz" ]];
-then
-    echo "brainmask exists. skipping"
-elif [[ ! ${mask} == 'null' ]];
-then
-    echo "brainmask exists. skipping"
-    cp -v ${mask} mask.nii.gz
-fi
-
 echo $FREESURFER_LICENSE > license.txt
-if [ ! -f wm_anat.nii.gz ]; then 
-	time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./create_wm_mask.sh
+if [ ! -f ${inputparc}+aseg.nii.gz ]; then 
+    time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer-mini:6.0.1 ./convertfreeparc.sh
 fi
 
 echo "inflating & generate ROIs"
-time singularity exec -e docker://brainlife/afni:16.3.0 ./roiGeneration.sh
+time singularity exec -e docker://brainlife/afni:16.3.0 ./eccentricityParcellationGeneration.sh
 
-echo "creating eccentricity ROIs"
-echo $FREESURFER_LICENSE > license.txt
-time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/connectome_workbench:1.4.2-freesurfer-update ./surface-generator.sh
-
-
-if [[ ${INFLATE} == 'null' ]];then
-    echo "{\"tags\": [\"no_inflate\" ]}" > product.json
-else
-    echo "{\"tags\": [\"inflate\" ]}" > product.json
-fi
-
-if [ -z "$(ls -A ./rois/rois/)" ]; then
-    echo "ROI files missing."
+if [ ! -f parc/parc.nii.gz ]; then
+    echo "parcellation file missing files missing."
     exit 1
 else
     mkdir -p raw
-    mv *.nii.gz *.func.gii ./raw/
+    mv *.nii.gz ./raw/
     exit 0
 fi
