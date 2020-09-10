@@ -26,7 +26,7 @@ cp -v ${rois}/*.nii.gz ./rois/rois/
 3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
 
 # create roi of eccentricity rois for tracking
-3dcalc -a allrois_byte.nii.gz -expr 'step(a)' -prefix ROIEcc${Min_Degree}to${Max_Degree}.nii.gz
+3dcalc -a allrois_byte.nii.gz -expr 'step(a)' -prefix ROIvarea.Ecc${Min_Degree}to${Max_Degree}.nii.gz
 
 # create key.txt for parcellation
 FILES=(`echo "./rois/rois/*.Ecc${Min_Degree}to${Max_Degree}*.nii.gz"`)
@@ -34,7 +34,7 @@ for i in "${!FILES[@]}"
 do
 	if [[ ! "${FILES[$i]}" == *"ROI"* ]]; then
 		name=`echo ${FILES[$i]} | sed -e "s/.Ecc${Min_Degree}to${Max_Degree}.nii.gz//" | cut -d'.' -f3`
-		if [[ "${name}" == *"lh"* ]]; then
+		if [[ "${FILES[$i]}" == *"lh"* ]]; then
 			oldval="lh.${name}"
 		else
 			oldval="rh.${name}"
