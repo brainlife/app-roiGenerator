@@ -2,7 +2,9 @@
 
 ## Create white matter mask and move rois to diffusion space for tracking
 
-input_nii_gz=`jq -r '.input_nifti' config.json`
+rois=`jq -r '.rois' config.json`
+Rois=(`ls ${rois}/*`) 
+input_nii_gz=${Rois[0]}
 fsurfer=`jq -r '.freesurfer' config.json`
 inputparc=`jq -r '.inputparc' config.json`
 
