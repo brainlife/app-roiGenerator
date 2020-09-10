@@ -21,7 +21,9 @@ cp -v ${rois}/*.nii.gz ./rois/rois/
 
 # create parcellation of all rois
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
-3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz ./rois/rois/ROI*.Ecc${Min_Degree}to${Max_Degree}.nii.gz
+ROIS=(`ls ./rois/rois/*.Ecc${Min_Degree}to${Max_Degree}.nii.gz`)
+
+3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz ./rois/rois/*.Ecc${Min_Degree}to${Max_Degree}.nii.gz
 3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
 3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
 
@@ -29,11 +31,19 @@ cp -v ${rois}/*.nii.gz ./rois/rois/
 3dcalc -a allrois_byte.nii.gz -expr 'step(a)' -prefix ROIEcc${Min_Degree}to${Max_Degree}.nii.gz
 
 # create key.txt for parcellation
-FILES=(`echo "./rois/rois/ROI*.Ecc${Min_Degree}to${Max_Degree}*.nii.gz"`)
-eccString="Ecc${Min_Degree}to${Max_Degree}.nii.gz"
+FILES=(`echo "./rois/rois/*.Ecc${Min_Degree}to${Max_Degree}*.nii.gz"`)
 for i in "${!FILES[@]}"
 do
-	oldval=`echo ${FILES[$i]} | sed -e 's/.*ROI\(.*\).nii.gz/\1/' | sed -e "s/.Ecc${Min_Degree}to${Max_Degree}//"`
+	if [[ ! "${FILES[0]}" == *"ROI"* ]]; then
+		name=`echo ${FILES[0]} | sed -e "s/.Ecc${Min_Degree}to${Max_Degree}.nii.gz//" | cut -d'.' -f3`
+		if [[ "${name}" == *"lh"* ]]; then
+			oldval="lh.${name}"
+		else
+			oldval="rh.${name}"
+		fi
+	else
+		oldval=`echo ${FILES[$i]} | sed -e 's/.*ROI\(.*\).nii.gz/\1/' | sed -e "s/.Ecc${Min_Degree}to${Max_Degree}//"`
+	fi
 	newval=$((i + 1))
 	echo "${oldval} -> ${newval}" >> key.txt
 done
