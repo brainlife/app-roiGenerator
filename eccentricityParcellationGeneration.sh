@@ -32,8 +32,8 @@ cp -v ${rois}/*.nii.gz ./rois/rois/
 FILES=(`echo "./rois/rois/*.Ecc${Min_Degree}to${Max_Degree}*.nii.gz"`)
 for i in "${!FILES[@]}"
 do
-	if [[ ! "${FILES[0]}" == *"ROI"* ]]; then
-		name=`echo ${FILES[0]} | sed -e "s/.Ecc${Min_Degree}to${Max_Degree}.nii.gz//" | cut -d'.' -f3`
+	if [[ ! "${FILES[$i]}" == *"ROI"* ]]; then
+		name=`echo ${FILES[$i]} | sed -e "s/.Ecc${Min_Degree}to${Max_Degree}.nii.gz//" | cut -d'.' -f3`
 		if [[ "${name}" == *"lh"* ]]; then
 			oldval="lh.${name}"
 		else
