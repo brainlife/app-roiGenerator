@@ -53,7 +53,7 @@ do
 	do
 		echo "${visROINames[$i]}"
 		[ ! -f ${hemi}.${visROINames[$i]}.func.gii ] && mri_binarize --i ./${hemi}.varea.func.gii --match ${visROIs[$i]} --o ./${hemi}.${visROINames[$i]}.func.gii
-		[ ! -f ./rois/rois/${hemi}.${visROINames[$i]}.nii.gz ] && mri_surf2vol --o ./rois/rois/${hemi}.${visROINames[$i]}.nii.gz --subject ./ --so ${freesurfer}/surf/${hemi}.pial ./${hemi}.${visROINames[$i]}.func.gii && mri_vol2vol --mov ./rois/rois/${hemi}.${visROINames[$i]}.nii.gz --targ ${input_nii_gz} --regheader --o ./rois/rois/${hemi}.${visROINames[$i]}.nii.gz --nearest
+		[ ! -f ./rois/rois/ROI${hemi}.${visROINames[$i]}.nii.gz ] && mri_surf2vol --o ./rois/rois/ROI${hemi}.${visROINames[$i]}.nii.gz --subject ./ --so ${freesurfer}/surf/${hemi}.pial ./${hemi}.${visROINames[$i]}.func.gii && mri_vol2vol --mov ./rois/rois/ROI${hemi}.${visROINames[$i]}.nii.gz --targ ${input_nii_gz} --regheader --o ./rois/rois/ROI${hemi}.${visROINames[$i]}.nii.gz --nearest
 
 		# extract eccentricity bins for each glasser visual roi
 		for DEG in ${!minDegree[@]}; do
@@ -62,7 +62,7 @@ do
 
 			# map surface to volume
 			SUBJECTS_DIR=${freesurfer}
-			[ ! -f ./rois/rois/${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz ] && mri_surf2vol --o ./rois/rois/${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz --subject ./ --so ${freesurfer}/surf/${hemi}.pial ./${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.func.gii && mri_vol2vol --mov ./rois/rois/${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz --targ ${input_nii_gz} --regheader --o ./rois/rois/${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz --nearest
+			[ ! -f ./rois/rois/ROI${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz ] && mri_surf2vol --o ./rois/rois/ROI${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz --subject ./ --so ${freesurfer}/surf/${hemi}.pial ./${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.func.gii && mri_vol2vol --mov ./rois/rois/ROI${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz --targ ${input_nii_gz} --regheader --o ./rois/rois/ROI${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz --nearest
 		done
 	done
 done
