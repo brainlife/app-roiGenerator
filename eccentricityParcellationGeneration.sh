@@ -17,7 +17,7 @@ inputparc=`jq -r '.inputparc' config.json`
 
 # make output directories and copy ROIs
 mkdir -p rois rois/rois parc
-cp -v ${rois}/*ROI*.nii.gz ./rois/rois/
+cp -v ${rois}/*.nii.gz ./rois/rois/
 
 # create parcellation of all rois
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
