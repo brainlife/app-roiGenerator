@@ -37,6 +37,8 @@ echo "creating eccentricity ROIs"
 echo $FREESURFER_LICENSE > license.txt
 time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/connectome_workbench:1.4.2-freesurfer-update ./surface-generator.sh
 
+echo "generate visual area parcellation"
+time singularity exec -e docker://brainlife/afni:16.3.0 ./vareaParcellationGeneration.sh
 
 if [[ ${INFLATE} == 'null' ]];then
     echo "{\"tags\": [\"no_inflate\" ]}" > product.json
