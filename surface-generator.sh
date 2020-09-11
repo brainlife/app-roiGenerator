@@ -23,7 +23,8 @@ visROINames=($visROINames)
 minDegree=($minDegree)
 maxDegree=($maxDegree)
 
-# set dwi as input
+# set SUBJECTS_DIR
+export SUBJECTS_DIR=${freesurfer}
 
 # move freesurfer whole-brain ribbon into diffusion space
 [ ! -f ribbon.nii.gz ] && mri_vol2vol --mov ${freesurfer}/mri/ribbon.mgz --targ ${input_nii_gz} --regheader --o ribbon.nii.gz
