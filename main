@@ -10,7 +10,7 @@ inputparc=`jq -r '.inputparc' config.json`
 [ ! -f license.txt ] && echo $FREESURFER_LICENSE > license.txt
 
 if [ ! -f ${inputparc}+aseg.nii.gz ]; then 
-    time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./convertfreeparc.sh
+    time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer-mini:6.0.1 ./convertfreeparc.sh
 fi
 
 echo "inflating & generate ROIs"
