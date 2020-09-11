@@ -1,0 +1,9 @@
+{
+	"min_degree": "0",
+	"max_degree":	"5",
+	"inputparc":	"aparc.a2009s",
+	"include_lgn":	true,
+	"include_oc":	true,
+	"rois":	"/home/brad/Desktop/roi/data/rois/",
+	"freesurfer":	"/home/brad/Desktop/roi/data/output/"
+}

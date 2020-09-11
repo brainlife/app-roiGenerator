@@ -14,15 +14,32 @@ Min_Degree=`jq -r '.min_degree' config.json`
 Max_Degree=`jq -r '.max_degree' config.json`
 rois=`jq -r '.rois' config.json`
 inputparc=`jq -r '.inputparc' config.json`
+include_lgn=`jq -r '.include_lgn' config.json`
+include_oc=`jq -r '.include_oc' config.json`
 
 # make output directories and copy ROIs
 mkdir -p rois rois/rois parc
 cp -v ${rois}/*.nii.gz ./rois/rois/
 
-# create parcellation of all rois
+# # create parcellation of all rois
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz ./rois/rois/*.Ecc${Min_Degree}to${Max_Degree}.nii.gz
-3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
+outimg="all_pre.nii.gz"
+
+# if want to include lgn
+if [[ ${include_lgn} == "true" ]]; then
+	3dTcat -prefix allpre.nii.gz ${outimg} ./rois/rois/*lgn_*.nii.gz
+	outimg="allpre.nii.gz"
+fi
+
+# if want to include optic chiasm
+if [[ ${include_oc} == "true" ]]; then
+	3dTcat -prefix allprepre.nii.gz ${outimg} ./rois/rois/*optic-chiasm.nii.gz
+	outimg="allprepre.nii.gz"
+fi
+
+# make parcellation
+3dTstat -argmax -prefix allroiss.nii.gz ${outimg}
 3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
 
 # create roi of eccentricity rois for tracking
@@ -46,7 +63,28 @@ do
 	echo "${oldval} -> ${newval}" >> key.txt
 done
 
-# clean up
+# lgn
+if [[ ${include_lgn} == "true" ]]; then
+	for lgn in ./rois/rois/*lgn_*.nii.gz
+	do
+		if [[ "${lgn}" == **"L"** ]]; then
+			oldval="lh.lgn"
+		else
+			oldval="rh.lgn"
+		fi
+		newval=$((newval + 1))
+		echo "${oldval} -> ${newval}" >> key.txt
+	done
+fi
+
+# optic chiasm
+if [[ ${include_oc} == "true" ]]; then
+	oldval="optic-chiasm"
+	newval=$((newval + 1))
+	echo "${oldval} -> ${newval}" >> key.txt
+fi
+
+# # clean up
 mv allrois_byte.nii.gz ./parc/parc.nii.gz;
 mv key.txt ./parc/key.txt;
 mv *ROI*.nii.gz ./rois/rois/;
