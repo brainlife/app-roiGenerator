@@ -154,10 +154,10 @@ else
 			mergeArrayL="$mergeArrayL `echo ROI*0"$i".nii.gz`"
 		done
 		
-			3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
+		3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
         	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
         	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
-        	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROI${mergename}_L.nii.gz
+        	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROIlh.${mergename}.nii.gz
 	fi
 	if [[ ! -z ${mergeROIsR} ]]; then
 		mergeArrayR=""
@@ -168,7 +168,7 @@ else
                 3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
                 3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
                 3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
-                3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROI${mergename}_R.nii.gz
+                3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROIrh.${mergename}.nii.gz
 	fi
 fi
 
@@ -188,8 +188,8 @@ mkdir rois/rois;
 mv allrois_byte.nii.gz ./parc/parc.nii.gz;
 mv key.txt ./parc/key.txt;
 mv *ROI*.nii.gz ./rois/rois/;
-mv ./rois/rois/ROI008109.nii.gz ./rois/rois/ROIlgn_L.nii.gz
-mv ./rois/rois/ROI008209.nii.gz ./rois/rois/ROIlgn_R.nii.gz
+mv ./rois/rois/ROI008109.nii.gz ./rois/rois/ROIlh.lgn.nii.gz
+mv ./rois/rois/ROI008209.nii.gz ./rois/rois/ROIrh.lgn.nii.gz
 mv ./rois/rois/ROI0001.nii.gz ./rois/rois/ROIv1.nii.gz
 mv ./rois/rois/ROI0002.nii.gz ./rois/rois/ROIv2.nii.gz
 mv ./rois/rois/ROI0003.nii.gz ./rois/rois/ROIv3.nii.gz
