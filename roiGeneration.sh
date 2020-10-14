@@ -44,14 +44,6 @@ else
 	l3="-inflate ${thalamusinflate} -prefix thalamus_inflate";
 fi
 
-# if [[ ${visInflate} == 'null' ]]; then
-#         echo "no visual area inflation";
-#         l4="-prefix visarea_inflate";
-# else
-#         echo "${visInflate} voxel inflation applied to every visual area label";
-#         l4="-inflate ${visInflate} -prefix visarea_inflate";
-# fi
-
 # stop inflation into white matter
 l1="-skel_stop";
 
@@ -101,29 +93,6 @@ else
                 3dcalc -a thalamus_inflate_GMI.nii.gz -expr 'equals(a,'${THAL}')' -prefix ROI00${THAL}.nii.gz
         done
 fi
-
-# # inflate visual areas
-# if [[ -z ${visROIs} ]]; then
-#         echo "no visual area inflation"
-# else
-#         3dROIMaker \
-#                 -inset parc_dwi.nii.gz \
-#                 -refset parc_dwi.nii.gz \
-#                 -mask ${brainmask} \
-#                 -wm_skel wm_anat.nii.gz \
-#                 -skel_thr 0.5 \
-#                 ${l1} \
-#                 ${l4} \
-#                 -nifti \
-#                 -overwrite;
-
-# 	#generate rois
-# 	VISROIS=`echo ${visROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
-#         for VIS in ${VISROIS}
-#         do
-#                 3dcalc -a visarea_inflate_GMI.nii.gz -expr 'equals(a,'${VIS}')' -prefix ROI000${VIS}.nii.gz
-#         done
-# fi
 
 if [[ -z ${subcorticalROIs} ]]; then
         echo "no subcortical rois"
