@@ -10,8 +10,9 @@ prfSurfacesDir=`jq -r '.prfSurfacesDir' config.json`
 minDegree=`jq -r '.min_degree' config.json` # min degree for binning of eccentricity
 maxDegree=`jq -r '.max_degree' config.json` # max degree for binning of eccentricity
 freesurfer=`jq -r '.freesurfer' config.json`
-input_nii_gz=`jq -r '.input_nifti' config.json`
 hemispheres="lh rh"
+
+input_nii_gz="${inputparc}+aseg.nii.gz"
 
 # glasser ROIS
 visROIs="1 2 3 4 5 6 7 8 9 10 11 12"
@@ -27,7 +28,7 @@ maxDegree=($maxDegree)
 export SUBJECTS_DIR=${freesurfer}
 
 # move freesurfer whole-brain ribbon into diffusion space
-[ ! -f ribbon.nii.gz ] && mri_vol2vol --mov ${freesurfer}/mri/ribbon.mgz --targ ${input_nii_gz} --regheader --o ribbon.nii.gz
+[ ! -f ribbon.nii.gz ] && mri_convert ${freesurfer}/mri/ribbon.mgz ./ribbon.nii.gz 
 
 # loop through hemispheres and create eccentricity surfaces
 for hemi in ${hemispheres}
@@ -36,8 +37,8 @@ do
 	parc=$(eval "echo \$${hemi}_annot")
 
 	# move freesurfer hemisphere ribbon into diffusion space
-	[ ! -f ${hemi}.ribbon.nii.gz ] && mri_vol2vol --mov $freesurfer/mri/${hemi}.ribbon.mgz --targ ${input_nii_gz} --regheader --o ${hemi}.ribbon.nii.gz
-
+	[ ! -f ${hemi}.ribbon.nii.gz ] && mri_convert $freesurfer/mri/${hemi}.ribbon.mgz ./${hemi}.ribbon.nii.gz
+	
 	# convert eccentricity surface to gifti
 	[ ! -f ${hemi}.eccentricity.func.gii ] && mris_convert -c ${prfSurfacesDir}/${hemi}.eccentricity ${freesurfer}/surf/${hemi}.pial ${hemi}.eccentricity.func.gii
 
@@ -63,7 +64,7 @@ do
 
 			# map surface to volume
 			SUBJECTS_DIR=${freesurfer}
-			[ ! -f ./rois/rois/ROI${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz ] && mri_surf2vol --o ./rois/rois/ROI${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz --subject ./ --so ${freesurfer}/surf/${hemi}.pial ./${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.func.gii && mri_vol2vol --mov ./rois/rois/ROI${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz --targ ${input_nii_gz} --regheader --o ./rois/rois/ROI${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz --nearest
+			[ ! -f ./rois/rois/ROI${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz ] && mri_surf2vol --o ./rois/rois/ROI${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.nii.gz --subject ./ --so ${freesurfer}/surf/${hemi}.pial ./${hemi}.${visROINames[$i]}.Ecc${minDegree[$DEG]}to${maxDegree[$DEG]}.func.gii
 		done
 	done
 done
