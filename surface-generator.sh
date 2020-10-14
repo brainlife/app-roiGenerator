@@ -10,6 +10,7 @@ prfSurfacesDir=`jq -r '.prfSurfacesDir' config.json`
 minDegree=`jq -r '.min_degree' config.json` # min degree for binning of eccentricity
 maxDegree=`jq -r '.max_degree' config.json` # max degree for binning of eccentricity
 freesurfer=`jq -r '.freesurfer' config.json`
+inputparc=`jq -r '.inputparc' config.json`
 hemispheres="lh rh"
 
 input_nii_gz="${inputparc}+aseg.nii.gz"
