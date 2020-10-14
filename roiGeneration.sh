@@ -108,8 +108,8 @@ if [[ -z ${prfROIs} ]]; then
         echo "no visual area inflation"
 else
         3dROIMaker \
-                -inset varea_dwi.nii.gz \
-                -refset varea_dwi.nii.gz \
+                -inset varea.nii.gz \
+                -refset varea.nii.gz \
                 -mask ${brainmask} \
                 -wm_skel wm_anat.nii.gz \
                 -skel_thr 0.5 \
