@@ -100,8 +100,8 @@ The secondary output of this app is `product.json`. This file allows web interfa
 
 This App requires the following libraries when run locally. 
 
-- AFNI: 
-- FSL: 
-- Freesurfer: 
-- jsonlab: 
-- singularity: 
+- AFNI: https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/install_instructs/index.html
+- FSL: https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation
+- Freesurfer: https://surfer.nmr.mgh.harvard.edu/fswiki/DownloadAndInstall
+- jsonlab: https://github.com/fangq/jsonlab
+- singularity: https://singularity.lbl.gov/quickstart
