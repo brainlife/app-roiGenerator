@@ -1,7 +1,7 @@
 [![Abcdspec-compliant](https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg)](https://github.com/brain-life/abcd-spec)
 [![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-brainlife.app.242-blue.svg)](https://doi.org/10.25663/brainlife.app.242)
 
-# Generate ROIs in DMRI Space 
+# Generate ROIs for Visual White Matter Tracking in DMRI Space 
 
 This app will generate regions-of-interest (ROIs) in dMRI space. This app is intended to be used in combination with apps that require the ROIs to have the same dimensions as the dMRI image including ROI to ROI tracking apps and the 'Extract diffusion metrics inside ROIs' app. This app takes in the following required inputs: DWI, Freesurfer. Optionally, this app can take any parcellation/volume datatype, pRF visual area segmentation, and can process individual thalamic nuclei segmented using Freesurfer. This app outputs a rois datatype containing the individual NIFTIs for each ROI requested and a parcellation/volume datatype containing a combined parcellation of the individual ROIs. This app uses AFNI's 3dROIMaker functionality.
 
