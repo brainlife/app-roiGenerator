@@ -15,6 +15,12 @@ This app will generate region-of-interest (ROI) niftis from either a Freesurfer 
 [![NSF-BCS-1734853](https://img.shields.io/badge/NSF_BCS-1734853-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1734853)
 [![NSF-BCS-1636893](https://img.shields.io/badge/NSF_BCS-1636893-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1636893)
 
+### Citations 
+
+Please cite the following articles when publishing papers that used data, code or other resources created by the brainlife.io community. 
+
+1. Taylor PA, Saad ZS (2013). FATCAT: (An Efficient) Functional And Tractographic Connectivity Analysis Toolbox. Brain Connectivity 3(5):523-535.
+
 ## Running the App 
 
 ### On Brainlife.io
