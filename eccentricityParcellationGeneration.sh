@@ -60,7 +60,7 @@ do
 		oldval=`echo ${FILES[$i]} | sed -e 's/.*ROI\(.*\).nii.gz/\1/' | sed -e "s/.Ecc${Min_Degree}to${Max_Degree}//"`
 	fi
 	newval=$((i + 1))
-	echo "1 -> ${oldval} == ${newval}" >> key.txt
+	echo -e "1\t->\t${oldval}\t==\t${newval}" >> key.txt
 done
 
 # lgn
@@ -73,7 +73,7 @@ if [[ ${include_lgn} == "true" ]]; then
 			oldval="rh.lgn"
 		fi
 		newval=$((newval + 1))
-		echo "1 -> ${oldval} == ${newval}" >> key.txt
+		echo -e "1\t->\t${oldval}\t==\t${newval}" >> key.txt
 	done
 fi
 
@@ -81,7 +81,7 @@ fi
 if [[ ${include_oc} == "true" ]]; then
 	oldval="optic-chiasm"
 	newval=$((newval + 1))
-	echo "1 -> ${oldval} == ${newval}" >> key.txt
+	echo -e "1\t->\t${oldval}\t==\t${newval}" >> key.txt
 fi
 
 # # clean up
