@@ -198,4 +198,5 @@ done
 mv ./rois/rois/ROI008109.nii.gz ./rois/rois/ROIlh.lgn.nii.gz
 mv ./rois/rois/ROI008209.nii.gz ./rois/rois/ROIrh.lgn.nii.gz
 mv ./rois/rois/ROI085.nii.gz ./rois/rois/ROIoptic-chiasm.nii.gz
+mkdir tmp && mv ${inputparc}+aseg.nii.gz ./tmp/
 rm -rf *.nii.gz* *.niml.*
