@@ -12,6 +12,7 @@ set -x
 visROINames="v1 mst v6 v2 v3 v4 v8 fef pef v3a v7 ips1 ffc v3b lo1 lo2 pit mt mip pres pros pha1 pha3 te1p tf te2p pht ph tpoj2 tpoj3 dvt pgp ip0 v6a vmv1 vmv3 pha2 v4t fst v3cd lo3 vmv2 vvc "
 visROINames=($visROINames)
 visrois=""
+inputparc=`jq -r '.inputparc' config.json`
 
 for i in ${!visROINames[@]}
 do
