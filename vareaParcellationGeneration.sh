@@ -20,6 +20,7 @@ do
 done
 
 # create parcellation of all rois
+mv ./tmp/${inputparc}+aseg.nii.gz ./ && rm -rf tmp
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz ${visrois}
 outimg="all_pre.nii.gz"
