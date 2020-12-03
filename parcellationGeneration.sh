@@ -65,7 +65,7 @@ if [ -f parc.nii.gz ]; then
 	mv parc.nii.gz ./parc/parc.nii.gz;
 	mv key.txt ./parc/key.txt;
 	mv label.json ./parc/label.json
-	rm -rf ./rois/ tmp.json
+	rm -rf ./rois/ tmp.json *.nii.gz
 	echo "completed"
 else
 	echo "parcellation failed to be generated. Please check .err and .log files to examine issues"
