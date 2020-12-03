@@ -26,10 +26,7 @@ outimg="all_pre.nii.gz"
 
 # # make parcellation
 3dTstat -argmax -prefix allroiss.nii.gz ${outimg}
-3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
-
-# # create roi of eccentricity rois for tracking
-3dcalc -a allrois_byte.nii.gz -expr 'step(a)' -prefix parc.nii.gz
+3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix parc.nii.gz
 
 # create key.txt for parcellation
 for i in "${!FILES[@]}"
@@ -62,7 +59,7 @@ done
 # pretty format label.json
 jq '.' tmp.json > label.json
 
-# # clean up
+# # # clean up
 if [ -f parc.nii.gz ]; then
 	# # clean up
 	mv parc.nii.gz ./parc/parc.nii.gz;
