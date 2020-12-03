@@ -1,26 +1,8 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=1,vmem=16gb,walltime=1:00:00
-#PBS -N eccentricity-parcellation-generator
+#PBS -l nodes=1:ppn=1,vmem=32gb,walltime=1:00:00
+#PBS -N parcellation-generator
 #PBS -V
 
-inputparc=`jq -r '.inputparc' config.json`
+echo "creating parcellation"
+time singularity exec -e docker://brainlife/afni:16.3.0 ./parcellationGeneration.sh
 
-[ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
-
-[ ! -f license.txt ] && echo $FREESURFER_LICENSE > license.txt
-
-if [ ! -f ${inputparc}+aseg.nii.gz ]; then 
-    time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./convertfreeparc.sh
-fi
-
-echo "inflating & generate ROIs"
-time singularity exec -e docker://brainlife/afni:16.3.0 ./eccentricityParcellationGeneration.sh
-
-if [ ! -f parc/parc.nii.gz ]; then
-    echo "parcellation file missing files missing."
-    exit 1
-else
-    mkdir -p raw
-    mv *.nii.gz ./raw/
-    exit 0
-fi
