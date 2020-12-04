@@ -28,6 +28,8 @@ mergeL=($mergeROIsL)
 mergeR=($mergeROIsR)
 mergename="exclusion"
 
+mkdir parc rois rois/rois;
+
 # parse inflation if desired by user
 if [[ ${freesurferInflate} == 'null' ]]; then
         echo "no freesurfer inflation";
@@ -189,6 +191,9 @@ mv ROI0011.nii.gz ROIv3b.nii.gz
 mv ROI0012.nii.gz ROIv3a.nii.gz
 mv ROI085.nii.gz ROIoptic-chiasm.nii.gz
 
+# move exclusion files as to not include in parcellation (significant overlap)
+mv *${mergename}*.nii.gz ./rois/rois/
+
 # create key.txt for parcellation
 FILES=(`echo "*ROI*.nii.gz"`)
 for i in "${!FILES[@]}"
@@ -213,9 +218,6 @@ jq '.' tmp.json > label.json
 
 # clean up
 if [ -f allrois_byte.nii.gz ]; then
-        mkdir parc;
-        mkdir rois;
-        mkdir rois/rois;
         mv allrois_byte.nii.gz ./parc/parc.nii.gz;
         mv key.txt ./parc/key.txt;
         mv label.json ./parc/label.json
