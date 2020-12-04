@@ -28,6 +28,8 @@ mergeL=($mergeROIsL)
 mergeR=($mergeROIsR)
 mergename="exclusion"
 
+mkdir parc rois rois/rois;
+
 # parse inflation if desired by user
 if [[ ${freesurferInflate} == 'null' ]]; then
         echo "no freesurfer inflation";
@@ -38,11 +40,11 @@ else
 fi
 
 if [[ ${thalamusinflate} == 'null' ]]; then
-	echo "no thalamic inflation";
-	l3="-prefix thalamus_inflate";
+        echo "no thalamic inflation";
+        l3="-prefix thalamus_inflate";
 else
-	echo "${thalamusinflate} voxel inflation applied to every thalamic label";
-	l3="-inflate ${thalamusinflate} -prefix thalamus_inflate";
+        echo "${thalamusinflate} voxel inflation applied to every thalamic label";
+        l3="-inflate ${thalamusinflate} -prefix thalamus_inflate";
 fi
 
 if [[ ${visInflate} == 'null' ]]; then
@@ -58,9 +60,9 @@ l1="-skel_stop";
 
 ## Inflate freesurfer ROIs
 if [[ -z ${freesurferROIs} ]]; then
-	echo "no freesurfer inflation"
+        echo "no freesurfer inflation"
 else
-	3dROIMaker \
+        3dROIMaker \
                 -inset ${inputparc}+aseg.nii.gz \
                 -refset ${inputparc}+aseg.nii.gz \
                 -mask ${brainmask} \
@@ -70,8 +72,8 @@ else
                 ${l5} \
                 -nifti \
                 -overwrite;
-	
-	#generate rois
+        
+        #generate rois
         FREEROIS=`echo ${freesurferROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
         for FREE in ${FREEROIS}
         do
@@ -82,20 +84,20 @@ fi
 
 # inflate thalamus
 if [[ -z ${thalamicROIs} ]]; then
-	echo "no thalamic nuclei segmentation"
+        echo "no thalamic nuclei segmentation"
 else
-	3dROIMaker \
-		-inset thalamicNuclei.nii.gz \
-		-refset thalamicNuclei.nii.gz \
-		-mask ${brainmask} \
-		-wm_skel wm_anat.nii.gz \
-		-skel_thr 0.5 \
-		${l1} \
-		${l3} \
-		-nifti \
-		-overwrite;
+        3dROIMaker \
+                -inset thalamicNuclei.nii.gz \
+                -refset thalamicNuclei.nii.gz \
+                -mask ${brainmask} \
+                -wm_skel wm_anat.nii.gz \
+                -skel_thr 0.5 \
+                ${l1} \
+                ${l3} \
+                -nifti \
+                -overwrite;
 
-	#generate rois
+        #generate rois
         THALROIS=`echo ${thalamicROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
         for THAL in ${THALROIS}
         do
@@ -118,8 +120,8 @@ else
                 -nifti \
                 -overwrite;
 
-	#generate rois
-	PRFROIS=`echo ${prfROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+        #generate rois
+        PRFROIS=`echo ${prfROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
         for VIS in ${PRFROIS}
         do
                 3dcalc -a visarea_inflate_GMI.nii.gz -expr 'equals(a,'${VIS}')' -prefix ROI000${VIS}.nii.gz
@@ -137,70 +139,94 @@ else
         done
 fi
 
-# create parcellation of all rois
+# rewrite roi names
+mv ROI008109.nii.gz ROIlh.lgn.nii.gz
+mv ROI008209.nii.gz ROIrh.lgn.nii.gz
+mv ROI0001.nii.gz ROIv1.nii.gz
+mv ROI0002.nii.gz ROIv2.nii.gz
+mv ROI0003.nii.gz ROIv3.nii.gz
+mv ROI0004.nii.gz ROIhV4.nii.gz
+mv ROI0005.nii.gz ROIvO1.nii.gz
+mv ROI0006.nii.gz ROIvO2.nii.gz
+mv ROI0007.nii.gz ROIlO1.nii.gz
+mv ROI0008.nii.gz ROIlO2.nii.gz
+mv ROI0009.nii.gz ROItO1.nii.gz
+mv ROI00010.nii.gz ROItO2.nii.gz
+mv ROI00011.nii.gz ROIv3b.nii.gz
+mv ROI00012.nii.gz ROIv3a.nii.gz
+mv ROI085.nii.gz ROIoptic-chiasm.nii.gz
+
+# create empty roi to fill
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
-3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
-3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
-3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
 
 if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
         echo "no merging of rois"
 else
         #merge rois
-	if [[ ! -z ${mergeROIsL} ]]; then
-		mergeArrayL=""
-		for i in "${mergeL[@]}"
-		do
-			mergeArrayL="$mergeArrayL `echo ROI*0"$i".nii.gz`"
-		done
-		
-		3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
-        	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
-        	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
-        	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROIlh.${mergename}.nii.gz
-	fi
-	if [[ ! -z ${mergeROIsR} ]]; then
-		mergeArrayR=""
-		for i in "${mergeR[@]}"
-		do
-			mergeArrayR="$mergeArrayR `echo ROI*0"$i".nii.gz`"
-		done
+        if [[ ! -z ${mergeROIsL} ]]; then
+                mergeArrayL=""
+                for i in "${mergeL[@]}"
+                do
+                        mergeArrayL="$mergeArrayL `echo ROI*0"$i".nii.gz`"
+                done
+                
+                3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
+                3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
+                3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
+                3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROIlh.${mergename}.nii.gz
+                rm -rf ${mergename}L_nonbyte.nii.gz ${mergename}L_allbytes.nii.gz
+                mv *`ls ${mergeArrayL}`* ./rois/rois/
+        fi
+        if [[ ! -z ${mergeROIsR} ]]; then
+                mergeArrayR=""
+                for i in "${mergeR[@]}"
+                do
+                        mergeArrayR="$mergeArrayR `echo ROI*0"$i".nii.gz`"
+                done
                 3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
                 3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
                 3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
                 3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROIrh.${mergename}.nii.gz
-	fi
+                rm -rf ${mergename}R_nonbyte.nii.gz ${mergename}R_allbytes.nii.gz
+                mv *`ls ${mergeArrayR}`* ./rois/rois/
+        fi
 fi
+
+# move exclusion files as to not include in parcellation (significant overlap)
+mv *${mergename}*.nii.gz ./rois/rois/
+
+# create parcellation of all rois
+3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
+3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
+3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
 
 # create key.txt for parcellation
 FILES=(`echo "*ROI*.nii.gz"`)
 for i in "${!FILES[@]}"
 do
-	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
-	newval=$((i + 1))
-	echo "${oldval} -> ${newval}" >> key.txt
+        oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
+        newval=$((i + 1))
+        echo -e "1\t->\t${newval}\t== ${oldval}" >> key.txt
+
+        # make tmp.json containing data for labels.json
+        jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
+        if [ ${i} -eq 0 ]; then
+                echo -e "[\n${jsonstring}," >> tmp.json
+        elif [ ${newval} -eq ${#FILES[*]} ]; then
+                echo -e "${jsonstring}\n]" >> tmp.json
+        else
+                echo -e "${jsonstring}," >> tmp.json
+        fi
 done
 
+# pretty format label.json
+jq '.' tmp.json > label.json
+
 # clean up
-mkdir parc;
-mkdir rois;
-mkdir rois/rois;
-mv allrois_byte.nii.gz ./parc/parc.nii.gz;
-mv key.txt ./parc/key.txt;
-mv *ROI*.nii.gz ./rois/rois/;
-mv ./rois/rois/ROI008109.nii.gz ./rois/rois/ROIlh.lgn.nii.gz
-mv ./rois/rois/ROI008209.nii.gz ./rois/rois/ROIrh.lgn.nii.gz
-mv ./rois/rois/ROI0001.nii.gz ./rois/rois/ROIv1.nii.gz
-mv ./rois/rois/ROI0002.nii.gz ./rois/rois/ROIv2.nii.gz
-mv ./rois/rois/ROI0003.nii.gz ./rois/rois/ROIv3.nii.gz
-mv ./rois/rois/ROI0004.nii.gz ./rois/rois/ROIhV4.nii.gz
-mv ./rois/rois/ROI0005.nii.gz ./rois/rois/ROIvO1.nii.gz
-mv ./rois/rois/ROI0006.nii.gz ./rois/rois/ROIvO2.nii.gz
-mv ./rois/rois/ROI0007.nii.gz ./rois/rois/ROIlO1.nii.gz
-mv ./rois/rois/ROI0008.nii.gz ./rois/rois/ROIlO2.nii.gz
-mv ./rois/rois/ROI0009.nii.gz ./rois/rois/ROItO1.nii.gz
-mv ./rois/rois/ROI0010.nii.gz ./rois/rois/ROItO2.nii.gz
-mv ./rois/rois/ROI0011.nii.gz ./rois/rois/ROIv3b.nii.gz
-mv ./rois/rois/ROI0012.nii.gz ./rois/rois/ROIv3a.nii.gz
-mv ./rois/rois/ROI085.nii.gz ./rois/rois/ROIoptic-chiasm.nii.gz
-rm -rf *.nii.gz* *.niml.*
+if [ -f allrois_byte.nii.gz ]; then
+        mv allrois_byte.nii.gz ./parc/parc.nii.gz;
+        mv key.txt ./parc/key.txt;
+        mv label.json ./parc/label.json
+        mv *ROI*.nii.gz ./rois/rois/;
+        rm -rf *.nii.gz* *.niml.* tmp.json
+fi
