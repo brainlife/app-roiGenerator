@@ -220,5 +220,5 @@ if [ -f allrois_byte.nii.gz ]; then
         mv key.txt ./parc/key.txt;
         mv label.json ./parc/label.json
         mv *ROI*.nii.gz ./rois/rois/;
-        rm -rf *.nii.gz* *.niml.*
+        rm -rf *.nii.gz* *.niml.* tmp.json
 fi
