@@ -9,7 +9,7 @@ set -x
 ## create nifti's for each ROI requested by the user, which can then be fed into a ROI to ROI tracking app (brainlife.io; www.github.com/brain-life/
 ## app-roi2roitracking).
 
-visROINames="v1 v2 v3 hv4 vO1 vO2 lO1 lO2 tO1 tO2 v3b v3a lh.lgn rh.lgn optic-chiasm"
+visROINames="v1 v2 v3 hv4 vO1 vO2 lO1 lO2 tO1 tO2 v3b v3a lgn optic-chiasm"
 visROINames=($visROINames)
 visrois=""
 
@@ -64,5 +64,6 @@ if [ -f allrois_byte.nii.gz ]; then
 	mv allrois_byte.nii.gz ./parc/parc.nii.gz;
 	mv key.txt ./parc/key.txt;
 	mv label.json ./parc/label.json
+	rm -rf tmp.json
 	mv *ROI*.nii.gz ./rois/rois/;
 fi
