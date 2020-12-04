@@ -9,31 +9,19 @@ set -x
 ## create nifti's for each ROI requested by the user, which can then be fed into a ROI to ROI tracking app (brainlife.io; www.github.com/brain-life/
 ## app-roi2roitracking).
 
-visROINames="v1 v2 v3 hv4 vO1 vO2 lO1 lO2 tO1 tO2 v3b v3a"
+visROINames="v1 v2 v3 hv4 vO1 vO2 lO1 lO2 tO1 tO2 v3b v3a lgn optic-chiasm"
 visROINames=($visROINames)
 visrois=""
 
 for i in ${!visROINames[@]}
 do
-	visrois+=" `ls ./rois/rois/*${visROINames[$i]}.nii.gz`"
+	visrois+=" `ls *${visROINames[$i]}.nii.gz`"
 done
 
 # create parcellation of all rois
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz ${visrois}
 outimg="all_pre.nii.gz"
-
-# if want to include lgn in tracking
-if [[ ${include_lgn} == "true" ]]; then
-	3dTcat -prefix allpre.nii.gz ${outimg} ./rois/rois/*lgn_*.nii.gz
-	outimg="allpre.nii.gz"
-fi
-
-# if want to include optic chiasm in tracking
-if [[ ${include_oc} == "true" ]]; then
-	3dTcat -prefix allprepre.nii.gz ${outimg} ./rois/rois/*optic-chiasm.nii.gz
-	outimg="allprepre.nii.gz"
-fi
 
 # create parcellation
 3dTstat -argmax -prefix allroiss.nii.gz ${outimg}
@@ -57,32 +45,25 @@ do
 		oldval=`echo ${FILES[$i]} | sed -e 's/.*ROI\(.*\).nii.gz/\1/'`
 	fi
 	newval=$((i + 1))
-	echo "${oldval} -> ${newval}" >> key.txt
+    echo -e "1\t->\t${newval}\t== ${oldval}" >> key.txt
+
+	# make tmp.json containing data for labels.json
+	jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
+	if [ ${i} -eq 0 ]; then
+	        echo -e "[\n${jsonstring}," >> tmp.json
+	elif [ ${newval} -eq ${#FILES[*]} ]; then
+	        echo -e "${jsonstring}\n]" >> tmp.json
+	else
+	        echo -e "${jsonstring}," >> tmp.json
+	fi
 done
 
-# lgn
-if [[ ${include_lgn} == "true" ]]; then
-	for lgn in ./rois/rois/*lgn_*.nii.gz
-	do
-		if [[ "${lgn}" == **"L"** ]]; then
-			oldval="lh.lgn"
-		else
-			oldval="rh.lgn"
-		fi
-		newval=$((newval + 1))
-		echo "${oldval} -> ${newval}" >> key.txt
-	done
-fi
-
-# optic chiasm
-if [[ ${include_oc} == "true" ]]; then
-	oldval="optic-chiasm"
-	newval=$((newval + 1))
-	echo "${oldval} -> ${newval}" >> key.txt
-fi
-
 # clean up
-mkdir -p parc_varea
-mv allrois_byte.nii.gz ./parc_varea/parc.nii.gz;
-mv key.txt ./parc_varea/key.txt;
-mv *ROI*.nii.gz ./rois/rois/;
+if [ -f allrois_byte.nii.gz ]; then
+	mkdir -p parc_varea
+	mv allrois_byte.nii.gz ./parc/parc.nii.gz;
+	mv key.txt ./parc/key.txt;
+	mv label.json ./parc/label.json
+	rm -rf tmp.json
+	mv *ROI*.nii.gz ./rois/rois/;
+fi
