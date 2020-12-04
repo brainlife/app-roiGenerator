@@ -220,12 +220,16 @@ do
 
 	# make tmp.json containing data for labels.json
 	jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
-	if [ ${i} -eq 0 ]; then
-		echo -e "[\n${jsonstring}," >> tmp.json
-	elif [ ${newval} -eq ${#FILES[*]} ]; then
-		echo -e "${jsonstring}\n]" >> tmp.json
+	if [ ${#FILES[*]} -eq 1 ]; then
+		echo -e "[\n${jsonstring}\n]"
 	else
-		echo -e "${jsonstring}," >> tmp.json
+		if [ ${newval} -eq 1 ]; then
+			echo -e "[\n${jsonstring}," >> tmp.json
+		elif [ ${newval} -eq ${#FILES[*]} ]; then
+			echo -e "${jsonstring}\n]" >> tmp.json
+		else
+			echo -e "${jsonstring}," >> tmp.json
+		fi
 	fi
 done
 
