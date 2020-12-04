@@ -156,6 +156,9 @@ mv ROI00011.nii.gz ROIv3b.nii.gz
 mv ROI00012.nii.gz ROIv3a.nii.gz
 mv ROI085.nii.gz ROIoptic-chiasm.nii.gz
 
+# create empty roi to fill
+3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
+
 if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
         echo "no merging of rois"
 else
@@ -191,7 +194,6 @@ fi
 mv *${mergename}*.nii.gz ./rois/rois/
 
 # create parcellation of all rois
-3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
 3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
 3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
