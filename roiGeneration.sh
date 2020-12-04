@@ -107,6 +107,9 @@ else
         done
 fi
 
+# create empty nifti to load rois into
+3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
+
 if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
         echo "no merging of rois"
 else
@@ -119,10 +122,10 @@ else
 		done
 		
 		3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
-        	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
-        	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
-        	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROIlh.${mergename}.nii.gz
-            mv *`ls ${mergeArrayL}`* ./rois/rois/
+    	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
+    	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
+    	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROIlh.${mergename}.nii.gz
+        mv *`ls ${mergeArrayL}`* ./rois/rois/
 	fi
 	if [[ ! -z ${mergeROIsR} ]]; then
 		mergeArrayR=""
@@ -130,11 +133,11 @@ else
 		do
 			mergeArrayR="$mergeArrayR `echo ROI*0"$i".nii.gz`"
 		done
-                3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
-                3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
-                3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
-                3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROIrh.${mergename}.nii.gz
-                mv *`ls ${mergeArrayR}`* ./rois/rois/
+            3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
+            3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
+            3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
+            3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROIrh.${mergename}.nii.gz
+            mv *`ls ${mergeArrayR}`* ./rois/rois/
 	fi
 fi
 
