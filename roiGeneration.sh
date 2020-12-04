@@ -172,35 +172,53 @@ else
 	fi
 fi
 
+# rewrite roi names
+mv ROI008109.nii.gz ROIlh.lgn.nii.gz
+mv ROI008209.nii.gz ROIrh.lgn.nii.gz
+mv ROI0001.nii.gz ROIv1.nii.gz
+mv ROI0002.nii.gz ROIv2.nii.gz
+mv ROI0003.nii.gz ROIv3.nii.gz
+mv ROI0004.nii.gz ROIhV4.nii.gz
+mv ROI0005.nii.gz ROIvO1.nii.gz
+mv ROI0006.nii.gz ROIvO2.nii.gz
+mv ROI0007.nii.gz ROIlO1.nii.gz
+mv ROI0008.nii.gz ROIlO2.nii.gz
+mv ROI0009.nii.gz ROItO1.nii.gz
+mv ROI0010.nii.gz ROItO2.nii.gz
+mv ROI0011.nii.gz ROIv3b.nii.gz
+mv ROI0012.nii.gz ROIv3a.nii.gz
+mv ROI085.nii.gz ROIoptic-chiasm.nii.gz
+
 # create key.txt for parcellation
 FILES=(`echo "*ROI*.nii.gz"`)
 for i in "${!FILES[@]}"
 do
 	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
 	newval=$((i + 1))
-	echo "${oldval} -> ${newval}" >> key.txt
+        echo -e "1\t->\t${newval}\t== ${oldval}" >> key.txt
+
+        # make tmp.json containing data for labels.json
+        jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
+        if [ ${i} -eq 0 ]; then
+                echo -e "[\n${jsonstring}," >> tmp.json
+        elif [ ${newval} -eq ${#FILES[*]} ]; then
+                echo -e "${jsonstring}\n]" >> tmp.json
+        else
+                echo -e "${jsonstring}," >> tmp.json
+        fi
 done
 
+# pretty format label.json
+jq '.' tmp.json > label.json
+
 # clean up
-mkdir parc;
-mkdir rois;
-mkdir rois/rois;
-mv allrois_byte.nii.gz ./parc/parc.nii.gz;
-mv key.txt ./parc/key.txt;
-mv *ROI*.nii.gz ./rois/rois/;
-mv ./rois/rois/ROI008109.nii.gz ./rois/rois/ROIlh.lgn.nii.gz
-mv ./rois/rois/ROI008209.nii.gz ./rois/rois/ROIrh.lgn.nii.gz
-mv ./rois/rois/ROI0001.nii.gz ./rois/rois/ROIv1.nii.gz
-mv ./rois/rois/ROI0002.nii.gz ./rois/rois/ROIv2.nii.gz
-mv ./rois/rois/ROI0003.nii.gz ./rois/rois/ROIv3.nii.gz
-mv ./rois/rois/ROI0004.nii.gz ./rois/rois/ROIhV4.nii.gz
-mv ./rois/rois/ROI0005.nii.gz ./rois/rois/ROIvO1.nii.gz
-mv ./rois/rois/ROI0006.nii.gz ./rois/rois/ROIvO2.nii.gz
-mv ./rois/rois/ROI0007.nii.gz ./rois/rois/ROIlO1.nii.gz
-mv ./rois/rois/ROI0008.nii.gz ./rois/rois/ROIlO2.nii.gz
-mv ./rois/rois/ROI0009.nii.gz ./rois/rois/ROItO1.nii.gz
-mv ./rois/rois/ROI0010.nii.gz ./rois/rois/ROItO2.nii.gz
-mv ./rois/rois/ROI0011.nii.gz ./rois/rois/ROIv3b.nii.gz
-mv ./rois/rois/ROI0012.nii.gz ./rois/rois/ROIv3a.nii.gz
-mv ./rois/rois/ROI085.nii.gz ./rois/rois/ROIoptic-chiasm.nii.gz
-rm -rf *.nii.gz* *.niml.*
+if [ -f allrois_byte.nii.gz ]; then
+        mkdir parc;
+        mkdir rois;
+        mkdir rois/rois;
+        mv allrois_byte.nii.gz ./parc/parc.nii.gz;
+        mv key.txt ./parc/key.txt;
+        mv label.json ./parc/label.json
+        mv *ROI*.nii.gz ./rois/rois/;
+        rm -rf *.nii.gz* *.niml.*
+fi
