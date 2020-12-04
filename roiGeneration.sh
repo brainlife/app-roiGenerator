@@ -174,7 +174,7 @@ else
                 3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
                 3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
                 3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROIlh.${mergename}.nii.gz
-                rm -rf ${mergename}R_nonbyte.nii.gz ${mergename}R_allbytes.nii.gz
+                rm -rf ${mergename}L_nonbyte.nii.gz ${mergename}L_allbytes.nii.gz
                 mv *`ls ${mergeArrayL}`* ./rois/rois/
         fi
         if [[ ! -z ${mergeROIsR} ]]; then
