@@ -29,6 +29,8 @@ mergeL=($mergeROIsL)
 mergeR=($mergeROIsR)
 mergename="exclusion"
 
+mkdir parc rois rois/rois;
+
 # parse inflation if desired by user
 if [[ ${freesurferInflate} == 'null' ]]; then
         echo "no freesurfer inflation";
@@ -149,6 +151,9 @@ mv ROI008109.nii.gz ROIlh.lgn.nii.gz
 mv ROI008209.nii.gz ROIrh.lgn.nii.gz
 mv ROI085.nii.gz ROIoptic-chiasm.nii.gz
 
+# create empty roi to fill
+3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
+
 if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
         echo "no merging of rois"
 else
@@ -165,7 +170,6 @@ else
                 3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
                 3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROIlh.${mergename}.nii.gz
                 mv *`ls ${mergeArrayL}`* ./rois/rois/
-
         fi
         if [[ ! -z ${mergeROIsR} ]]; then
                 mergeArrayR=""
@@ -185,7 +189,6 @@ fi
 mv *${mergename}*.nii.gz ./rois/rois/
 
 # create parcellation of all rois
-3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
 3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
 3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
@@ -214,9 +217,6 @@ jq '.' tmp.json > label.json
 
 # clean up
 if [ -f allrois_byte.nii.gz ]; then
-        mkdir parc;
-        mkdir rois;
-        mkdir rois/rois;
         mv allrois_byte.nii.gz ./parc/parc.nii.gz;
         mv key.txt ./parc/key.txt;
         mv label.json ./parc/label.json
