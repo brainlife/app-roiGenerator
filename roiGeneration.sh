@@ -27,6 +27,8 @@ mergeL=($mergeROIsL)
 mergeR=($mergeROIsR)
 mergename="exclusion"
 
+mkdir -p rois rois/rois parc
+
 # parse inflation if desired by user
 if [[ ${freesurferInflate} == 'null' ]]; then
         echo "no freesurfer inflation";
@@ -102,29 +104,6 @@ else
         done
 fi
 
-# # inflate visual areas
-# if [[ -z ${visROIs} ]]; then
-#         echo "no visual area inflation"
-# else
-#         3dROIMaker \
-#                 -inset parc_dwi.nii.gz \
-#                 -refset parc_dwi.nii.gz \
-#                 -mask ${brainmask} \
-#                 -wm_skel wm_anat.nii.gz \
-#                 -skel_thr 0.5 \
-#                 ${l1} \
-#                 ${l4} \
-#                 -nifti \
-#                 -overwrite;
-
-# 	#generate rois
-# 	VISROIS=`echo ${visROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
-#         for VIS in ${VISROIS}
-#         do
-#                 3dcalc -a visarea_inflate_GMI.nii.gz -expr 'equals(a,'${VIS}')' -prefix ROI000${VIS}.nii.gz
-#         done
-# fi
-
 if [[ -z ${subcorticalROIs} ]]; then
         echo "no subcortical rois"
 else
@@ -136,11 +115,8 @@ else
         done
 fi
 
-# create parcellation of all rois
+# create empty nifti to load rois into
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
-3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
-3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
-3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
 
 if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
         echo "no merging of rois"
@@ -154,9 +130,10 @@ else
 		done
 		
 		3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
-        	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
-        	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
-        	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROIlh.${mergename}.nii.gz
+    	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
+    	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
+    	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROIlh.${mergename}.nii.gz
+        mv *`ls ${mergeArrayL}`* ./rois/rois/
 	fi
 	if [[ ! -z ${mergeROIsR} ]]; then
 		mergeArrayR=""
@@ -164,30 +141,21 @@ else
 		do
 			mergeArrayR="$mergeArrayR `echo ROI*0"$i".nii.gz`"
 		done
-                3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
-                3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
-                3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
-                3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROIrh.${mergename}.nii.gz
+            3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
+            3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
+            3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
+            3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROIrh.${mergename}.nii.gz
+            mv *`ls ${mergeArrayR}`* ./rois/rois/
 	fi
 fi
 
-# create key.txt for parcellation
-FILES=(`echo "*ROI*.nii.gz"`)
-for i in "${!FILES[@]}"
-do
-	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
-	newval=$((i + 1))
-	echo "${oldval} -> ${newval}" >> key.txt
-done
+# move exclusion files as to not include in parcellation (significant overlap)
+mv *${mergename}*.nii.gz ./rois/rois/
 
-# clean up
-mkdir parc;
-mkdir rois;
-mkdir rois/rois;
-mv allrois_byte.nii.gz ./parc/parc.nii.gz;
-mv key.txt ./parc/key.txt;
-mv *ROI*.nii.gz ./rois/rois/;
+# rename rois
 mv ./rois/rois/ROI008109.nii.gz ./rois/rois/ROIlh.lgn.nii.gz
 mv ./rois/rois/ROI008209.nii.gz ./rois/rois/ROIrh.lgn.nii.gz
 mv ./rois/rois/ROI085.nii.gz ./rois/rois/ROIoptic-chiasm.nii.gz
+
+# clean up
 rm -rf *.niml.*
