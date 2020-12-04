@@ -216,17 +216,34 @@ for i in "${!FILES[@]}"
 do
 	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
 	newval=$((i + 1))
-	echo "${oldval} -> ${newval}" >> key.txt
+	echo -e "1\t->\t${newval}\t== ${oldval}" >> key.txt
+
+	# make tmp.json containing data for labels.json
+	jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
+	if [ ${i} -eq 0 ]; then
+		echo -e "[\n${jsonstring}," >> tmp.json
+	elif [ ${newval} -eq ${#FILES[*]} ]; then
+		echo -e "${jsonstring}\n]" >> tmp.json
+	else
+		echo -e "${jsonstring}," >> tmp.json
+	fi
 done
 
+# pretty format label.json
+jq '.' tmp.json > label.json
+
 # clean up
-mkdir parc;
-mkdir rois;
-mkdir rois/rois;
-mv allrois_byte.nii.gz ./parc/parc.nii.gz;
-mv key.txt ./parc/key.txt;
-mv *ROI*.nii.gz ./rois/rois/;
-rm -rf *.nii.gz* *.niml.*
+if [ -f ./allrois_byte.nii.gz ]; then
+	mkdir parc;
+	mkdir rois;
+	mkdir rois/rois;
+	mv allrois_byte.nii.gz ./parc/parc.nii.gz;
+	mv key.txt ./parc/key.txt;
+	mv label.json ./parc/label.json
+	mv *ROI*.nii.gz ./rois/rois/;
+	rm -rf *.nii.gz* *.niml.* tmp.json
+fi
+
 
 # inflate hippocampus: to do later!
 #if [[ ${hippocampus} == "false" ]]; then
