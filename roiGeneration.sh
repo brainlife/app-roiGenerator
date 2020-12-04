@@ -139,6 +139,23 @@ else
         done
 fi
 
+# rewrite roi names
+mv ROI008109.nii.gz ROIlh.lgn.nii.gz
+mv ROI008209.nii.gz ROIrh.lgn.nii.gz
+mv ROI0001.nii.gz ROIv1.nii.gz
+mv ROI0002.nii.gz ROIv2.nii.gz
+mv ROI0003.nii.gz ROIv3.nii.gz
+mv ROI0004.nii.gz ROIhV4.nii.gz
+mv ROI0005.nii.gz ROIvO1.nii.gz
+mv ROI0006.nii.gz ROIvO2.nii.gz
+mv ROI0007.nii.gz ROIlO1.nii.gz
+mv ROI0008.nii.gz ROIlO2.nii.gz
+mv ROI0009.nii.gz ROItO1.nii.gz
+mv ROI00010.nii.gz ROItO2.nii.gz
+mv ROI00011.nii.gz ROIv3b.nii.gz
+mv ROI00012.nii.gz ROIv3a.nii.gz
+mv ROI085.nii.gz ROIoptic-chiasm.nii.gz
+
 if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
         echo "no merging of rois"
 else
@@ -178,23 +195,6 @@ mv *${mergename}*.nii.gz ./rois/rois/
 3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
 3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
 3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
-
-# rewrite roi names
-mv ROI008109.nii.gz ROIlh.lgn.nii.gz
-mv ROI008209.nii.gz ROIrh.lgn.nii.gz
-mv ROI0001.nii.gz ROIv1.nii.gz
-mv ROI0002.nii.gz ROIv2.nii.gz
-mv ROI0003.nii.gz ROIv3.nii.gz
-mv ROI0004.nii.gz ROIhV4.nii.gz
-mv ROI0005.nii.gz ROIvO1.nii.gz
-mv ROI0006.nii.gz ROIvO2.nii.gz
-mv ROI0007.nii.gz ROIlO1.nii.gz
-mv ROI0008.nii.gz ROIlO2.nii.gz
-mv ROI0009.nii.gz ROItO1.nii.gz
-mv ROI00010.nii.gz ROItO2.nii.gz
-mv ROI00011.nii.gz ROIv3b.nii.gz
-mv ROI00012.nii.gz ROIv3a.nii.gz
-mv ROI085.nii.gz ROIoptic-chiasm.nii.gz
 
 # create key.txt for parcellation
 FILES=(`echo "*ROI*.nii.gz"`)
