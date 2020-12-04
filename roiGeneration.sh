@@ -31,11 +31,11 @@ mkdir -p parc rois rois/rois/
 
 # parse inflation if desired by user
 if [[ ${freesurferInflate} == 'null' ]]; then
-        echo "no freesurfer inflation";
-        l5="-prefix ${inputparc}+aseg_inflate";
+    echo "no freesurfer inflation";
+    l5="-prefix ${inputparc}+aseg_inflate";
 else
-        echo "${fsurfInflate} voxel inflation applied to every freesurfer label";
-        l5="-inflate ${fsurfInflate} -prefix ${inputparc}+aseg_inflate";
+    echo "${fsurfInflate} voxel inflation applied to every freesurfer label";
+    l5="-inflate ${fsurfInflate} -prefix ${inputparc}+aseg_inflate";
 fi
 
 if [[ ${thalamusinflate} == 'null' ]]; then
@@ -65,11 +65,11 @@ else
                 -overwrite;
 	
 	#generate rois
-        FREEROIS=`echo ${freesurferROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
-        for FREE in ${FREEROIS}
-        do
-                3dcalc -a ${inputparc}+aseg_inflate_GMI.nii.gz -expr 'equals(a,'${FREE}')' -prefix ROI0000${FREE}.nii.gz
-        done
+    FREEROIS=`echo ${freesurferROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+    for FREE in ${FREEROIS}
+    do
+            3dcalc -a ${inputparc}+aseg_inflate_GMI.nii.gz -expr 'equals(a,'${FREE}')' -prefix ROI0000${FREE}.nii.gz
+    done
 
 fi
 
@@ -89,31 +89,31 @@ else
 		-overwrite;
 
 	#generate rois
-        THALROIS=`echo ${thalamicROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
-        for THAL in ${THALROIS}
-        do
-                3dcalc -a thalamus_inflate_GMI.nii.gz -expr 'equals(a,'${THAL}')' -prefix ROI00${THAL}.nii.gz
-        done
+    THALROIS=`echo ${thalamicROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+    for THAL in ${THALROIS}
+    do
+            3dcalc -a thalamus_inflate_GMI.nii.gz -expr 'equals(a,'${THAL}')' -prefix ROI00${THAL}.nii.gz
+    done
 fi
 
 if [[ -z ${subcorticalROIs} ]]; then
-        echo "no subcortical rois"
+    echo "no subcortical rois"
 else
-        #generate rois
-        SUBROIS=`echo ${subcorticalROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
-        for SUB in ${SUBROIS}
-        do
-                3dcalc -a ${inputparc}+aseg.nii.gz -expr 'equals(a,'${SUB}')' -prefix ROI0${SUB}.nii.gz
-        done
+    #generate rois
+    SUBROIS=`echo ${subcorticalROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+    for SUB in ${SUBROIS}
+    do
+            3dcalc -a ${inputparc}+aseg.nii.gz -expr 'equals(a,'${SUB}')' -prefix ROI0${SUB}.nii.gz
+    done
 fi
 
 # create empty nifti to load rois into
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 
 if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
-        echo "no merging of rois"
+    echo "no merging of rois"
 else
-        #merge rois
+    #merge rois
 	if [[ ! -z ${mergeROIsL} ]]; then
 		mergeArrayL=""
 		for i in "${mergeL[@]}"
@@ -125,6 +125,7 @@ else
     	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
     	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
     	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROIlh.${mergename}.nii.gz
+        rm -rf ${mergename}L_nonbyte.nii.gz ${mergename}L_allbytes.nii.gz
         mv *`ls ${mergeArrayL}`* ./rois/rois/
 	fi
 	if [[ ! -z ${mergeROIsR} ]]; then
@@ -133,11 +134,12 @@ else
 		do
 			mergeArrayR="$mergeArrayR `echo ROI*0"$i".nii.gz`"
 		done
-            3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
-            3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
-            3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
-            3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROIrh.${mergename}.nii.gz
-            mv *`ls ${mergeArrayR}`* ./rois/rois/
+        3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
+        3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
+        3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
+        3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROIrh.${mergename}.nii.gz
+        rm -rf ${mergename}R_nonbyte.nii.gz ${mergename}R_allbytes.nii.gz
+        mv *`ls ${mergeArrayR}`* ./rois/rois/
 	fi
 fi
 
