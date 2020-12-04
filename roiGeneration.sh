@@ -173,30 +173,49 @@ else
 	fi
 fi
 
+# rename rois
+visROIs=($visROIs)
+visROINames=($visROINames)
+for ROIS in ${!visROIs[@]}
+do
+        mv ROI000${visROIs[$ROIS]}.nii.gz ROI${visROINames[$ROIS]}.nii.gz
+done
+
+mv ROI008109.nii.gz ROIlh.lgn.nii.gz
+mv ROI008209.nii.gz ROIrh.lgn.nii.gz
+mv ROI085.nii.gz ROIoptic-chiasm.nii.gz
+
 # create key.txt for parcellation
 FILES=(`echo "*ROI*.nii.gz"`)
 for i in "${!FILES[@]}"
 do
 	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
 	newval=$((i + 1))
-	echo "${oldval} -> ${newval}" >> key.txt
+        echo -e "1\t->\t${newval}\t== ${oldval}" >> key.txt
+
+        # make tmp.json containing data for labels.json
+        jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
+        if [ ${i} -eq 0 ]; then
+                echo -e "[\n${jsonstring}," >> tmp.json
+        elif [ ${newval} -eq ${#FILES[*]} ]; then
+                echo -e "${jsonstring}\n]" >> tmp.json
+        else
+                echo -e "${jsonstring}," >> tmp.json
+        fi
 done
 
+# pretty format label.json
+jq '.' tmp.json > label.json
+
 # clean up
-mkdir parc;
-mkdir rois;
-mkdir rois/rois;
-mv allrois_byte.nii.gz ./parc/parc.nii.gz;
-mv key.txt ./parc/key.txt;
-mv *ROI*.nii.gz ./rois/rois/;
-visROIs=($visROIs)
-visROINames=($visROINames)
-for ROIS in ${!visROIs[@]}
-do
-        mv ./rois/rois/ROI000${visROIs[$ROIS]}.nii.gz ./rois/rois/ROI${visROINames[$ROIS]}.nii.gz
-done
-mv ./rois/rois/ROI008109.nii.gz ./rois/rois/ROIlh.lgn.nii.gz
-mv ./rois/rois/ROI008209.nii.gz ./rois/rois/ROIrh.lgn.nii.gz
-mv ./rois/rois/ROI085.nii.gz ./rois/rois/ROIoptic-chiasm.nii.gz
-mkdir tmp && mv ${inputparc}+aseg.nii.gz ./tmp/
-rm -rf *.nii.gz* *.niml.*
+if [ -f allrois_byte.nii.gz ]; then
+        mkdir parc;
+        mkdir rois;
+        mkdir rois/rois;
+        mv allrois_byte.nii.gz ./parc/parc.nii.gz;
+        mv key.txt ./parc/key.txt;
+        mv label.json ./parc/label.json
+        mv *ROI*.nii.gz ./rois/rois/;
+        rm -rf *.nii.gz* *.niml.* tmp.json
+fi
+
