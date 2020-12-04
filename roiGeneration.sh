@@ -160,6 +160,8 @@ else
         	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
         	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
         	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROIlh.${mergename}.nii.gz
+                mv *`ls ${mergeArrayL}`* ./rois/rois/
+
 	fi
 	if [[ ! -z ${mergeROIsR} ]]; then
 		mergeArrayR=""
@@ -171,6 +173,7 @@ else
                 3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
                 3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
                 3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROIrh.${mergename}.nii.gz
+                mv *`ls ${mergeArrayR}`* ./rois/rois/
 	fi
 fi
 
@@ -193,6 +196,7 @@ mv ROI085.nii.gz ROIoptic-chiasm.nii.gz
 
 # move exclusion files as to not include in parcellation (significant overlap)
 mv *${mergename}*.nii.gz ./rois/rois/
+
 
 # create key.txt for parcellation
 FILES=(`echo "*ROI*.nii.gz"`)
