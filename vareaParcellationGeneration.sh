@@ -63,7 +63,7 @@ if [ -f allrois_byte.nii.gz ]; then
 	mkdir -p parc_varea
 	mv allrois_byte.nii.gz ./parc/parc.nii.gz;
 	mv key.txt ./parc/key.txt;
-	mv label.json ./parc/label.json
+	mv tmp.json ./parc/label.json
 	rm -rf tmp.json
 	mv *ROI*.nii.gz ./rois/rois/;
 fi
