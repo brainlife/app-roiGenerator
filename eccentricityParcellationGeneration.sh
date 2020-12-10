@@ -118,6 +118,5 @@ fi
 # # clean up
 mv allrois_byte.nii.gz ./parc/parc.nii.gz;
 mv key.txt ./parc/key.txt;
-mv *ROI*.nii.gz ./rois/rois/;
 mv tmp.json ./parc/labels.json
 
