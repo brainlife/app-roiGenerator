@@ -118,5 +118,5 @@ fi
 # # clean up
 mv allrois_byte.nii.gz ./parc/parc.nii.gz;
 mv key.txt ./parc/key.txt;
-mv tmp.json ./parc/labels.json
+mv tmp.json ./parc/label.json
 
