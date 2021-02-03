@@ -33,8 +33,8 @@ fi
 echo "inflating & generate ROIs"
 time singularity exec -e docker://brainlife/afni:16.3.0 ./roiGeneration.sh
 
-# echo "generate visual area parcellation"
-# time singularity exec -e docker://brainlife/afni:16.3.0 ./vareaParcellationGeneration.sh
+echo "generate visual area parcellation"
+time singularity exec -e docker://brainlife/afni:16.3.0 ./vareaParcellationGeneration.sh
 
 if [[ ${INFLATE} == 'null' ]];then
     echo "{\"tags\": [\"no_inflate\" ]}" > product.json
