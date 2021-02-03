@@ -87,4 +87,4 @@ fi
 mkdir -p parc_varea
 mv allrois_byte.nii.gz ./parc_varea/parc.nii.gz;
 mv key.txt ./parc_varea/key.txt;
-mv *ROI*.nii.gz ./rois/rois/;
+#mv *ROI*.nii.gz ./rois/rois/;
