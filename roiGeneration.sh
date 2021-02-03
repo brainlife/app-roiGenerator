@@ -29,7 +29,7 @@ mergeL=($mergeROIsL)
 mergeR=($mergeROIsR)
 mergename="exclusion"
 
-mkdir parc rois rois/rois;
+mkdir parc rois rois/rois tmp;
 
 # parse inflation if desired by user
 if [[ ${freesurferInflate} == 'null' ]]; then
@@ -223,6 +223,7 @@ if [ -f allrois_byte.nii.gz ]; then
         mv key.txt ./parc/key.txt;
         mv label.json ./parc/label.json
         mv *ROI*.nii.gz ./rois/rois/;
+	mv ${inputparc}+aseg.nii.gz ./tmp/
         rm -rf *.nii.gz* *.niml.* tmp.json
 fi
 
