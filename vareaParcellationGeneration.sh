@@ -16,7 +16,7 @@ inputparc=`jq -r '.inputparc' config.json`
 
 for i in ${!visROINames[@]}
 do
-	visrois+=" `ls ./rois/rois/*${visROINames[$i]}.nii.gz`"
+	visrois+=" `ls ./rois/rois/*.${visROINames[$i]}.nii.gz`"
 done
 
 # create parcellation of all rois
