@@ -22,6 +22,7 @@ freesurferROIs="41 42 7 8 4 2 3 46 47 43 28 60"
 subcorticalROIs="85"
 visROIs="2 3 4 5 6 7 8 11 12 14 17 18 19 20 21 22 23 24 50 120 122 127 128 134 136 137 138 139 141 142 143 144 147 153 154 155 156 157 158 159 160 161 164 183 184 185 186 187 188 189 192 193 195 198 199 200 201 202 203 204 205 231 301 303 308 309 315 317 318 319 320 322 323 324 325 328 334 335 336 337 338 339 340 341 342 345"
 visROINames="lh.v1 lh.mst lh.v6 lh.v2 lh.v3 lh.v4 lh.v8 lh.fef lh.pef lh.v3a lh.v7 lh.ips1 lh.ffc lh.v3b lh.lo1 lh.lo2 lh.pit lh.mt lh.mip lh.pres lh.pros lh.pha1 lh.pha3 lh.te1p lh.tf lh.te2p lh.pht lh.ph lh.tpoj2 lh.tpoj3 lh.dvt lh.pgp lh.ip0 lh.v6a lh.vmv1 lh.vmv3 lh.pha2 lh.v4t lh.fst lh.v3cd lh.lo3 lh.vmv2 lh.vvc rh.v1 rh.mst rh.v6 rh.v2 rh.v3 rh.v4 rh.v8 rh.fef rh.pef rh.v3a rh.v7 rh.ips1 rh.ffc rh.v3b rh.lo1 rh.lo2 rh.pit rh.mt rh.mip rh.pres rh.pros rh.pha1 rh.pha3 rh.te1p rh.tf rh.te2p rh.pht rh.ph rh.tpoj2 rh.tpoj3 rh.dvt rh.pgp rh.ip0 rh.v6a rh.vmv1 rh.vmv3 rh.pha2 rh.v4t rh.fst rh.v3cd rh.lo3 rh.vmv2 rh.vvc"
+visrois=""
 thalamicROIs="8109 8209"
 mergeROIsL="41 42 7 8 4 28"
 mergeROIsR="2 3 46 47 43 60"
@@ -145,14 +146,12 @@ visROINames=($visROINames)
 for ROIS in ${!visROIs[@]}
 do
         mv ROI000${visROIs[$ROIS]}.nii.gz ROI${visROINames[$ROIS]}.nii.gz
+	visrois+=" `ls ./*${visROINames[$ROIS]}.nii.gz`"
 done
 
 mv ROI008109.nii.gz ROIlh.lgn.nii.gz
 mv ROI008209.nii.gz ROIrh.lgn.nii.gz
 mv ROI085.nii.gz ROIoptic-chiasm.nii.gz
-
-# create empty roi to fill
-3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 
 if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
         echo "no merging of rois"
@@ -190,18 +189,21 @@ fi
 # move exclusion files as to not include in parcellation (significant overlap)
 mv *${mergename}*.nii.gz ./rois/rois/
 
+# create empty roi to fill
+3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
+
 # create parcellation of all rois
-3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
+3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz ${visrois}
 3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
 3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
 
 # create key.txt for parcellation
-FILES=(`echo "*ROI*.nii.gz"`)
+FILES=(${visrois})
 for i in "${!FILES[@]}"
 do
 	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
 	newval=$((i + 1))
-        echo -e "1\t->\t${newval}\t== ${oldval}" >> key.txt
+        echo -e "${FILES[$i]}\t->\t${newval}\t== ${oldval}" >> key.txt
 
         # make tmp.json containing data for labels.json
         jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
@@ -226,4 +228,3 @@ if [ -f allrois_byte.nii.gz ]; then
 	mv ${inputparc}+aseg.nii.gz ./tmp/
         rm -rf *.nii.gz* *.niml.* tmp.json
 fi
-
