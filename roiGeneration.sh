@@ -203,7 +203,7 @@ for i in "${!FILES[@]}"
 do
 	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
 	newval=$((i + 1))
-        echo -e "${FILES[$i]}\t->\t${newval}\t== ${oldval}" >> key.txt
+        echo -e "${visROIs[$i]}\t->\t${newval}\t== ${oldval}" >> key.txt
 
         # make tmp.json containing data for labels.json
         jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
