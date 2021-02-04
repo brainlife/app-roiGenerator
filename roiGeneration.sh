@@ -21,6 +21,7 @@ brainmask=mask.nii.gz;
 freesurferROIs="41 42 7 8 4 2 3 46 47 43 28 60"
 subcorticalROIs="85"
 prfROIs="1 2 3 4 5 6 7 8 9 10 11 12"
+visrois=""
 thalamicROIs="8109 8209"
 mergeROIsL="41 42 7 8 4 28"
 mergeROIsR="2 3 46 47 43 60"
@@ -140,24 +141,17 @@ else
 fi
 
 # rewrite roi names
+visROIs=($visROIs)
+visROINames=($visROINames)
+for ROIS in ${!visROIs[@]}
+do
+        mv ROI000${visROIs[$ROIS]}.nii.gz ROI${visROINames[$ROIS]}.nii.gz
+	visrois+=" `ls ./*${visROINames[$ROIS]}.nii.gz`"
+done
+
 mv ROI008109.nii.gz ROIlh.lgn.nii.gz
 mv ROI008209.nii.gz ROIrh.lgn.nii.gz
-mv ROI0001.nii.gz ROIv1.nii.gz
-mv ROI0002.nii.gz ROIv2.nii.gz
-mv ROI0003.nii.gz ROIv3.nii.gz
-mv ROI0004.nii.gz ROIhV4.nii.gz
-mv ROI0005.nii.gz ROIvO1.nii.gz
-mv ROI0006.nii.gz ROIvO2.nii.gz
-mv ROI0007.nii.gz ROIlO1.nii.gz
-mv ROI0008.nii.gz ROIlO2.nii.gz
-mv ROI0009.nii.gz ROItO1.nii.gz
-mv ROI00010.nii.gz ROItO2.nii.gz
-mv ROI00011.nii.gz ROIv3b.nii.gz
-mv ROI00012.nii.gz ROIv3a.nii.gz
 mv ROI085.nii.gz ROIoptic-chiasm.nii.gz
-
-# create empty roi to fill
-3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 
 if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
         echo "no merging of rois"
@@ -195,18 +189,21 @@ fi
 # move exclusion files as to not include in parcellation (significant overlap)
 mv *${mergename}*.nii.gz ./rois/rois/
 
+# create empty roi to fill
+3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
+
 # create parcellation of all rois
-3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
+3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz ${visrois}
 3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
 3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
 
 # create key.txt for parcellation
-FILES=(`echo "*ROI*.nii.gz"`)
+FILES=(${visrois})
 for i in "${!FILES[@]}"
 do
 	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
 	newval=$((i + 1))
-        echo -e "1\t->\t${newval}\t== ${oldval}" >> key.txt
+        echo -e "${visROIs[${i}]}\t->\t${newval}\t== ${oldval}" >> key.txt
 
         # make tmp.json containing data for labels.json
         jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
