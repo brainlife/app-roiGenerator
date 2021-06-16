@@ -11,6 +11,7 @@
 
 parcInflate=`jq -r '.parcInflate' config.json`
 thalamusInflate=`jq -r '.thalamusInflate' config.json`
+hippocampusInflate=`jq -r '.hippocampusInflate' config.json`
 brainmask=mask.nii.gz;
 inputparc=`jq -r '.inputparc' config.json`
 whitematter=`jq -r '.whitematter' config.json`
@@ -21,6 +22,7 @@ visInflate=`jq -r '.visInflate' config.json`
 fsurfInflate=`jq -r '.freesurferInflate' config.json`
 freesurferROIs=`jq -r '.freesurferROIs' config.json`
 subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
+hippocampalROIs=`jq -r '.hippocampalROIs' config.json`
 mergeROIsL=`jq -r '.mergeROIsL' config.json`
 mergeROIsR=`jq -r '.mergeROIsR' config.json`
 mergeL=($mergeROIsL)
@@ -61,6 +63,13 @@ else
         l5="-inflate ${fsurfInflate} -prefix ${inputparc}+aseg_inflate";
 fi
 
+if [[ ${hippocampusInflate} == 'null' ]]; then
+	echo "no hippocampal inflation";
+	l3="-prefix hippocampus_inflate";
+else
+	echo "${hippocampusInflate} voxel inflation applied to every hipocampal label";
+	l3="-inflate ${hippocampusInflate} -prefix hippocampus_inflate";
+fi
 
 if [ ${whitematter} == "true" ]; then
 	echo "white matter segmentation included";
@@ -90,7 +99,7 @@ else
 	PARCROIS=`echo ${parcellationROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
 	for PARC in ${PARCROIS}
 	do
-		3dcalc -a parc_inflate_GMI.nii.gz -expr 'equals(a,'${PARC}')' -prefix ROI${PARC}.nii.gz
+		3dcalc -a parc_inflate_GMI.nii.gz -expr 'equals(a,'${PARC}')' -prefix ROIparc-${PARC}.nii.gz
 	done
 fi
 
@@ -113,7 +122,7 @@ else
         FREEROIS=`echo ${freesurferROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
         for FREE in ${FREEROIS}
         do
-                3dcalc -a ${inputparc}+aseg_inflate_GMI.nii.gz -expr 'equals(a,'${FREE}')' -prefix ROI0000${FREE}.nii.gz
+                3dcalc -a ${inputparc}+aseg_inflate_GMI.nii.gz -expr 'equals(a,'${FREE}')' -prefix ROIfreesurfer-${FREE}.nii.gz
         done
 
 fi
@@ -137,7 +146,7 @@ else
         THALROIS=`echo ${thalamicROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
         for THAL in ${THALROIS}
         do
-                3dcalc -a thalamus_inflate_GMI.nii.gz -expr 'equals(a,'${THAL}')' -prefix ROI00${THAL}.nii.gz
+                3dcalc -a thalamus_inflate_GMI.nii.gz -expr 'equals(a,'${THAL}')' -prefix ROIthalamus-${THAL}.nii.gz
         done
 fi
 
@@ -160,7 +169,7 @@ else
 	PRFROIS=`echo ${prfROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
         for VIS in ${PRFROIS}
         do
-                3dcalc -a visarea_inflate_GMI.nii.gz -expr 'equals(a,'${VIS}')' -prefix ROI000${VIS}.nii.gz
+                3dcalc -a visarea_inflate_GMI.nii.gz -expr 'equals(a,'${VIS}')' -prefix ROIvarea${VIS}.nii.gz
         done
 fi
 
@@ -171,7 +180,30 @@ else
         SUBROIS=`echo ${subcorticalROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
         for SUB in ${SUBROIS}
         do
-                3dcalc -a ${inputparc}+aseg.nii.gz -expr 'equals(a,'${SUB}')' -prefix ROI0${SUB}.nii.gz
+                3dcalc -a ${inputparc}+aseg.nii.gz -expr 'equals(a,'${SUB}')' -prefix ROIsubcortical-${SUB}.nii.gz
+        done
+fi
+
+# inflate thalamus
+if [[ -z ${hippocampalROIs} ]]; then
+	echo "no hippocampal subfield segmentation"
+else
+	3dROIMaker \
+		-inset hippocampus.nii.gz \
+		-refset hippocampus.nii.gz \
+		-mask ${brainmask} \
+		-wm_skel wm_anat.nii.gz \
+		-skel_thr 0.5 \
+		${l1} \
+		${l3} \
+		-nifti \
+		-overwrite;
+
+	#generate rois
+        HIPPROIS=`echo ${hippocampalROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+        for HIPP in ${HIPPROIS}
+        do
+                3dcalc -a hippocampus_inflate_GMI.nii.gz -expr 'equals(a,'${HIPP}')' -prefix ROIhippocampus-${HIPP}.nii.gz
         done
 fi
 
