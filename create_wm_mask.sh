@@ -6,6 +6,8 @@ parc=`jq -r '.parc' config.json`
 dwi=`jq -r '.dwi' config.json`
 dtiinit=`jq -r '.dtiinit' config.json`
 thalamicROIs=`jq -r '.thalamicROIs' config.json`
+hippocampalROIs=`jq -r '.hippocampalROIs' config.json`
+amygdalaROIs=`jq -r '.amygdalaROIs' config.json`
 fsurfer=`jq -r '.freesurfer' config.json`
 inputparc=`jq -r '.inputparc' config.json`
 prfROIs=`jq -r '.prfROIs' config.json`
@@ -45,8 +47,17 @@ else
 fi
 
 # convert hippocampal nuclei mgz to nifti: to do later!
-#if [[ ${hippocampal} == "false" ]]; then
-#        echo "no hippocampal segmentation"
-#else
-#        mri_label2vol --seg $fsurfer/mri/ThalamicNuclei.v10.T1.FSvoxelSpace.mgz --temp $input_nii_gz --regheader $fsurfer/mri/ThalamicNuclei.v10.T1.FSvoxelSpace.mgz --o thalamicNuclei.nii.gz
-#fi
+if [[ ${hippocampalROIs} == "false" ]]; then
+       echo "no hippocampal segmentation"
+else
+       mri_concat $fsurfer/mri/lh.hippoSfLabels.*.FSvoxelSpace.mgz $fsurfer/mri/rh.hippoSfLabels.*.FSvoxelSpace.mgz --combine --out ./hippoSfLabels.FSvoxelSpace.mgz
+       mri_label2vol --seg ./hippoSfLabels.*.FSvoxelSpace.mgz --temp $input_nii_gz --regheader ./hippoSfLabels.*.FSvoxelSpace.mgz --o hippocampus.nii.gz
+fi
+
+# convert amygdala nuclei mgz to nifti: to do later!
+if [[ ${amygdalaROIs} == "false" ]]; then
+       echo "no amygdala segmentation"
+else
+       mri_concat $fsurfer/mri/lh.hippoAmygLabels.*.FSvoxelSpace.mgz $fsurfer/mri/rh.hippoAmygLabels.*.FSvoxelSpace.mgz --combine --out ./hippoAmygLabels.FSvoxelSpace.mgz
+       mri_label2vol --seg ./hippoAmygLabels.FSvoxelSpace.mgz --temp $input_nii_gz --regheader ./hippoAmygLabels.FSvoxelSpace.mgz --o amygdala.nii.gz
+fi
