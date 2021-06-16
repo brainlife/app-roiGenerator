@@ -12,6 +12,7 @@
 parcInflate=`jq -r '.parcInflate' config.json`
 thalamusInflate=`jq -r '.thalamusInflate' config.json`
 hippocampusInflate=`jq -r '.hippocampusInflate' config.json`
+amygdalaInflate=`jq -r '.amygdalaInflate' config.json`
 brainmask=mask.nii.gz;
 inputparc=`jq -r '.inputparc' config.json`
 whitematter=`jq -r '.whitematter' config.json`
@@ -23,6 +24,7 @@ fsurfInflate=`jq -r '.freesurferInflate' config.json`
 freesurferROIs=`jq -r '.freesurferROIs' config.json`
 subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
 hippocampalROIs=`jq -r '.hippocampalROIs' config.json`
+amygdalaROIs=`jq -r '.amygdalaROIs' config.json`
 mergeROIsL=`jq -r '.mergeROIsL' config.json`
 mergeROIsR=`jq -r '.mergeROIsR' config.json`
 mergeL=($mergeROIsL)
@@ -69,6 +71,14 @@ if [[ ${hippocampusInflate} == 'null' ]]; then
 else
 	echo "${hippocampusInflate} voxel inflation applied to every hipocampal label";
 	l3="-inflate ${hippocampusInflate} -prefix hippocampus_inflate";
+fi
+
+if [[ ${amygdalaInflate} == 'null' ]]; then
+	echo "no amygdala inflation";
+	l3="-prefix amygdala_inflate";
+else
+	echo "${amgydalaInflate} voxel inflation applied to every amygdala label";
+	l3="-inflate ${amygdalaInflate} -prefix amygdala_inflate";
 fi
 
 if [ ${whitematter} == "true" ]; then
@@ -207,6 +217,29 @@ else
         done
 fi
 
+# inflate thalamus
+if [[ -z ${amygdalaROIs} ]]; then
+	echo "no amgydala subfield segmentation"
+else
+	3dROIMaker \
+		-inset amygdala.nii.gz \
+		-refset amygdala.nii.gz \
+		-mask ${brainmask} \
+		-wm_skel wm_anat.nii.gz \
+		-skel_thr 0.5 \
+		${l1} \
+		${l3} \
+		-nifti \
+		-overwrite;
+
+	#generate rois
+        AMYGROIS=`echo ${amygdalaROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
+        for AMYG in ${AMYGROIS}
+        do
+                3dcalc -a amygdala_inflate_GMI.nii.gz -expr 'equals(a,'${AMYG}')' -prefix ROIamygdala-${HIPP}.nii.gz
+        done
+fi
+
 # create parcellation of all rois
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz *ROI*.nii.gz
@@ -221,7 +254,7 @@ else
 		mergeArrayL=""
 		for i in "${mergeL[@]}"
 		do
-			mergeArrayL="$mergeArrayL `echo ROI*0"$i".nii.gz`"
+			mergeArrayL="$mergeArrayL `echo ROI*"$i".nii.gz`"
 		done
 		
 		3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
@@ -233,7 +266,7 @@ else
 		mergeArrayR=""
 		for i in "${mergeR[@]}"
 		do
-			mergeArrayR="$mergeArrayR `echo ROI*0"$i".nii.gz`"
+			mergeArrayR="$mergeArrayR `echo ROI*"$i".nii.gz`"
 		done
                 3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
                 3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
@@ -279,20 +312,3 @@ if [ -f ./allrois_byte.nii.gz ]; then
 	mv *ROI*.nii.gz ./rois/rois/;
 	rm -rf *.nii.gz* *.niml.* tmp.json
 fi
-
-
-# inflate hippocampus: to do later!
-#if [[ ${hippocampus} == "false" ]]; then
-#        echo "no thalamic nuclei segmentation"
-#else
-#        3dROIMaker \
-#                -inset thalamicNuclei.nii.gz \
-#                -refset thalamicNuclei.nii.gz \
-#                -mask ${brainmask} \
-#                -wm_skel wm_anat.nii.gz \
-#                -skel_thr 0.5 \
-#                ${l1} \
-#                ${l3} \
-#                -nifti \
-#                -overwrite;
-#fi
