@@ -7,7 +7,7 @@ inflate=`jq -r '.inflate' config.json`
 mask=`jq -r '.mask' config.json`
 dtiinit=`jq -r '.dtiinit' config.json`
 
-[ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
+[ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" #&& exit 1;
 
 echo "creating masks"
 if [[ -f ${dtiinit}/dti/bin/brainMask.nii.gz ]];

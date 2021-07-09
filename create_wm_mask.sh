@@ -47,7 +47,7 @@ else
 fi
 
 # convert hippocampal nuclei mgz to nifti: to do later!
-if [[ ${hippocampalROIs} == "false" ]]; then
+if [ -z ${hippocampalROIs} ] ; then
        echo "no hippocampal segmentation"
 else
        mri_concat $fsurfer/mri/lh.hippoSfLabels.*.FSvoxelSpace.mgz $fsurfer/mri/rh.hippoSfLabels.*.FSvoxelSpace.mgz --combine --out ./hippoSfLabels.FSvoxelSpace.mgz
@@ -55,7 +55,7 @@ else
 fi
 
 # convert amygdala nuclei mgz to nifti: to do later!
-if [[ ${amygdalaROIs} == "false" ]]; then
+if [ -z ${amygdalaROIs} ]; then
        echo "no amygdala segmentation"
 else
        mri_concat $fsurfer/mri/lh.hippoAmygLabels.*.FSvoxelSpace.mgz $fsurfer/mri/rh.hippoAmygLabels.*.FSvoxelSpace.mgz --combine --out ./hippoAmygLabels.FSvoxelSpace.mgz
