@@ -3,7 +3,7 @@
 echo "Setting file paths"
 
 # parse inputs
-fmri=`jq -r '.dwi' config.json`;
+fmri=`jq -r '.fmri' config.json`;
 
 echo "Files loaded"
 
