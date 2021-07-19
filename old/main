@@ -5,16 +5,24 @@
 
 inflate=`jq -r '.inflate' config.json`
 mask=`jq -r '.mask' config.json`
+dtiinit=`jq -r '.dtiinit' config.json`
 
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" #&& exit 1;
 
-if [[ ! -f "mask.nii.gz" ]] && [[ ${mask} == 'null' ]];
+echo "creating masks"
+if [[ -f ${dtiinit}/dti/bin/brainMask.nii.gz ]];
 then
-    echo "creating masks"
+    cp -v ${dtiinit}/dti/bin/brainMask.nii.gz mask.nii.gz
+elif [[ ! -f "mask.nii.gz" ]] && [[ ${mask} == 'null' ]];
+then
     time singularity exec -e docker://brainlife/fsl:5.0.9 ./brainmask.sh
-else
-    echo "brainmask exists. skippping mask generation"
-    cp ${mask} mask.nii.gz
+elif [[ -f "mask.nii.gz" ]];
+then
+    echo "brainmask exists. skipping"
+elif [[ ! ${mask} == 'null' ]];
+then
+    echo "brainmask exists. skipping"
+    cp -v ${mask} mask.nii.gz
 fi
 
 #echo $FREESURFER_LICENSE > license.txt

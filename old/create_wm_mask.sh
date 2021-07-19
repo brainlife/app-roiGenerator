@@ -3,7 +3,8 @@
 ## Create white matter mask and move rois to diffusion space for tracking
 
 parc=`jq -r '.parc' config.json`
-input_nii_gz=`jq -r '.fmri' config.json`
+dwi=`jq -r '.dwi' config.json`
+dtiinit=`jq -r '.dtiinit' config.json`
 thalamicROIs=`jq -r '.thalamicROIs' config.json`
 hippocampalROIs=`jq -r '.hippocampalROIs' config.json`
 amygdalaROIs=`jq -r '.amygdalaROIs' config.json`
@@ -11,6 +12,13 @@ fsurfer=`jq -r '.freesurfer' config.json`
 inputparc=`jq -r '.inputparc' config.json`
 prfROIs=`jq -r '.prfROIs' config.json`
 prfDir=`jq -r '.prfDir' config.json`
+
+# parse whether input is dtiinit or dwi
+if [[ ${dtiinit} = "null" ]]; then
+	export input_nii_gz=$dwi;
+else
+	export input_nii_gz=$dtiinit/`jq -r '.files.alignedDwRaw' $dtiinit/dt6.json`
+fi
 
 source $FREESURFER_HOME/SetUpFreeSurfer.sh
 
