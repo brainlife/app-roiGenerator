@@ -6,9 +6,9 @@
 echo "merging ROIs"
 time singularity exec -e docker://brainlife/afni:16.3.0 ./roiMerge.sh
 
-if [ -z "$(ls -A ./rois/rois/)" ]; then
-    echo "ROI files missing."
-    exit 1
-else
-    exit 0
-fi
+#if [ -z "$(ls -A ./rois/rois/)" ]; then
+#    echo "ROI files missing."
+#    exit 1
+#else
+#    exit 0
+#fi

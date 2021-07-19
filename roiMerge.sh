@@ -14,6 +14,9 @@ mergeR=($mergeROIsR)
 mergename=`jq -r '.mergename' config.json`
 mergenames=($mergename)
 
+# make parc dir
+[ ! -d ./parc ] && mkdir -p parc && parc='./parc'
+
 # copy rois
 [ ! -d ./rois ] && mkdir -p rois rois/rois && cp -R ${rois}/* ./rois/rois/ && rois='./rois/rois'
 
@@ -22,9 +25,6 @@ rois_avail=(`ls ${rois}`)
 
 # create parcellation of all rois
 3dcalc -a ${rois}/${rois_avail[0]} -prefix zeroDataset.nii.gz -expr '0'
-3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz ${rois}/*ROI*.nii.gz
-3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
-3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
 
 if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
         echo "no merging of rois"
@@ -106,8 +106,45 @@ else
 	fi
 fi
 
+# move rois to output dir
+mv *ROI*.nii.gz ./rois/rois/;
+
+# create parcellation
+3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz ${rois}/*ROI*.nii.gz
+3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
+3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
+
+# create key.txt for parcellation
+FILES=(`echo "${rois}*/ROI*.nii.gz"`)
+for i in "${!FILES[@]}"
+do
+	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
+	newval=$((i + 1))
+	echo -e "1\t->\t${newval}\t== ${oldval}" >> key.txt
+
+	# make tmp.json containing data for labels.json
+	jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
+	if [ ${#FILES[*]} -eq 1 ]; then
+		echo -e "[\n${jsonstring}\n]" >> tmp.json
+	else
+		if [ ${newval} -eq 1 ]; then
+			echo -e "[\n${jsonstring}," >> tmp.json
+		elif [ ${newval} -eq ${#FILES[*]} ]; then
+			echo -e "${jsonstring}\n]" >> tmp.json
+		else
+			echo -e "${jsonstring}," >> tmp.json
+		fi
+	fi
+done
+
+# pretty format label.json
+jq '.' tmp.json > label.json
+
 # clean up
-if [ -f ./allrois_byte.nii.gz ]; then
-	mv *ROI*.nii.gz ./rois/rois/;
-	rm -rf *.nii.gz* *.niml.* tmp.json
+if [ -f ./label.json ]; then
+	cp label.json ${rois}/
+	cp label.json ${parc}/
+	mv allrois_byte.nii.gz ${parc}/parc.nii.gz
+	mv key.txt ${parc}/
+	rm -rf *.nii.gz* *.niml.* tmp.json label.json
 fi
