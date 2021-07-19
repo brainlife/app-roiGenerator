@@ -142,9 +142,12 @@ jq '.' tmp.json > label.json
 
 # clean up
 if [ -f ./label.json ]; then
-	cp label.json ${rois}/
+	cp label.json ./rois/
 	cp label.json ${parc}/
 	mv allrois_byte.nii.gz ${parc}/parc.nii.gz
 	mv key.txt ${parc}/
 	rm -rf *.nii.gz* *.niml.* tmp.json label.json
+else
+	echo "something went wrong. check logs"
+	exit 1
 fi
