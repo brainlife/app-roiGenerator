@@ -3,8 +3,7 @@
 ## Create white matter mask and move rois to diffusion space for tracking
 
 parc=`jq -r '.parc' config.json`
-dwi=`jq -r '.dwi' config.json`
-dtiinit=`jq -r '.dtiinit' config.json`
+input_nii_gz=`jq -r '.fmri' config.json`
 thalamicROIs=`jq -r '.thalamicROIs' config.json`
 hippocampalROIs=`jq -r '.hippocampalROIs' config.json`
 amygdalaROIs=`jq -r '.amygdalaROIs' config.json`
@@ -12,13 +11,6 @@ fsurfer=`jq -r '.freesurfer' config.json`
 inputparc=`jq -r '.inputparc' config.json`
 prfROIs=`jq -r '.prfROIs' config.json`
 prfDir=`jq -r '.prfDir' config.json`
-
-# parse whether input is dtiinit or dwi
-if [[ ${dtiinit} = "null" ]]; then
-	export input_nii_gz=$dwi;
-else
-	export input_nii_gz=$dtiinit/`jq -r '.files.alignedDwRaw' $dtiinit/dt6.json`
-fi
 
 source $FREESURFER_HOME/SetUpFreeSurfer.sh
 
@@ -30,7 +22,7 @@ if [[ ${parc} == "null" ]]; then
     echo "inputparc is freesurfer. appropriate file already generated"
 else
     mri_convert $parc parc.mgz
-    mri_label2vol --seg parc.mgz --temp $input_nii_gz --regheader parc.mgz --o parc_diffusion.nii.gz
+    mri_label2vol --seg parc.mgz --temp $input_nii_gz --regheader parc.mgz --o parc_fmri.nii.gz
 fi
 
 # convert thalamic nuclei mgz to nifti
@@ -43,7 +35,7 @@ fi
 if [ -z ${prfROIs} ]; then
 	echo "no visual field mapping"
 else
-        mri_label2vol --seg ${prfDir} --temp $input_nii_gz --regheader ${prfDir} --o varea_dwi.nii.gz
+        mri_label2vol --seg ${prfDir} --temp $input_nii_gz --regheader ${prfDir} --o varea_fmri.nii.gz
 fi
 
 # convert hippocampal nuclei mgz to nifti: to do later!
