@@ -3,7 +3,7 @@
 ## Create white matter mask and move rois to diffusion space for tracking
 
 parc=`jq -r '.parc' config.json`
-input_nii_gz=`jq -r '.fmri' config.json`
+input_nii_gz=`jq -r '.t1' config.json`
 thalamicROIs=`jq -r '.thalamicROIs' config.json`
 hippocampalROIs=`jq -r '.hippocampalROIs' config.json`
 amygdalaROIs=`jq -r '.amygdalaROIs' config.json`
