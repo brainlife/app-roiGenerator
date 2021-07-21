@@ -96,8 +96,8 @@ if [[ -z ${parcellationROIs} ]]; then
 else
 	#inflate
 	3dROIMaker \
-		-inset parc_diffusion.nii.gz \
-		-refset parc_diffusion.nii.gz \
+		-inset parc_t1.nii.gz \
+		-refset parc_t1.nii.gz \
 		-mask ${brainmask} \
 		-wm_skel wm_anat.nii.gz \
 		-skel_thr 0.5 \
@@ -166,8 +166,8 @@ if [[ -z ${prfROIs} ]]; then
         echo "no visual area inflation"
 else
         3dROIMaker \
-                -inset varea_dwi.nii.gz \
-                -refset varea_dwi.nii.gz \
+                -inset varea_t1.nii.gz \
+                -refset varea_t1.nii.gz \
                 -mask ${brainmask} \
                 -wm_skel wm_anat.nii.gz \
                 -skel_thr 0.5 \

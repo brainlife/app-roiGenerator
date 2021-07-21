@@ -22,7 +22,7 @@ if [[ ${parc} == "null" ]]; then
     echo "inputparc is freesurfer. appropriate file already generated"
 else
     mri_convert $parc parc.mgz
-    mri_label2vol --seg parc.mgz --temp $input_nii_gz --regheader parc.mgz --o parc_fmri.nii.gz
+    mri_label2vol --seg parc.mgz --temp $input_nii_gz --regheader parc.mgz --o parc_t1.nii.gz
 fi
 
 # convert thalamic nuclei mgz to nifti
@@ -35,7 +35,7 @@ fi
 if [ -z ${prfROIs} ]; then
 	echo "no visual field mapping"
 else
-        mri_label2vol --seg ${prfDir} --temp $input_nii_gz --regheader ${prfDir} --o varea_fmri.nii.gz
+        mri_label2vol --seg ${prfDir} --temp $input_nii_gz --regheader ${prfDir} --o varea_t1.nii.gz
 fi
 
 # convert hippocampal nuclei mgz to nifti: to do later!
