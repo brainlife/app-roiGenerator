@@ -22,13 +22,14 @@ mkdir -p rois rois/rois parc
 cp -v ${rois}/*.nii.gz ./rois/rois/
 
 # # create parcellation of all rois
+
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz ./rois/rois/*.Ecc${Min_Degree}to${Max_Degree}.nii.gz
 outimg="all_pre.nii.gz"
 
 # if want to include lgn
 if [[ ${include_lgn} == "true" ]]; then
-	3dTcat -prefix allpre.nii.gz ${outimg} ./rois/rois/*lgn_*.nii.gz
+	3dTcat -prefix allpre.nii.gz ${outimg} ./rois/rois/*lgn*.nii.gz
 	outimg="allpre.nii.gz"
 fi
 
@@ -50,14 +51,14 @@ FILES=(`echo "./rois/rois/*.Ecc${Min_Degree}to${Max_Degree}*.nii.gz"`)
 for i in "${!FILES[@]}"
 do
 	if [[ ! "${FILES[$i]}" == *"ROI"* ]]; then
-		name=`echo ${FILES[$i]} | sed -e "s/.Ecc${Min_Degree}to${Max_Degree}.nii.gz//" | cut -d'.' -f3`
+		name=`echo ${FILES[$i]} | cut -d'.' -f3,4`
 		if [[ "${FILES[$i]}" == *"lh"* ]]; then
 			oldval="lh.${name}"
 		else
 			oldval="rh.${name}"
 		fi
 	else
-		oldval=`echo ${FILES[$i]} | sed -e 's/.*ROI\(.*\).nii.gz/\1/' | sed -e "s/.Ecc${Min_Degree}to${Max_Degree}//"`
+		oldval=`echo ${FILES[$i]} | sed -e 's/.*ROI\(.*\).nii.gz/\1/'`
 	fi
 	newval=$((i + 1))
 	echo -e "1\t->\t${newval}\t== ${oldval}" >> key.txt
@@ -75,9 +76,9 @@ done
 
 # lgn
 if [[ ${include_lgn} == "true" ]]; then
-	for lgn in ./rois/rois/*lgn_*.nii.gz
+	for lgn in ./rois/rois/*lgn*.nii.gz
 	do
-		if [[ "${lgn}" == **"L"** ]]; then
+		if [[ "${lgn}" == **"L"** ]] || [[ "${lgn}" == **"lh"** ]]; then
 			oldval="lh.lgn"
 		else
 			oldval="rh.lgn"

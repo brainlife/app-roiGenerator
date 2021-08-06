@@ -20,6 +20,7 @@ if [ ! -f parc/parc.nii.gz ]; then
     echo "parcellation file missing files missing."
     exit 1
 else
+    echo "finished"
     mkdir -p raw
     mv *.nii.gz ./raw/
     exit 0
