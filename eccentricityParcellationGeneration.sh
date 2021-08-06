@@ -67,7 +67,7 @@ do
 	jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
 	if [ ${i} -eq 0 ]; then
 		echo -e "[\n${jsonstring}," >> tmp.json
-	elif [ ${newval} -eq ${#FILES[*]} ]; then
+	elif [ ${newval} -eq ${#FILES[*]} ] && [[ ${include_lgn} == "false" ]] && [[ ${include_oc} == "false" ]]; then
 		echo -e "${jsonstring}\n]" >> tmp.json
 	else
 		echo -e "${jsonstring}," >> tmp.json
@@ -76,6 +76,7 @@ done
 
 # lgn
 if [[ ${include_lgn} == "true" ]]; then
+	l=0
 	for lgn in ./rois/rois/*lgn*.nii.gz
 	do
 		if [[ "${lgn}" == **"L"** ]] || [[ "${lgn}" == **"lh"** ]]; then
@@ -88,13 +89,12 @@ if [[ ${include_lgn} == "true" ]]; then
 		
 		# make tmp.json containing data for labels.json
 		jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
-		if [ ${i} -eq 0 ]; then
-			echo -e "[\n${jsonstring}," >> tmp.json
-		elif [ ${newval} -eq ${#FILES[*]} ]; then
+		if [ ${l} -eq 1 ] && [[ ${include_oc} == "false" ]]; then
 			echo -e "${jsonstring}\n]" >> tmp.json
 		else
 			echo -e "${jsonstring}," >> tmp.json
 		fi
+		l=$((l + 1))
 	done
 fi
 
@@ -106,13 +106,7 @@ if [[ ${include_oc} == "true" ]]; then
 	
 	# make tmp.json containing data for labels.json
 	jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
-	if [ ${i} -eq 0 ]; then
-		echo -e "[\n${jsonstring}," >> tmp.json
-	elif [ ${newval} -eq ${#FILES[*]} ]; then
-		echo -e "${jsonstring}\n]" >> tmp.json
-	else
-		echo -e "${jsonstring}," >> tmp.json
-	fi
+	echo -e "${jsonstring}\n]" >> tmp.json
 fi
 
 
