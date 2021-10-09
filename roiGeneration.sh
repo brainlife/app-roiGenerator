@@ -153,6 +153,9 @@ mv ROI008109.nii.gz ROIlh.lgn.nii.gz
 mv ROI008209.nii.gz ROIrh.lgn.nii.gz
 mv ROI085.nii.gz ROIoptic-chiasm.nii.gz
 
+# create empty roi to fill
+3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
+
 if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
         echo "no merging of rois"
 else
@@ -188,9 +191,6 @@ fi
 
 # move exclusion files as to not include in parcellation (significant overlap)
 mv *${mergename}*.nii.gz ./rois/rois/
-
-# create empty roi to fill
-3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 
 # create parcellation of all rois
 3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz ${visrois}
