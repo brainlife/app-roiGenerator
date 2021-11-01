@@ -83,11 +83,11 @@ else
 fi
 
 if [ ${whitematter} == "true" ]; then
-	echo "white matter segmentation included";
-	l1="-skel_stop";
+	echo "allowing for inflation into wm";
+	l1="";
 else
-	echo "removing white matter segmentation";
-	l1="-skel_stop -trim_off_wm";
+	echo "preventing inflation into wm";
+	l1="-skel_stop -trim_off_wm -skel_thr 0.5";
 fi
 
 ## Inflate parcellation ROIs
@@ -100,7 +100,6 @@ else
 		-refset parc_t1.nii.gz \
 		-mask ${brainmask} \
 		-wm_skel wm_anat.nii.gz \
-		-skel_thr 0.5 \
 		${l1} \
 		${l2} \
 		-nifti \
@@ -123,7 +122,6 @@ else
                 -refset ${inputparc}+aseg.nii.gz \
                 -mask ${brainmask} \
                 -wm_skel wm_anat.nii.gz \
-                -skel_thr 0.5 \
                 ${l1} \
                 ${l5} \
                 -nifti \
@@ -147,7 +145,6 @@ else
 		-refset thalamicNuclei.nii.gz \
 		-mask ${brainmask} \
 		-wm_skel wm_anat.nii.gz \
-		-skel_thr 0.5 \
 		${l1} \
 		${l3} \
 		-nifti \
@@ -170,7 +167,6 @@ else
                 -refset varea_t1.nii.gz \
                 -mask ${brainmask} \
                 -wm_skel wm_anat.nii.gz \
-                -skel_thr 0.5 \
                 ${l1} \
                 ${l4} \
                 -nifti \
@@ -204,7 +200,6 @@ else
 		-refset hippocampus.nii.gz \
 		-mask ${brainmask} \
 		-wm_skel wm_anat.nii.gz \
-		-skel_thr 0.5 \
 		${l1} \
 		${l3} \
 		-nifti \
@@ -227,7 +222,6 @@ else
 		-refset amygdala.nii.gz \
 		-mask ${brainmask} \
 		-wm_skel wm_anat.nii.gz \
-		-skel_thr 0.5 \
 		${l1} \
 		${l3} \
 		-nifti \
