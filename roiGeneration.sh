@@ -15,7 +15,7 @@ hippocampusInflate=`jq -r '.hippocampusInflate' config.json`
 amygdalaInflate=`jq -r '.amygdalaInflate' config.json`
 brainmask=mask.nii.gz;
 inputparc=`jq -r '.inputparc' config.json`
-whitematter=`jq -r '.whitematter' config.json`
+# whitematter=`jq -r '.whitematter' config.json`
 thalamicROIs=`jq -r '.thalamicROIs' config.json`
 parcellationROIs=`jq -r '.parcellationROIs' config.json`
 prfROIs=`jq -r '.prfROIs' config.json`
@@ -24,6 +24,10 @@ fsurfInflate=`jq -r '.freesurferInflate' config.json`
 freesurferROIs=`jq -r '.freesurferROIs' config.json`
 subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
 hippocampalROIs=`jq -r '.hippocampalROIs' config.json`
+fa=`jq -r '.fa' config.json`
+skel_thr=`jq -r '.skel_thr' config.json`
+skel_stop=`jq -r '.skel_stop' config.json`
+neigh_def=`jq -r '.neigh_def' config.json`
 amygdalaROIs=`jq -r '.amygdalaROIs' config.json`
 mergeROIsL=`jq -r '.mergeROIsL' config.json`
 mergeROIsR=`jq -r '.mergeROIsR' config.json`
@@ -82,13 +86,16 @@ else
 	l3="-inflate ${amygdalaInflate} -prefix amygdala_inflate";
 fi
 
-if [ ${whitematter} == "true" ]; then
-	echo "white matter segmentation included";
-	l1="-skel_stop";
-else
-	echo "removing white matter segmentation";
-	l1="-skel_stop -trim_off_wm";
-fi
+# if [ ${whitematter} == "skel_stop" ]; then
+# 	echo "white matter segmentation included";
+# 	l1="-skel_stop";
+# else
+# 	echo "removing white matter segmentation";
+# 	l1="-skel_stop -trim_off_wm";
+# fi
+
+# fa is wm_anat in this case
+[ ! -f ./wm_anat.nii.gz ] && cp ${fa} ./wm_anat.nii.gz
 
 ## Inflate parcellation ROIs
 if [[ -z ${parcellationROIs} ]]; then
@@ -100,9 +107,10 @@ else
 		-refset parc_diffusion.nii.gz \
 		-mask ${brainmask} \
 		-wm_skel wm_anat.nii.gz \
-		-skel_thr 0.5 \
-		${l1} \
+		-skel_thr ${skel_thr} \
 		${l2} \
+		-${neigh_def} \
+		-${skel_stop} \
 		-nifti \
 		-overwrite;
 
@@ -123,9 +131,10 @@ else
                 -refset ${inputparc}+aseg.nii.gz \
                 -mask ${brainmask} \
                 -wm_skel wm_anat.nii.gz \
-                -skel_thr 0.5 \
-                ${l1} \
+                -skel_thr ${skel_thr} \
                 ${l5} \
+                -${neigh_def} \
+                -${skel_stop} \
                 -nifti \
                 -overwrite;
 	
@@ -147,9 +156,10 @@ else
 		-refset thalamicNuclei.nii.gz \
 		-mask ${brainmask} \
 		-wm_skel wm_anat.nii.gz \
-		-skel_thr 0.5 \
-		${l1} \
+		-skel_thr ${skel_thr} \
 		${l3} \
+		-${neigh_def} \
+                -${skel_stop} \
 		-nifti \
 		-overwrite;
 
@@ -170,9 +180,10 @@ else
                 -refset varea_dwi.nii.gz \
                 -mask ${brainmask} \
                 -wm_skel wm_anat.nii.gz \
-                -skel_thr 0.5 \
-                ${l1} \
+                -skel_thr ${skel_thr} \
                 ${l4} \
+                -${neigh_def} \
+                -${skel_stop} \
                 -nifti \
                 -overwrite;
 
@@ -204,9 +215,10 @@ else
 		-refset hippocampus.nii.gz \
 		-mask ${brainmask} \
 		-wm_skel wm_anat.nii.gz \
-		-skel_thr 0.5 \
-		${l1} \
+		-skel_thr ${skel_thr} \
 		${l3} \
+		-${neigh_def} \
+		-${skel_stop} \
 		-nifti \
 		-overwrite;
 
@@ -227,9 +239,10 @@ else
 		-refset amygdala.nii.gz \
 		-mask ${brainmask} \
 		-wm_skel wm_anat.nii.gz \
-		-skel_thr 0.5 \
-		${l1} \
+		-skel_thr ${skel_thr} \
 		${l3} \
+		-${neigh_def} \
+		-${skel_stop} \
 		-nifti \
 		-overwrite;
 
