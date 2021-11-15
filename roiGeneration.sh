@@ -94,6 +94,12 @@ fi
 # 	l1="-skel_stop -trim_off_wm";
 # fi
 
+if [[ ${skel_stop} == 'no_stop' ]]; then
+	skel_stop=""
+else
+	skel_stop="-${skel_stop}"
+fi
+
 # fa is wm_anat in this case
 [ ! -f ./wm_anat.nii.gz ] && cp ${fa} ./wm_anat.nii.gz
 
@@ -110,7 +116,7 @@ else
 		-skel_thr ${skel_thr} \
 		${l2} \
 		-${neigh_def} \
-		-${skel_stop} \
+		${skel_stop} \
 		-nifti \
 		-overwrite;
 
@@ -134,7 +140,7 @@ else
                 -skel_thr ${skel_thr} \
                 ${l5} \
                 -${neigh_def} \
-                -${skel_stop} \
+                ${skel_stop} \
                 -nifti \
                 -overwrite;
 	
@@ -159,7 +165,7 @@ else
 		-skel_thr ${skel_thr} \
 		${l3} \
 		-${neigh_def} \
-                -${skel_stop} \
+                ${skel_stop} \
 		-nifti \
 		-overwrite;
 
@@ -183,7 +189,7 @@ else
                 -skel_thr ${skel_thr} \
                 ${l4} \
                 -${neigh_def} \
-                -${skel_stop} \
+                ${skel_stop} \
                 -nifti \
                 -overwrite;
 
@@ -218,7 +224,7 @@ else
 		-skel_thr ${skel_thr} \
 		${l3} \
 		-${neigh_def} \
-		-${skel_stop} \
+		${skel_stop} \
 		-nifti \
 		-overwrite;
 
@@ -242,7 +248,7 @@ else
 		-skel_thr ${skel_thr} \
 		${l3} \
 		-${neigh_def} \
-		-${skel_stop} \
+		${skel_stop} \
 		-nifti \
 		-overwrite;
 
