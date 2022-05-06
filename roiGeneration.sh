@@ -2,19 +2,17 @@
 
 set -x
 
-## This script uses AFNI's (Taylor PA, Saad ZS (2013).  FATCAT: (An Efficient) Functional And Tractographic Connectivity Analysis Toolbox. Brain 
-## Connectivity 3(5):523-535. https://afni.nimh.nih.gov/) 3dROIMaker function to a) remove the white matter mask from the cortical segmentation 
-## inputted (i.e. freesurfer or parcellation; BE CAREFUL: REMOVES SUBCORTICAL ROIS) and b) inflates the ROIs by n voxels into the white matter 
-## based on user input (option for no inflation is also built in). The output of this will then passed into a matlab function (roiGeneration.m) to 
+## This script uses AFNI's (Taylor PA, Saad ZS (2013).  FATCAT: (An Efficient) Functional And Tractographic Connectivity Analysis Toolbox. Brain
+## Connectivity 3(5):523-535. https://afni.nimh.nih.gov/) 3dROIMaker function to a) remove the white matter mask from the cortical segmentation
+## inputted (i.e. freesurfer or parcellation; BE CAREFUL: REMOVES SUBCORTICAL ROIS) and b) inflates the ROIs by n voxels into the white matter
+## based on user input (option for no inflation is also built in). The output of this will then passed into a matlab function (roiGeneration.m) to
 ## create nifti's for each ROI requested by the user, which can then be fed into a ROI to ROI tracking app (brainlife.io; www.github.com/brain-life/
 ## app-roi2roitracking).
 
 # bl config inputs
 inputparc=`jq -r '.inputparc' config.json`
 thalamusinflate=`jq -r '.thalamusInflate' config.json`
-# visInflate=`jq -r '.visInflate' config.json`
 freesurferInflate=`jq -r '.freesurferInflate' config.json`
-#subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
 
 # hard coded roi numbers for optic radiation tracking
 brainmask=mask.nii.gz;
@@ -54,16 +52,16 @@ if [[ -z ${freesurferROIs} ]]; then
 	echo "no freesurfer inflation"
 else
 	3dROIMaker \
-                -inset ${inputparc}+aseg.nii.gz \
-                -refset ${inputparc}+aseg.nii.gz \
-                -mask ${brainmask} \
-                -wm_skel wm_anat.nii.gz \
-                -skel_thr 0.5 \
-                ${l1} \
-                ${l5} \
-                -nifti \
-                -overwrite;
-	
+		-inset ${inputparc}+aseg.nii.gz \
+		-refset ${inputparc}+aseg.nii.gz \
+		-mask ${brainmask} \
+		-wm_skel wm_anat.nii.gz \
+		-skel_thr 0.5 \
+		${l1} \
+		${l5} \
+		-nifti \
+		-overwrite;
+
 	#generate rois
     FREEROIS=`echo ${freesurferROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
     for FREE in ${FREEROIS}
@@ -97,7 +95,7 @@ else
 fi
 
 if [[ -z ${subcorticalROIs} ]]; then
-    echo "no subcortical rois"
+        echo "no subcortical rois"
 else
     #generate rois
     SUBROIS=`echo ${subcorticalROIs} | cut -d',' --output-delimiter=$'\n' -f1-`
@@ -111,7 +109,7 @@ fi
 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 
 if [[ -z ${mergeROIsL} ]] || [[ -z ${mergeROIsR} ]]; then
-    echo "no merging of rois"
+        echo "no merging of rois"
 else
     #merge rois
 	if [[ ! -z ${mergeROIsL} ]]; then
@@ -120,13 +118,13 @@ else
 		do
 			mergeArrayL="$mergeArrayL `echo ROI*0"$i".nii.gz`"
 		done
-		
-		3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
-    	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
-    	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
-    	3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROIlh.${mergename}.nii.gz
-        rm -rf ${mergename}L_nonbyte.nii.gz ${mergename}L_allbytes.nii.gz
-        mv *`ls ${mergeArrayL}`* ./rois/rois/
+
+      3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz ${mergeArrayL[*]}
+      3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
+      3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
+      3dcalc -a ${mergename}L_allbytes.nii.gz -expr 'step(a)' -prefix ROIlh.${mergename}.nii.gz
+      rm -rf ${mergename}L_nonbyte.nii.gz ${mergename}L_allbytes.nii.gz
+      mv ${mergeArrayL[*]} ./rois/rois/
 	fi
 	if [[ ! -z ${mergeROIsR} ]]; then
 		mergeArrayR=""
@@ -134,12 +132,12 @@ else
 		do
 			mergeArrayR="$mergeArrayR `echo ROI*0"$i".nii.gz`"
 		done
-        3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
-        3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
-        3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
-        3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROIrh.${mergename}.nii.gz
-        rm -rf ${mergename}R_nonbyte.nii.gz ${mergename}R_allbytes.nii.gz
-        mv *`ls ${mergeArrayR}`* ./rois/rois/
+      3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz ${mergeArrayR[*]}
+      3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
+      3dcalc -byte -a ${mergename}R_nonbyte.nii.gz -expr 'a' -prefix ${mergename}R_allbytes.nii.gz
+      3dcalc -a ${mergename}R_allbytes.nii.gz -expr 'step(a)' -prefix ROIrh.${mergename}.nii.gz
+      rm -rf ${mergename}R_nonbyte.nii.gz ${mergename}R_allbytes.nii.gz
+      mv ${mergeArrayR[*]} ./rois/rois/
 	fi
 fi
 
@@ -147,9 +145,9 @@ fi
 mv *${mergename}*.nii.gz ./rois/rois/
 
 # rename rois
-mv ROI008109.nii.gz ROIlh.lgn.nii.gz
-mv ROI008209.nii.gz ROIrh.lgn.nii.gz
-mv ROI085.nii.gz ROIoptic-chiasm.nii.gz
+mv ROI008109.nii.gz ./rois/rois/ROIlh.lgn.nii.gz
+mv ROI008209.nii.gz ./rois/rois/ROIrh.lgn.nii.gz
+mv ROI085.nii.gz ./rois/rois/ROIoptic-chiasm.nii.gz
 
 # clean up
-rm -rf *.niml*
+rm -rf *.niml* merge_pre*.nii.gz zeroDataset.nii.gz

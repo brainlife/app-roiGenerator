@@ -2,17 +2,11 @@
 
 ## Create white matter mask and move rois to diffusion space for tracking
 
-input_nii_gz=`jq -r '.input_nifti' config.json`
-dtiinit=`jq -r '.dtiinit' config.json`
+dwi=`jq -r '.dwi' config.json`
 fsurfer=`jq -r '.freesurfer' config.json`
 inputparc=`jq -r '.inputparc' config.json`
 
-# parse whether input is dtiinit or dwi
-# if [[ ${dtiinit} = "null" ]]; then
-# 	export input_nii_gz=$dwi;
-# else
-# 	export input_nii_gz=$dtiinit/`jq -r '.files.alignedDwRaw' $dtiinit/dt6.json`
-# fi
+input_nii_gz=$dwi
 
 source $FREESURFER_HOME/SetUpFreeSurfer.sh
 
