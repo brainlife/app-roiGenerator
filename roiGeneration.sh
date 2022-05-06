@@ -44,6 +44,9 @@ else
 	l3="-inflate ${thalamusinflate} -prefix thalamus_inflate";
 fi
 
+# stop inflation into white matter
+l1="-skel_stop";
+
 ## Inflate freesurfer ROIs
 if [[ -z ${freesurferROIs} ]]; then
 	echo "no freesurfer inflation"
