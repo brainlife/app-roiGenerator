@@ -93,7 +93,7 @@ else
 fi
 
 # in thise case, skel_thr = 0.5
-skel_thr = 0.5
+skel_thr=0.5
 
 if [[ ${skel_stop} == 'no_stop' ]]; then
 	skel_stop=""
