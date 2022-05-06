@@ -9,6 +9,7 @@ set -x
 ## create nifti's for each ROI requested by the user, which can then be fed into a ROI to ROI tracking app (brainlife.io; www.github.com/brain-life/
 ## app-roi2roitracking).
 
+inputparc=`jq -r '.inputparc' config.json`
 visROINames="v1 v2 v3 hv4 vO1 vO2 lO1 lO2 tO1 tO2 v3b v3a lgn optic-chiasm"
 visROINames=($visROINames)
 visrois=""
