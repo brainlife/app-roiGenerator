@@ -2,11 +2,11 @@
 
 ## Create white matter mask and move rois to diffusion space for tracking
 
-dwi=`jq -r '.dwi' config.json`
+fmri=`jq -r '.bold' config.json`
 fsurfer=`jq -r '.freesurfer' config.json`
 inputparc=`jq -r '.inputparc' config.json`
 
-input_nii_gz=$dwi
+input_nii_gz=$fmri
 
 source $FREESURFER_HOME/SetUpFreeSurfer.sh
 
