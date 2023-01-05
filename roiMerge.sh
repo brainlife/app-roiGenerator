@@ -43,16 +43,14 @@ else
 			do
 				mergeArrayL=""
 				mergeName=${mergenames[$i]}
-
+				firstName=`echo "${mergeArray[$i]%% *}"`
+				
 				for j in ${mergeArray[$i]}
 				do
-					if [[ ${j} -eq 0 ]]; then
-						first_name=`echo ${rois}/ROI$j.nii.gz`
-					fi
 					mergeArrayL=$mergeArrayL" `echo ${rois}/ROI$j.nii.gz`"
 				done
 							
-				[ ! -f zeroDataset.nii.gz ] && 3dcalc -a ${rois}/${first_name} -prefix zeroDataset.nii.gz -expr '0'
+				[ ! -f zeroDataset.nii.gz ] && 3dcalc -a ${rois}/ROI${firstName}.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 
 				echo ${mergeArrayL} ${mergeName}
 				3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
@@ -65,12 +63,12 @@ else
 			mergeArrayL=""
 			for i in "${mergeL[@]}"
 			do
-				if [[ ${i} -eq 0 ]]; then
-					first_name=`echo ${rois}/ROI"$i".nii.gz`
-				fi
 				mergeArrayL="$mergeArrayL `echo ${rois}/ROI"$i".nii.gz`"
 			done
-			[ ! -f zeroDataset.nii.gz ] && 3dcalc -a ${rois}/${first_name} -prefix zeroDataset.nii.gz -expr '0'
+			firstName=`echo "${mergeL[0]}"`
+			
+			[ ! -f zeroDataset.nii.gz ] && 3dcalc -a ${rois}/${firstName}.nii.gz -prefix zeroDataset.nii.gz -expr '0'
+			
 			3dTcat -prefix merge_preL.nii.gz zeroDataset.nii.gz `ls ${mergeArrayL}`
 	        	3dTstat -argmax -prefix ${mergename}L_nonbyte.nii.gz merge_preL.nii.gz
 	        	3dcalc -byte -a ${mergename}L_nonbyte.nii.gz -expr 'a' -prefix ${mergename}L_allbytes.nii.gz
@@ -90,16 +88,14 @@ else
 			do 
 				mergeArrayR=""
 				mergeName=${mergenames[$i]}
+				firstName=`echo "${mergeArray[$i]%% *}"`
 
 				for j in ${mergeArray[$i]}
 				do 
-					if [[ ${j} -eq 0 ]]; then
-						first_name=`echo ${rois}/ROI$j.nii.gz`
-					fi
 					mergeArrayR=$mergeArrayR" `echo ${rois}/ROI$j.nii.gz`"
 				done
 				
-				[ ! -f zeroDataset.nii.gz ] && 3dcalc -a ${rois}/${first_name} -prefix zeroDataset.nii.gz -expr '0'
+				[ ! -f zeroDataset.nii.gz ] && 3dcalc -a ${rois}/ROI${firstName}.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 
 				3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
 		        	3dTstat -argmax -prefix ${mergeName}R_nonbyte.nii.gz merge_preR.nii.gz
@@ -111,13 +107,12 @@ else
 			mergeArrayR=""
 			for i in "${mergeR[@]}"
 			do
-				if [[ ${i} -eq 0 ]]; then
-					first_name=`echo ${rois}/ROI"$i".nii.gz`
-				fi
 				mergeArrayR="$mergeArrayR `echo ${rois}/ROI*"$i".nii.gz`"
 			done
-
-			[ ! -f zeroDataset.nii.gz ] && 3dcalc -a ${rois}/${first_name} -prefix zeroDataset.nii.gz -expr '0'
+			
+			firstName=`echo "${mergeR[0]}"`
+			
+			[ ! -f zeroDataset.nii.gz ] && 3dcalc -a ${rois}/${firstName}.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 
 			3dTcat -prefix merge_preR.nii.gz zeroDataset.nii.gz `ls ${mergeArrayR}`
 	        	3dTstat -argmax -prefix ${mergename}R_nonbyte.nii.gz merge_preR.nii.gz
