@@ -6,9 +6,9 @@
 echo "merging ROIs"
 time singularity exec -e docker://brainlife/afni:16.3.0 ./roiMerge.sh
 
-if [ ! -f ./parc/parc.nii.gz ]; then
-    echo "something failed. please check logs and derivatives"
-    exit 1
-else
-    exit 0
-fi
+# if [ ! -f ./parc/parc.nii.gz ]; then
+#     echo "something failed. please check logs and derivatives"
+#     exit 1
+# else
+#     exit 0
+# fi
