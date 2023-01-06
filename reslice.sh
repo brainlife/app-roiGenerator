@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export SUBJECTS_DIR=./
 dwi=`jq -r '.dwi' config.json`
 
 [ ! -d tmp ] && mkdir tmp
