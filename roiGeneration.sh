@@ -15,13 +15,27 @@ thalamusinflate=`jq -r '.thalamusInflate' config.json`
 visInflate=`jq -r '.visInflate' config.json`
 freesurferInflate=`jq -r '.freesurferInflate' config.json`
 #subcorticalROIs=`jq -r '.subcorticalROIs' config.json`
+label=`jq -r '.label' config.json`
 
 # hard coded roi numbers for optic radiation tracking
 brainmask=mask.nii.gz;
 freesurferROIs="41 42 7 8 4 2 3 46 47 43 28 60"
 subcorticalROIs="85"
-#visROIs="2 3 4 5 6 7 8 11 12 14 17 18 19 20 21 22 23 24 50 120 122 127 128 134 136 137 138 139 141 142 143 144 147 153 154 155 156 157 158 159 160 161 164 183 184 185 186 187 188 189 192 193 195 198 199 200 201 202 203 204 205 231 301 303 308 309 315 317 318 319 320 322 323 324 325 328 334 335 336 337 338 339 340 341 342 345"
-visROIs="1 2 3 4 5 6 7 10 11 15 16 17 18 19 20 21 22 23 49 119 121 126 127 133 135 136 137 138 140 141 142 143 146 152 153 154 155 156 157 158 159 160 163 181 182 183 184 185 186 187 190 191 195 196 197 198 199 200 201 202 203 230 299 301 306 307 313 315 316 317 318 320 321 322 323 326 332 333 334 335 336 337 338 339 340 343"
+labelNames=`jq '.[].name' ${label}`
+containsUnident=0
+for i in ${labelNames}
+do
+        if [[ `echo ${i} | tr -d '"'` == *"???.label" ]]; then
+                containsUnident=1
+        fi
+done
+
+if [[ ${containsUnident} -eq 1 ]]; then
+        visROIs="2 3 4 5 6 7 8 11 12 14 17 18 19 20 21 22 23 24 50 120 122 127 128 134 136 137 138 139 141 142 143 144 147 153 154 155 156 157 158 159 160 161 164 183 184 185 186 187 188 189 192 193 195 198 199 200 201 202 203 204 205 231 301 303 308 309 315 317 318 319 320 322 323 324 325 328 334 335 336 337 338 339 340 341 342 345"
+else
+        visROIs="1 2 3 4 5 6 7 10 11 15 16 17 18 19 20 21 22 23 49 119 121 126 127 133 135 136 137 138 140 141 142 143 146 152 153 154 155 156 157 158 159 160 163 181 182 183 184 185 186 187 190 191 195 196 197 198 199 200 201 202 203 230 299 301 306 307 313 315 316 317 318 320 321 322 323 326 332 333 334 335 336 337 338 339 340 343"
+fi
+
 visROINames="lh.v1 lh.mst lh.v6 lh.v2 lh.v3 lh.v4 lh.v8 lh.fef lh.pef lh.v3a lh.v7 lh.ips1 lh.ffc lh.v3b lh.lo1 lh.lo2 lh.pit lh.mt lh.mip lh.pres lh.pros lh.pha1 lh.pha3 lh.te1p lh.tf lh.te2p lh.pht lh.ph lh.tpoj2 lh.tpoj3 lh.dvt lh.pgp lh.ip0 lh.v6a lh.vmv1 lh.vmv3 lh.pha2 lh.v4t lh.fst lh.v3cd lh.lo3 lh.vmv2 lh.vvc rh.v1 rh.mst rh.v6 rh.v2 rh.v3 rh.v4 rh.v8 rh.fef rh.pef rh.v3a rh.v7 rh.ips1 rh.ffc rh.v3b rh.lo1 rh.lo2 rh.pit rh.mt rh.mip rh.pres rh.pros rh.pha1 rh.pha3 rh.te1p rh.tf rh.te2p rh.pht rh.ph rh.tpoj2 rh.tpoj3 rh.dvt rh.pgp rh.ip0 rh.v6a rh.vmv1 rh.vmv3 rh.pha2 rh.v4t rh.fst rh.v3cd rh.lo3 rh.vmv2 rh.vvc"
 visrois=""
 thalamicROIs="8109 8209"
