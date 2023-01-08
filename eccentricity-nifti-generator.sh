@@ -33,7 +33,7 @@ source $FREESURFER_HOME/SetUpFreeSurfer.sh
 export SUBJECTS_DIR=${freesurfer}
 
 # inputaparc to diffusion space
-[ ! -f ${inputparc}+aseg.nii.gz ] && mri_label2vol --seg $fsurfer/mri/${inputparc}+aseg.mgz --temp $input_nii_gz --regheader $fsurfer/mri/${inputparc}+aseg.mgz --o ${inputparc}+aseg.nii.gz
+[ ! -f ${inputparc}+aseg.nii.gz ] && mri_label2vol --seg $freesurfer/mri/${inputparc}+aseg.mgz --temp $input_nii_gz --regheader $fsurfer/mri/${inputparc}+aseg.mgz --o ${inputparc}+aseg.nii.gz
 
 # use this as internal target for volume moves
 input_nii_gz="${inputparc}+aseg.nii.gz"
