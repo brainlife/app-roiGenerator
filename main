@@ -1,27 +1,15 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=1,vmem=16gb,walltime=1:00:00
+#PBS -l nodes=1:ppn=1,vmem=20gb,walltime=1:00:00
 #PBS -N eccentricity-parcellation-generator
 #PBS -V
 
-inputparc=`jq -r '.inputparc' config.json`
+set -ex
 
-[ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
+# create niftis of eccentricity parcellations before final merge
+echo $FREESURFER_LICENSE > license.txt
+time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/connectome_workbench:1.4.2-freesurfer-update ./eccentricity-nifti-generation.sh
 
-[ ! -f license.txt ] && echo $FREESURFER_LICENSE > license.txt
-
-if [ ! -f ${inputparc}+aseg.nii.gz ]; then 
-    time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./convertfreeparc.sh
-fi
-
-echo "inflating & generate ROIs"
-time singularity exec -e docker://brainlife/afni:16.3.0 ./eccentricityParcellationGeneration.sh
-
+# create final parcellation
 if [ ! -f parc/parc.nii.gz ]; then
-    echo "parcellation file missing files missing."
-    exit 1
-else
-    echo "finished"
-    mkdir -p raw
-    mv *.nii.gz ./raw/
-    exit 0
+    time singularity exec -e docker://brainlife/fsl:5.0.11 ./combine-parcellation.sh
 fi
