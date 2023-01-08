@@ -60,5 +60,6 @@ if [ ! -f parc/parc.nii.gz ]; then
 	exit 1
 else
 	echo "parcellation generation complete."
-	mv *.nii.gz *.txt tmp.json *.gii *.pial ./raw/
+	mv *.nii.gz *.txt *.gii *.pial ./raw/
+	exit 0
 fi

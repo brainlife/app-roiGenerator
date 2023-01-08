@@ -1,3 +1,6 @@
 license.txt
-inputs
+inputs/
 config.json
+.gitignore
+raw/
+parc/
