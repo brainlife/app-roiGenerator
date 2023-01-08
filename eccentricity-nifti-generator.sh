@@ -14,6 +14,7 @@ inputparc=`jq -r '.inputparc' config.json`
 # input_nii_gz=`jq -r '.input_nii_gz' config.json`
 hemispheres="lh rh"
 dwi=`jq -r '.dwi' config.json`
+fmri=`jq -r '.func' config.json`
 freesurfer=`jq -r '.freesurfer' config.json`
 inputparc=`jq -r '.inputparc' config.json`
 
@@ -25,8 +26,14 @@ inputparc=`jq -r '.inputparc' config.json`
 minDegree=($minDegree)
 maxDegree=($maxDegree)
 
-# set up some stuff to move inputaparc to diffusion space
-input_nii_gz=$dwi
+# set up some stuff to move inputaparc to space
+if [ -f ${dwi} ]; then
+	input_nii_gz=$dwi
+elif [ -f ${fmri} ]; then
+	input_nii_gz=$fmri
+else
+	input_nii_gz="./ribbon.nii.gz"
+fi
 
 # source $FREESURFER_HOME/SetUpFreeSurfer.sh
 
