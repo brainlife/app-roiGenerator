@@ -29,15 +29,14 @@ maxDegree=($maxDegree)
 input_nii_gz=$dwi
 
 source $FREESURFER_HOME/SetUpFreeSurfer.sh
+# set SUBJECTS_DIR
+export SUBJECTS_DIR=${freesurfer}
 
 # inputaparc to diffusion space
 [ ! -f ${inputparc}+aseg.nii.gz ] && mri_label2vol --seg $fsurfer/mri/${inputparc}+aseg.mgz --temp $input_nii_gz --regheader $fsurfer/mri/${inputparc}+aseg.mgz --o ${inputparc}+aseg.nii.gz
 
 # use this as internal target for volume moves
 input_nii_gz="${inputparc}+aseg.nii.gz"
-
-# set SUBJECTS_DIR
-export SUBJECTS_DIR=${freesurfer}
 
 # move freesurfer whole-brain ribbon into diffusion space
 [ ! -f ribbon.nii.gz ] && mri_convert ${freesurfer}/mri/ribbon.mgz ./ribbon.nii.gz
