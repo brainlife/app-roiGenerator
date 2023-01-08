@@ -14,7 +14,7 @@ inputparc=`jq -r '.inputparc' config.json`
 # input_nii_gz=`jq -r '.input_nii_gz' config.json`
 hemispheres="lh rh"
 dwi=`jq -r '.dwi' config.json`
-fsurfer=`jq -r '.freesurfer' config.json`
+freesurfer=`jq -r '.freesurfer' config.json`
 inputparc=`jq -r '.inputparc' config.json`
 
 # make directories
@@ -28,12 +28,13 @@ maxDegree=($maxDegree)
 # set up some stuff to move inputaparc to diffusion space
 input_nii_gz=$dwi
 
-source $FREESURFER_HOME/SetUpFreeSurfer.sh
+# source $FREESURFER_HOME/SetUpFreeSurfer.sh
+
 # set SUBJECTS_DIR
 export SUBJECTS_DIR=${freesurfer}
 
 # inputaparc to diffusion space
-[ ! -f ${inputparc}+aseg.nii.gz ] && mri_label2vol --seg $freesurfer/mri/${inputparc}+aseg.mgz --temp $input_nii_gz --regheader $fsurfer/mri/${inputparc}+aseg.mgz --o ${inputparc}+aseg.nii.gz
+[ ! -f ${inputparc}+aseg.nii.gz ] && mri_label2vol --seg $freesurfer/mri/${inputparc}+aseg.mgz --temp $input_nii_gz --regheader $freesurfer/mri/${inputparc}+aseg.mgz --o ${inputparc}+aseg.nii.gz
 
 # use this as internal target for volume moves
 input_nii_gz="${inputparc}+aseg.nii.gz"
