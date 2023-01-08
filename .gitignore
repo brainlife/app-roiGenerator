@@ -1,5 +1,8 @@
 license.txt
 inputs/
+*.nii.gz
+*.pial
+*.gii
 config.json
 .gitignore
 raw/
