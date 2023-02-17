@@ -70,18 +70,18 @@ fi
 
 if [[ ${hippocampusInflate} == 'null' ]]; then
 	echo "no hippocampal inflation";
-	l3="-prefix hippocampus_inflate";
+	l6="-prefix hippocampus_inflate";
 else
 	echo "${hippocampusInflate} voxel inflation applied to every hipocampal label";
-	l3="-inflate ${hippocampusInflate} -prefix hippocampus_inflate";
+	l6="-inflate ${hippocampusInflate} -prefix hippocampus_inflate";
 fi
 
 if [[ ${amygdalaInflate} == 'null' ]]; then
 	echo "no amygdala inflation";
-	l3="-prefix amygdala_inflate";
+	l7="-prefix amygdala_inflate";
 else
 	echo "${amgydalaInflate} voxel inflation applied to every amygdala label";
-	l3="-inflate ${amygdalaInflate} -prefix amygdala_inflate";
+	l7="-inflate ${amygdalaInflate} -prefix amygdala_inflate";
 fi
 
 if [ ${whitematter} == "true" ]; then
@@ -225,7 +225,7 @@ else
 		-wm_skel wm_anat.nii.gz \
 		-skel_thr ${skel_thr} \
 		${l1} \
-		${l3} \
+		${l6} \
 		-${neigh_def} \
 		${skel_stop} \
 		-nifti \
@@ -250,7 +250,7 @@ else
 		-wm_skel wm_anat.nii.gz \
 		-skel_thr ${skel_thr} \
 		${l1} \
-		${l3} \
+		${l7} \
 		-${neigh_def} \
 		${skel_stop} \
 		-nifti \
