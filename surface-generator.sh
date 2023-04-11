@@ -46,7 +46,7 @@ do
 		echo "${visROINames[$i]}"
 		[ ! -f ${hemi}.${visROINames[$i]}.func.gii ] && mri_binarize --i ./${hemi}.varea.func.gii --match ${visROIs[$i]} --o ./${hemi}.${visROINames[$i]}.func.gii
 		[ ! -f ./rois/rois/ROI${hemi}.${visROINames[$i]}.nii.gz ] && mri_surf2vol --o ./rois/rois/ROI${hemi}.${visROINames[$i]}.nii.gz --subject ./ --so ${freesurfer}/surf/${hemi}.pial ./${hemi}.${visROINames[$i]}.func.gii && mri_vol2vol --mov ./rois/rois/ROI${hemi}.${visROINames[$i]}.nii.gz --targ ${input_nii_gz} --regheader --o ./rois/rois/ROI${hemi}.${visROINames[$i]}.nii.gz --nearest
-		mri_vol2vol --mov ./rois/rois/ROI${hemi}.${visROINames[$i]}.nii.gz --targ ${dwi} --regheader --interp nearest --o ./rois/rois/ROI${hemi}.${visROINames[$i]}.nii.gz
+		# mri_vol2vol --mov ./rois/rois/ROI${hemi}.${visROINames[$i]}.nii.gz --targ ${dwi} --regheader --interp nearest --o ./rois/rois/ROI${hemi}.${visROINames[$i]}.nii.gz
 		done
 	done
 done
