@@ -1,19 +1,15 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=1,vmem=16gb,walltime=1:30:00
+#PBS -l nodes=1:ppn=1,vmem=16gb,walltime=3:00:00
 #PBS -N roiGeneration
 #PBS -V
 
 inflate=`jq -r '.inflate' config.json`
 mask=`jq -r '.mask' config.json`
-dtiinit=`jq -r '.dtiinit' config.json`
 
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
 echo "creating masks"
-if [[ -f ${dtiinit}/dti/bin/brainMask.nii.gz ]];
-then
-    cp -v ${dtiinit}/dti/bin/brainMask.nii.gz mask.nii.gz
-elif [[ ! -f "mask.nii.gz" ]] && [[ ${mask} == 'null' ]];
+if [[ ! -f "mask.nii.gz" ]] && [[ ${mask} == 'null' ]];
 then
     time singularity exec -e docker://brainlife/fsl:5.0.9 ./brainmask.sh
 elif [[ -f "mask.nii.gz" ]];
@@ -26,13 +22,22 @@ then
 fi
 
 #echo $FREESURFER_LICENSE > license.txt
-if [ ! -f wm_anat.nii.gz ]; then 
+if [ ! -f wm_anat.nii.gz ]; then
 	time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./create_wm_mask.sh
 fi
 
 echo "inflating & generate ROIs"
 time singularity exec -e docker://brainlife/afni:16.3.0 ./roiGeneration.sh
 
+echo "creating eccentricity ROIs"
+echo $FREESURFER_LICENSE > license.txt
+time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/connectome_workbench:1.4.2-freesurfer-update ./surface-generator.sh
+
+echo "reslicing ROIS to diffusion space"
+time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:7.1.1 ./reslice.sh
+
+echo "generate visual area parcellation"
+time singularity exec -e docker://brainlife/afni:16.3.0 ./vareaParcellationGeneration.sh
 
 if [[ ${INFLATE} == 'null' ]];then
     echo "{\"tags\": [\"no_inflate\" ]}" > product.json
@@ -44,5 +49,7 @@ if [ -z "$(ls -A ./rois/rois/)" ]; then
     echo "ROI files missing."
     exit 1
 else
+    mkdir -p raw
+    mv *.nii.gz *.func.gii ./raw/
     exit 0
 fi

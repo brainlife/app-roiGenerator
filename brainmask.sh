@@ -19,10 +19,10 @@ select_dwi_vols \
 # Brain extraction before alignment
 bet nodif.nii.gz \
 	nodif_brain \
-	-f 0.4 \
+	-f 0.3 \
 	-g 0 \
 	-m;
-  
+
 mv nodif_brain_mask.nii.gz mask.nii.gz;
 
 echo "brainmask creation complete"
