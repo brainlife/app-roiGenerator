@@ -149,5 +149,8 @@ mv ROI008109.nii.gz ./rois/rois/ROIlh.lgn.nii.gz
 mv ROI008209.nii.gz ./rois/rois/ROIrh.lgn.nii.gz
 mv ROI085.nii.gz ./rois/rois/ROIoptic-chiasm.nii.gz
 
+# pretty format label.json
+jq '.' tmp.json > label.json
+
 # clean up
 rm -rf *.niml* merge_pre*.nii.gz zeroDataset.nii.gz
