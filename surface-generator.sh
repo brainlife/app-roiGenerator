@@ -5,7 +5,7 @@ set -x
 set -e
 
 # parse inputs
-prfSurfacesDir=`jq -r '.prfSurfacesDir' config.json`
+prfSurfacesDir=`jq -r '.prfDir' config.json`
 freesurfer=`jq -r '.freesurfer' config.json`
 inputparc=`jq -r '.inputparc' config.json`
 hemispheres="lh rh"
