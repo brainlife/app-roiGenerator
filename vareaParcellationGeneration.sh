@@ -54,7 +54,7 @@ do
 		oldval=`echo ${FILES[$i]} | sed -e 's/.*ROI\(.*\).nii.gz/\1/'`
 	fi
 	newval=$((i + 1))
-  echo -e "1\t->\t${newval}\t== ${oldval}" >> key.txt
+	echo -e "1\t->\t${newval}\t== ${oldval}" >> key.txt
 
 	# make tmp.json containing data for labels.json
 	jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} --arg key3 "label" --arg value3 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2 | .[$key3]=$value3' <<<'{}'`
