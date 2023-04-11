@@ -190,40 +190,40 @@ fi
 mv *${mergename}*.nii.gz ./rois/rois/
 
 # create empty roi to fill
-3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
+# 3dcalc -a ${inputparc}+aseg.nii.gz -prefix zeroDataset.nii.gz -expr '0'
 
-# create parcellation of all rois
-3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz ${visrois}
-3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
-3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
+# # create parcellation of all rois
+# 3dTcat -prefix all_pre.nii.gz zeroDataset.nii.gz ${visrois}
+# 3dTstat -argmax -prefix allroiss.nii.gz all_pre.nii.gz
+# 3dcalc -byte -a allroiss.nii.gz -expr 'a' -prefix allrois_byte.nii.gz
 
-# create key.txt for parcellation
-FILES=(${visrois})
-for i in "${!FILES[@]}"
-do
-	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
-	newval=$((i + 1))
-        echo -e "${visROIs[${i}]}\t->\t${newval}\t== ${oldval}" >> key.txt
+# # create key.txt for parcellation
+# FILES=(${visrois})
+# for i in "${!FILES[@]}"
+# do
+# 	oldval=`echo "${FILES[$i]}" | sed 's/.*ROI\(.*\).nii.gz/\1/'`
+# 	newval=$((i + 1))
+#         echo -e "${visROIs[${i}]}\t->\t${newval}\t== ${oldval}" >> key.txt
 
-        # make tmp.json containing data for labels.json
-        jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
-        if [ ${i} -eq 0 ]; then
-                echo -e "[\n${jsonstring}," >> tmp.json
-        elif [ ${newval} -eq ${#FILES[*]} ]; then
-                echo -e "${jsonstring}\n]" >> tmp.json
-        else
-                echo -e "${jsonstring}," >> tmp.json
-        fi
-done
+#         # make tmp.json containing data for labels.json
+#         jsonstring=`jq --arg key0 'name' --arg value0 "${oldval}" --arg key1 "desc" --arg value1 "value of ${newval} indicates voxel belonging to ROI${oldval}" --arg key2 "voxel_value" --arg value2 ${newval} '. | .[$key0]=$value0 | .[$key1]=$value1 | .[$key2]=$value2' <<<'{}'`
+#         if [ ${i} -eq 0 ]; then
+#                 echo -e "[\n${jsonstring}," >> tmp.json
+#         elif [ ${newval} -eq ${#FILES[*]} ]; then
+#                 echo -e "${jsonstring}\n]" >> tmp.json
+#         else
+#                 echo -e "${jsonstring}," >> tmp.json
+#         fi
+# done
 
-# pretty format label.json
-jq '.' tmp.json > label.json
+# # pretty format label.json
+# jq '.' tmp.json > label.json
 
 # clean up
-if [ -f allrois_byte.nii.gz ]; then
-        mv allrois_byte.nii.gz ./parc/parc.nii.gz;
-        mv key.txt ./parc/key.txt;
-        mv label.json ./parc/label.json
-        mv *ROI*.nii.gz ./rois/rois/;
-        rm -rf *.nii.gz* *.niml.* tmp.json
-fi
+# if [ -f allrois_byte.nii.gz ]; then
+#         mv allrois_byte.nii.gz ./parc/parc.nii.gz;
+#         mv key.txt ./parc/key.txt;
+#         mv label.json ./parc/label.json
+mv *ROI*.nii.gz ./rois/rois/;
+#         rm -rf *.niml.* tmp.json
+# fi
