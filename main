@@ -8,7 +8,7 @@ set -ex
 
 # create niftis of eccentricity parcellations before final merge
 echo $FREESURFER_LICENSE > license.txt
-time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/connectome_workbench:1.4.2-freesurfer-update ./eccentricity-nifti-generator.sh
+time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/connectome_workbench:1.4.2-freesurfer-update ./polarAngle-nifti-generator.sh
 
 # create final parcellation
 if [ ! -f parc/parc.nii.gz ]; then
