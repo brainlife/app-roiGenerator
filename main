@@ -6,6 +6,8 @@
 inflate=`jq -r '.inflate' config.json`
 mask=`jq -r '.mask' config.json`
 
+[ ! -d rois ] && mkdir -p rois rois/rois
+
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" #&& exit 1;
 
 if [[ ! -f "mask.nii.gz" ]] && [[ ${mask} == 'null' ]];
