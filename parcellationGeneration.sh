@@ -33,12 +33,13 @@ for i in "${!FILES[@]}"
 do
 	# make key.txt
 	if [[ ! "${FILES[$i]}" == *"ROI"* ]]; then
-		name=`echo ${FILES[$i]}`
-		if [[ "${FILES[$i]}" == *"lh"* ]]; then
-			oldval="lh.${name}"
-		else
-			oldval="rh.${name}"
-		fi
+		name=`echo ${FILES[$i]#./rois/rois/*}`
+  		oldval=${name%*.nii.gz}
+		# if [[ "${FILES[$i]}" == *"lh"* ]]; then
+		# 	oldval="lh.${name}"
+		# else
+		# 	oldval="rh.${name}"
+		# fi
 	else
 		oldval=`echo ${FILES[$i]} | sed -e 's/.*ROI\(.*\).nii.gz/\1/'`
 	fi
