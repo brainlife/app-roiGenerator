@@ -10,9 +10,9 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-lightgrey.svg" alt="MIT license"></a>
 </p>
 
-> 📍 **This branch, `merge-rois-v1.1`, is the brainlife.io App Merge multiple ROIs together using AFNI** ([doi:10.25663/brainlife.app.710](https://doi.org/10.25663/brainlife.app.710)). The other Apps in this repository are listed under **Versions on brainlife.io** below.
+> **This branch, `merge-rois-v1.1`, is the brainlife.io App Merge multiple ROIs together using AFNI** ([doi:10.25663/brainlife.app.710](https://doi.org/10.25663/brainlife.app.710)). The other Apps in this repository are listed under **Versions on brainlife.io** below.
 
-## 🧠 At a glance
+## At a glance
 
 <!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
 
@@ -22,26 +22,26 @@ Utility that reads an rois directory, combines the ROIs whose numbers are listed
 
 | | |
 |---|---|
-| 📥 **Inputs** | `neuro/rois` |
-| 📤 **Outputs** | `neuro/rois` |
-| 🐳 **Container** | `brainlife/afni:16.3.0` |
-| ⚙️ **Resources** | 1 CPUs · 16 GB memory · 1 h walltime |
-| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.710](https://doi.org/10.25663/brainlife.app.710) |
+| **Inputs** | `neuro/rois` |
+| **Outputs** | `neuro/rois` |
+| **Container** | `brainlife/afni:16.3.0` |
+| **Resources** | 1 CPUs · 16 GB memory · 1 h walltime |
+| **Run it** | [doi.org/10.25663/brainlife.app.710](https://doi.org/10.25663/brainlife.app.710) |
 
-#### 📥 Inputs
+#### Inputs
 
 | Input | Datatype | Required | Description |
 |---|---|---|---|
 | `rois` | `neuro/rois` | yes | Directory of binary NIfTI ROIs named ROI<number>.nii.gz to be merged. |
 
-#### 📤 Outputs
+#### Outputs
 
 | Output | Datatype | Description |
 |---|---|---|
 | `rois` | `neuro/rois` | The directory containing all of the ROIs |
 
 <details>
-<summary><b>⚙️ Parameters</b> (3)</summary>
+<summary><b>Parameters</b> (3)</summary>
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
@@ -53,7 +53,7 @@ Utility that reads an rois directory, combines the ROIs whose numbers are listed
 
 <!-- brainlife-app:end -->
 
-## 🏷️ Versions on brainlife.io
+## Versions on brainlife.io
 
 This repository hosts a family of related Apps, each built from its own branch. The current Apps fall into four groups:
 
@@ -88,9 +88,9 @@ This repository hosts a family of related Apps, each built from its own branch. 
 | ROI Generation (old) | [`non_dtiinit`](https://github.com/brainlife/app-roiGenerator/tree/non_dtiinit) | [doi:10.25663/brainlife.app.154](https://doi.org/10.25663/brainlife.app.154) | deprecated |
 | ROI Generation (w/ dtiinit) | [`1.0`](https://github.com/brainlife/app-roiGenerator/tree/1.0) | [doi:10.25663/bl.app.37](https://doi.org/10.25663/bl.app.37) | deprecated |
 
-## 🚀 Running the App
+## Running the App
 
-### ☁️ On brainlife.io
+### On brainlife.io
 
 Pick the App for your target space and inputs from the table above, choose the inputs from your project, set the ROIs and press **Execute**. Most Apps need a FreeSurfer output and a FreeSurfer license; the outputs are a `neuro/rois` dataset (one NIfTI per ROI) and/or a `neuro/parcellation/volume` dataset combining them.
 
@@ -101,7 +101,7 @@ Pick the App for your target space and inputs from the table above, choose the i
 
 **pRF polar angle and eccentricity parcellations** ([doi:10.25663/brainlife.app.762](https://doi.org/10.25663/brainlife.app.762), [doi:10.25663/brainlife.app.713](https://doi.org/10.25663/brainlife.app.713)). Choose a FreeSurfer output, a `neuro/prf` dataset and the DWI that defines the output grid, and set the bins as space-separated lower and upper bounds in `min_degree` and `max_degree`. The App bins the pRF surface map, projects each bin into the cortical ribbon with FreeSurfer and Connectome Workbench, and combines the bins into one parcellation with FSL.
 
-### 💻 Locally
+### Locally
 
 You need [Singularity/Apptainer](https://apptainer.org/), [`jq`](https://jqlang.github.io/jq/) and, for most Apps, a [FreeSurfer license](https://surfer.nmr.mgh.harvard.edu/registration.html). FreeSurfer, FSL, AFNI 16.3.0 and Connectome Workbench run inside containers.
 
@@ -129,7 +129,7 @@ You need [Singularity/Apptainer](https://apptainer.org/), [`jq`](https://jqlang.
    ./main
    ```
 
-### 🧪 Sample data
+### Sample data
 
 Download sample datasets from brainlife.io with the [brainlife CLI](https://github.com/brainlife/cli):
 
@@ -142,7 +142,7 @@ bl dataset download 5c45e58c287fa00144a33567 && mv 5c45e58c287fa00144a33567 inpu
 bl dataset download 5967bffa9b45c212bbec8958 && mv 5967bffa9b45c212bbec8958 input/freesurfer
 ```
 
-## 📦 Outputs
+## Outputs
 
 ```text
 rois/rois/           one NIfTI per requested ROI (ROI-generation Apps)
@@ -152,12 +152,12 @@ parc/
 └── key.txt          mapping from original to new voxel values
 ```
 
-## 🩺 Troubleshooting
+## Troubleshooting
 
 - **`ROI files missing.`**: no ROI was written. Check the ROI index numbers against the lookup table of the chosen `inputparc`, and that the FreeSurfer output contains the segmentations requested (for example thalamic nuclei for the LGN).
 - **ROIs missing after inflation**: with `whitematter` off, or with large inflation values, some ROIs may not be generated; reduce the inflation or keep `whitematter` on.
 
-## 📚 Citing
+## Citing
 
 > [!TIP]
 > If you use this App in your work, please cite the App, the software it builds on and brainlife.io (below). GitHub's **Cite this repository** button gives the App citation in APA and BibTeX.
@@ -173,7 +173,7 @@ If you use these Apps, please cite AFNI's ROI tools and brainlife.io:
 - Hayashi S, Caron BA, Heinsfeld AS, et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. *Nature Methods* 21:809–813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
 - Avesani P, McPherson B, Hayashi S, et al. The open diffusion data derivatives, brain data upcycling via integrated publishing of derivatives and reproducible open cloud services. *Scientific Data* 6:69 (2019). [doi:10.1038/s41597-019-0073-y](https://doi.org/10.1038/s41597-019-0073-y)
 
-## 👥 Authors
+## Authors
 
 - Brad Caron
 
@@ -181,7 +181,7 @@ If you use these Apps, please cite AFNI's ROI tools and brainlife.io:
 
 The older Apps use [vistasoft](https://github.com/vistalab/vistasoft), [SPM 8](https://www.fil.ion.ucl.ac.uk/spm/software/spm8/) and [jsonlab](https://github.com/fangq/jsonlab).
 
-## 💰 Funding
+## Funding
 
 [![Wellcome-226486/Z/22/Z](https://img.shields.io/badge/Wellcome-226486%2FZ%2F22%2FZ-purple.svg)](https://wellcome.org/)
 [![NIH-NINDS-U24NS140384](https://img.shields.io/badge/NIH_NINDS-U24NS140384-green.svg)](https://reporter.nih.gov/project-details/11261037)
@@ -200,6 +200,6 @@ The older Apps use [vistasoft](https://github.com/vistalab/vistasoft), [SPM 8](h
 
 <sub>brainlife.io is publicly funded, and acknowledging that support helps keep it running. This App was developed with support from Wellcome, the U.S. National Institutes of Health (including the BRAIN Initiative BRAIN CONNECTS program: The Axonal Projectome EXchange, U24NS140384, and the Center for Mesoscale Connectomics, UM1NS132207) and the U.S. National Science Foundation.</sub>
 
-## ⚖️ License
+## License
 
 [MIT](LICENSE). FreeSurfer, FSL, AFNI and Connectome Workbench are distributed under their own licenses.
