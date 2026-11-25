@@ -2,6 +2,35 @@
 [![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.223-blue.svg)](https://doi.org/10.25663/brainlife.app.223)
 
 # app-roiGenerator
+
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+**Generates a volumetric parcellation in DWI space by binning a pRF polar angle surface map into user-defined ranges and projecting the bins into the cortical ribbon, using FreeSurfer, Connectome Workbench and FSL.**
+
+Converts the pRF polar angle surface to GIFTI, binarizes it into the bins given by min_degree/max_degree (space-separated lists of equal length), maps each bin into the volume with mri_surf2vol on the cortical ribbon resliced to the DWI, and combines left and right hemispheres into one parcellation with one label per bin. Use it to analyse white matter or tracts by visual field polar angle. It needs a FreeSurfer output, a prf dataset with lh/rh.polarAngle surfaces and a DWI for the reference grid.
+
+Run it on brainlife.io: [https://doi.org/10.25663/brainlife.app.762](https://doi.org/10.25663/brainlife.app.762)
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `freesurfer` | `neuro/freesurfer` | yes | FreeSurfer output providing the pial surfaces, ribbon and <inputparc>+aseg volume used to map surface bins into the volume. |
+| `prf` | `neuro/prf` | yes | pRF dataset providing lh/rh.polarAngle surface maps. |
+| `dwi` | `neuro/dwi` | yes | DWI image used as the reference grid for the output parcellation. |
+
+| Output | Datatype | Description |
+|---|---|---|
+| `parc` | `neuro/parcellation/volume` | Volumetric parcellation in DWI space with one label per polar angle bin (both hemispheres combined), with key.txt and label.json. |
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `inputparc` | enum | `aparc.a2009s` | FreeSurfer parcellation whose +aseg volume is resliced to the DWI with mri_label2vol and used as the template grid. Options: `aparc`, `aparc.a2009s`, `aparc.DKTatlas`. |
+| `min_degree` | string |  | minimum polar angle values for each bin ex. 0 3 7 |
+| `max_degree` | string |  | maximum polar values for each bin ex. 3 7 90 |
+
+Runtime: container `brainlife/connectome_workbench:1.4.2-freesurfer-update`; 2 CPUs; needs `FREESURFER_LICENSE`.
+
+<!-- brainlife-app:end -->
+
 This app will generate region-of-interest (ROI) niftis from either a Freesurfer parcellation or another parcellation. This app will use AFNI to inflate parcellations and VISTASOFT to extract inputted ROIs and create ROI niftis. The inputs are: T1, DTIINIT, Freesurfer, parcellation (optional). The outputs are: parcellation (inflated), rois (niftis).
 
 ### Authors
